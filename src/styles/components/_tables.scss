@@ -1,45 +1,68 @@
 table.file-table {
     width: 100%;
-    border-collapse: collapse;
+    table-layout: auto;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    font-size: large;
 
     tr>td,
     tr>th {
-        padding: 0.5rem 1rem;
+        padding: 0.75rem 1rem;
 
-        :nth-child(1) {
+        &:nth-child(1) {
             width: 5%;
         }
 
-        :nth-child(2) {
-            width: 50%;
+        &:nth-child(2) {
+            width: 40%;
         }
 
-        :nth-child(3) {
-            width: 10%;
+        &:nth-child(3) {
+            width: 15%;
         }
 
-        :nth-child(4) {
-            width: 10%;
+        &:nth-child(4) {
+            width: 15%;
         }
 
-        :nth-child(5) {
-            width: 25%;
+        &:nth-child(5) {
+            width: auto;
         }
     }
 
     thead {
-        th {
-            font-weight: normal;
-            border-bottom: 1px solid gray;
-            cursor: pointer;
-            &:hover {
-                background-color: lightgray;
+        >tr {
+            >th {
+                font-weight: normal;
+                border-bottom: 1px solid slategray;
+                cursor: pointer;
+
+                &:hover {
+                    background-color: lightgray;
+                }
+
+                &:nth-child(1) {
+                    text-align: right;
+                }
             }
         }
     }
 
     tbody {
-        tr {
+        >tr {
+            >td {
+                &:nth-child(1) {
+                    text-align: right;
+                }
+
+                &:nth-child(3) {
+                    color: gray;
+                }
+
+                &:nth-child(4) {
+                    color: gray;
+                }
+            }
+
             cursor: pointer;
             border-bottom: 1px solid whitesmoke;
 
