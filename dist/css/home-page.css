@@ -3,7 +3,7 @@
   \*******************************************************************************************************************************************************************************************************************************************/
 .nav-button {
   border: none;
-  padding: 8px 12px;
+  padding: 8px 16px;
   background: transparent;
   text-align: center;
   text-decoration: none;
@@ -71,9 +71,52 @@
   padding: 8px;
 }
 
+table.file-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+table.file-table tr > td,
+table.file-table tr > th {
+  padding: 0.5rem 1rem;
+}
+table.file-table tr > td :nth-child(1),
+table.file-table tr > th :nth-child(1) {
+  width: 5%;
+}
+table.file-table tr > td :nth-child(2),
+table.file-table tr > th :nth-child(2) {
+  width: 50%;
+}
+table.file-table tr > td :nth-child(3),
+table.file-table tr > th :nth-child(3) {
+  width: 10%;
+}
+table.file-table tr > td :nth-child(4),
+table.file-table tr > th :nth-child(4) {
+  width: 10%;
+}
+table.file-table tr > td :nth-child(5),
+table.file-table tr > th :nth-child(5) {
+  width: 25%;
+}
+table.file-table thead th {
+  font-weight: normal;
+  border-bottom: 1px solid gray;
+  cursor: pointer;
+}
+table.file-table thead th:hover {
+  background-color: lightgray;
+}
+table.file-table tbody tr {
+  cursor: pointer;
+  border-bottom: 1px solid whitesmoke;
+}
+table.file-table tbody tr:hover {
+  background-color: lightgray;
+}
+
 .home-page {
   font-family: "Oswald", sans-serif;
-  font-optical-sizing: auto;
   font-style: normal;
 }
 .home-page .fa-file-excel {

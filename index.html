@@ -22,7 +22,7 @@
 
 			<!-- Toggle button (appear when collapsed) -->
 
-			<div class="d-flex border-bottom border-1 border-terretri container-fluid px-3 py-2">
+			<div class="d-lg-none d-flex border-bottom border-1 border-terretri container-fluid px-3 py-2">
 				<button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse"
 					data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
 					aria-expanded="false" aria-label="Toggle navigation">
@@ -78,54 +78,64 @@
 	</nav>
 
 	<!-- Body section (table - desktop) -->
-	<div class="d-none d-md-block">
-		<table>
-			<tr>
-				<th><i class="fa-solid fa-folder"></i></th>
+	<div class="d-none d-lg-block px-4">
+		<h1 class="my-3 fw-light">Documents</h1>
+
+		<table class="file-table">
+			<thead>
+				<th><i class="fa-regular fa-file"></i></th>
 				<th>Name</th>
 				<th>Modified</th>
 				<th>Modified By</th>
 				<th>Add column</th>
-			</tr>
-			<tr>
-				<td><i class="fa-solid fa-folder"></i></td>
-				<td>CAS</td>
-				<td>April 30</td>
-				<td>Megan Bowen</td>
-			</tr>
-			<tr>
-				<td><i class="fa-solid fa-file-excel"></i></td>
-				<td>CoasterAndBargelLoading.xlsx</td>
-				<td>A few seconds ago</td>
-				<td>Administrator MOD</td>
-			</tr>
-			<tr>
-				<td><i class="fa-solid fa-file-excel"></i></td>
-				<td>RevenueByServices.xlsx</td>
-				<td>A few seconds ago</td>
-				<td>Administrator MOD</td>
-			</tr>
-			<tr>
-				<td><i class="fa-solid fa-file-excel"></i></td>
-				<td>RevenueByServices2016.xlsx</td>
-				<td>A few seconds ago</td>
-				<td>Administrator MOD</td>
-			</tr>
-			<tr>
-				<td><i class="fa-solid fa-file-excel"></i></td>
-				<td>RevenueByServices2017.xlsx</td>
-				<td>A few seconds ago</td>
-				<td>Administrator MOD</td>
-			</tr>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><i class="fa-solid fa-folder"></i></td>
+					<td>CAS</td>
+					<td>April 30</td>
+					<td>Megan Bowen</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><i class="fa-solid fa-file-excel"></i></td>
+					<td>CoasterAndBargelLoading.xlsx</td>
+					<td>A few seconds ago</td>
+					<td>Administrator MOD</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><i class="fa-solid fa-file-excel"></i></td>
+					<td>RevenueByServices.xlsx</td>
+					<td>A few seconds ago</td>
+					<td>Administrator MOD</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><i class="fa-solid fa-file-excel"></i></td>
+					<td>RevenueByServices2016.xlsx</td>
+					<td>A few seconds ago</td>
+					<td>Administrator MOD</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><i class="fa-solid fa-file-excel"></i></td>
+					<td>RevenueByServices2017.xlsx</td>
+					<td>A few seconds ago</td>
+					<td>Administrator MOD</td>
+					<td></td>
+				</tr>
+			<tbody>
 		</table>
 	</div>
 
 
 	<!-- Body section (item list - mobile) -->
-	<div class="d-md-none px-2">
+	<div class="d-lg-none px-2">
 
 		<!-- Title -->
-		<h1 class="my-title my-3">Documents</h1>
+		<h1 class="my-3">Documents</h1>
 
 		<div class="d-flex flex-column gap-4">
 

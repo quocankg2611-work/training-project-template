@@ -1,0 +1,52 @@
+table.file-table {
+    width: 100%;
+    border-collapse: collapse;
+
+    tr>td,
+    tr>th {
+        padding: 0.5rem 1rem;
+
+        :nth-child(1) {
+            width: 5%;
+        }
+
+        :nth-child(2) {
+            width: 50%;
+        }
+
+        :nth-child(3) {
+            width: 10%;
+        }
+
+        :nth-child(4) {
+            width: 10%;
+        }
+
+        :nth-child(5) {
+            width: 25%;
+        }
+    }
+
+    thead {
+        th {
+            font-weight: normal;
+            border-bottom: 1px solid gray;
+            cursor: pointer;
+            &:hover {
+                background-color: lightgray;
+            }
+        }
+    }
+
+    tbody {
+        tr {
+            cursor: pointer;
+            border-bottom: 1px solid whitesmoke;
+
+            &:hover {
+                background-color: lightgray;
+
+            }
+        }
+    }
+}
