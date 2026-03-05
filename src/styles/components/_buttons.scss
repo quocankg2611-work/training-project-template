@@ -1,1 +1,35 @@
-// Button Styles
+.nav-button {
+  border: none;
+  padding: 8px 12px;
+  background: transparent;
+  text-align: center;
+  text-decoration: none;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+
+  &:hover {
+    background-color: $hover-gray;
+    color: $primary-color;
+
+    .icon {
+      color: $primary-color;
+    }
+  }
+
+  > .icon {
+    font-size: 18px;
+    color: $primary-color;
+  }
+
+  > .dropdown-indicator {
+    font-size: 12px;
+    color: rgb(172, 172, 172);
+  }
+
+  > .more-option {
+    letter-spacing: 2px;
+  }
+}

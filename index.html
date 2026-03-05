@@ -1,8 +1,233 @@
-<html>
-	<head>
+<!DOCTYPE html>
 
-	</head>
-	<body>
-		
-	</body>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Web Demo 01</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="A sample web application">
+	<link rel="stylesheet" href="./dist/css/home-page.css">
+	<link rel="stylesheet" href="./test.css">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+<body class="home-page">
+	<!-- Navbar section -->
+	<nav class="navbar navbar-expand-lg py-0 rounded-0">
+		<div class="container-fluid px-0">
+
+			<!-- Toggle button (appear when collapsed) -->
+
+			<div class="d-flex border-bottom border-1 border-terretri container-fluid px-3 py-2">
+				<button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse"
+					data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+					aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+			</div>
+
+			<!-- Nav Collpase -->
+
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav me-auto mb-lg-0">
+					<li class="nav-item">
+						<button class="nav-button">
+							<i class="icon fa-solid fa-plus"></i>
+							<span>New</span>
+							<i class="dropdown-indicator fa-solid fa-chevron-down"></i>
+						</button>
+					</li>
+					<li class="nav-item">
+						<button class="nav-button">
+							<i class="icon fa-solid fa-folder-open"></i>
+							<span>Open</span>
+							<i class="dropdown-indicator fa-solid fa-chevron-down"></i>
+						</button>
+					</li>
+					<li class="nav-item">
+						<button class="nav-button">
+							<i class="icon fa-solid fa-sync"></i>
+							<span>Sync</span>
+						</button>
+					</li>
+					<li class="nav-item">
+						<button class="nav-button">
+							<i class="icon fa-solid fa-file-excel" style="color: green;"></i>
+							<span>Export to Excel</span>
+						</button>
+					</li>
+					<li class="nav-item">
+						<button class="nav-button">
+							<i class="icon fa-solid fa-diagram-project"></i>
+							<span>Flow</span>
+							<i class="dropdown-indicator fa-solid fa-chevron-down"></i>
+						</button>
+					</li>
+					<li class="nav-item">
+						<button class="nav-button">
+							<span class="more-option">...</span>
+						</button>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<!-- Body section (table - desktop) -->
+	<div class="d-none d-md-block">
+		<table>
+			<tr>
+				<th><i class="fa-solid fa-folder"></i></th>
+				<th>Name</th>
+				<th>Modified</th>
+				<th>Modified By</th>
+				<th>Add column</th>
+			</tr>
+			<tr>
+				<td><i class="fa-solid fa-folder"></i></td>
+				<td>CAS</td>
+				<td>April 30</td>
+				<td>Megan Bowen</td>
+			</tr>
+			<tr>
+				<td><i class="fa-solid fa-file-excel"></i></td>
+				<td>CoasterAndBargelLoading.xlsx</td>
+				<td>A few seconds ago</td>
+				<td>Administrator MOD</td>
+			</tr>
+			<tr>
+				<td><i class="fa-solid fa-file-excel"></i></td>
+				<td>RevenueByServices.xlsx</td>
+				<td>A few seconds ago</td>
+				<td>Administrator MOD</td>
+			</tr>
+			<tr>
+				<td><i class="fa-solid fa-file-excel"></i></td>
+				<td>RevenueByServices2016.xlsx</td>
+				<td>A few seconds ago</td>
+				<td>Administrator MOD</td>
+			</tr>
+			<tr>
+				<td><i class="fa-solid fa-file-excel"></i></td>
+				<td>RevenueByServices2017.xlsx</td>
+				<td>A few seconds ago</td>
+				<td>Administrator MOD</td>
+			</tr>
+		</table>
+	</div>
+
+
+	<!-- Body section (item list - mobile) -->
+	<div class="d-md-none px-2">
+
+		<!-- Title -->
+		<h1 class="my-title my-3">Documents</h1>
+
+		<div class="d-flex flex-column gap-4">
+
+			<table class="file-card">
+				<tr>
+					<th>File Type</th>
+					<th><i class="fa-solid fa-folder"></i></th>
+				</tr>
+				<tr>
+					<td>Name</td>
+					<td>CAS</td>
+				</tr>
+				<tr>
+					<td>Modified</td>
+					<td>April 30</td>
+				</tr>
+				<tr>
+					<td>Modified By</td>
+					<td>Megan Bowen</td>
+				</tr>
+			</table>
+			<table class="file-card">
+				<tr>
+					<th>File Type</th>
+					<th><i class="fa-solid fa-file-excel"></i></th>
+				</tr>
+				<tr>
+					<td>Name</td>
+					<td>CoasterAndBargelLoading.xlsx</td>
+				</tr>
+				<tr>
+					<td>Modified</td>
+					<td>A few seconds ago</td>
+				</tr>
+				<tr>
+					<td>Modified By</td>
+					<td>Administrator MOD</td>
+				</tr>
+			</table>
+			<table class="file-card">
+				<tr>
+					<th>File Type</th>
+					<th><i class="fa-solid fa-file-word"></i></th>
+				</tr>
+				<tr>
+					<td>Name</td>
+					<td>RevenueByServices</td>
+				</tr>
+				<tr>
+					<td>Modified</td>
+					<td>A few seconds ago</td>
+				</tr>
+				<tr>
+					<td>Modified By</td>
+					<td>Administrator MOD</td>
+				</tr>
+			</table>
+			<table class="file-card">
+				<tr>
+					<th>File Type</th>
+					<th><i class="fa-solid fa-file-excel"></i></th>
+				</tr>
+				<tr>
+					<td>Name</td>
+					<td>RevenueByServices2016</td>
+				</tr>
+				<tr>
+					<td>Modified</td>
+					<td>A few seconds ago</td>
+				</tr>
+				<tr>
+					<td>Modified By</td>
+					<td>Administrator MOD</td>
+				</tr>
+			</table>
+			<table class="file-card">
+				<tr>
+					<th>File Type</th>
+					<th><i class="fa-solid fa-file-excel"></i></th>
+				</tr>
+				<tr>
+					<td>Name</td>
+					<td>RevenueByServices2017</td>
+				</tr>
+				<tr>
+					<td>Modified</td>
+					<td>A few seconds ago</td>
+				</tr>
+				<tr>
+					<td>Modified By</td>
+					<td>Administrator MOD</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+
+	<!-- === Scripts import === -->
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+		crossorigin="anonymous"></script>
+	<script src="./dist/js/home-page.js"></script>
+</body>
+
 </html>
