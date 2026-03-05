@@ -1,12 +1,29 @@
-table.file-table {
+.file-table {
+    $block-font-size: $font-size-base * 0.875;
+    $block-header-border-color: $color-gray-300;
+    $block-body-border-color: $color-gray-200;
+    $block-hover-background-color: $color-gray-100;
+
     width: 100%;
     table-layout: auto;
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    font-size: large;
+    font-weight: 300;
+
+    &__dropdown-indicator {
+        font-size: $block-font-size;
+        color: $color-dropdown-indicator;
+        margin-left: $spacer-base;
+    }
+
+    &__header-icon {
+        color: $color-gray-400;
+        font-size: $block-font-size * 1.125;
+        margin-left: $spacer-base;
+    }
+
 
     tr>td,
     tr>th {
-        padding: 0.75rem 1rem;
+        padding: $block-font-size * 0.75 $block-font-size;
 
         &:nth-child(1) {
             width: 5%;
@@ -27,17 +44,27 @@ table.file-table {
         &:nth-child(5) {
             width: auto;
         }
+
+        @for $i from 1 through 5 {
+            &:nth-child(#{$i}) {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+        }
     }
+
+
 
     thead {
         >tr {
             >th {
                 font-weight: normal;
-                border-bottom: 1px solid slategray;
+                border-bottom: 2px solid $block-header-border-color;
                 cursor: pointer;
 
                 &:hover {
-                    background-color: lightgray;
+                    background-color: $block-hover-background-color;
                 }
 
                 &:nth-child(1) {
@@ -55,19 +82,19 @@ table.file-table {
                 }
 
                 &:nth-child(3) {
-                    color: gray;
+                    color: $color-text-muted;
                 }
 
                 &:nth-child(4) {
-                    color: gray;
+                    color: $color-text-muted;
                 }
             }
 
             cursor: pointer;
-            border-bottom: 1px solid whitesmoke;
+            border-bottom: 1px solid $block-body-border-color;
 
             &:hover {
-                background-color: lightgray;
+                background-color: $block-hover-background-color;
 
             }
         }

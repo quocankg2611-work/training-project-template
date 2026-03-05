@@ -2,10 +2,11 @@
 @import '../utilities/variables';
 @import '../utilities/functions';
 @import '../utilities/mixins';
+@import '../utilities/fonts';
 
+@import '../base/variables';
 @import '../base/reset';
 @import '../base/typography';
-@import '../base/variables';
 
 @import '../layout/navigation';
 @import '../layout/grid';
@@ -17,4 +18,4 @@
 @import '../components/cards';
 @import '../components/navbar';
 @import '../components/tables';
-@import '../components/icon';
+@import '../components/texts';

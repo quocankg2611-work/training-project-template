@@ -4,7 +4,7 @@
 
 <head>
 	<meta charset="utf-8">
-	<title>Web Demo 01</title>
+	<title>Training SCSS and Bootstrap</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="description" content="A sample web application">
 	<link rel="stylesheet" href="./dist/css/home-page.css">
@@ -16,8 +16,10 @@
 </head>
 
 <body class="home-page">
+
 	<!-- Navbar section -->
-	<nav class="navbar navbar-expand-lg py-0 rounded-0">
+
+	<nav class="navbar navbar-expand-lg py-0">
 		<div class="container-fluid px-0">
 
 			<!-- Toggle button (appear when collapsed) -->
@@ -36,40 +38,40 @@
 				<ul class="navbar-nav me-auto mb-lg-0">
 					<li class="nav-item">
 						<button class="nav-button">
-							<i class="icon fa-solid fa-plus"></i>
+							<i class="nav-button__icon fa-solid fa-plus"></i>
 							<span>New</span>
-							<i class="dropdown-indicator fa-solid fa-chevron-down"></i>
+							<i class="nav-button__dropdown-indicator fa-solid fa-chevron-down"></i>
 						</button>
 					</li>
 					<li class="nav-item">
 						<button class="nav-button">
-							<i class="icon fa-solid fa-upload"></i>
+							<i class=" nav-button__icon fa-solid fa-upload"></i>
 							<span>Upload</span>
-							<i class="dropdown-indicator fa-solid fa-chevron-down"></i>
+							<i class="nav-button__dropdown-indicator fa-solid fa-chevron-down"></i>
 						</button>
 					</li>
 					<li class="nav-item">
 						<button class="nav-button">
-							<i class="icon fa-solid fa-sync"></i>
+							<i class="nav-button__icon fa-solid fa-sync"></i>
 							<span>Sync</span>
 						</button>
 					</li>
 					<li class="nav-item">
 						<button class="nav-button">
-							<i class="icon fa-solid fa-file-excel" style="color: green;"></i>
+							<i class="nav-button__icon fa-solid fa-file-excel" style="color: green;"></i>
 							<span>Export to Excel</span>
 						</button>
 					</li>
 					<li class="nav-item">
 						<button class="nav-button">
-							<i class="icon fa-solid fa-diagram-project"></i>
+							<i class="nav-button__icon fa-solid fa-diagram-project"></i>
 							<span>Flow</span>
-							<i class="dropdown-indicator fa-solid fa-chevron-down"></i>
+							<i class="nav-button__dropdown-indicator fa-solid fa-chevron-down"></i>
 						</button>
 					</li>
 					<li class="nav-item">
 						<button class="nav-button">
-							<span class="more-option">...</span>
+							<span class="nav-button__more-option">...</span>
 						</button>
 					</li>
 				</ul>
@@ -78,16 +80,16 @@
 	</nav>
 
 	<!-- Body section (table - desktop) -->
-	<div class="d-none d-lg-block px-4">
-		<h1 class="my-3 fw-light">Documents</h1>
+	<div class="d-none d-lg-block px-4" style="overflow-x: auto;">
+		<h1 class="ms-4 my-4 fw-light">Documents</h1>
 
 		<table class="file-table">
 			<thead>
 				<th><i class="fa-regular fa-file"></i></th>
 				<th>Name</th>
-				<th>Modified <i class="fa-solid fa-chevron-down"></i></th>
-				<th>Modified By <i class="fa-solid fa-chevron-down"></i></th>
-				<th><i class="fa-solid fa-add"></i> Add column</th>
+				<th>Modified <i class="file-table__dropdown-indicator fa-solid fa-chevron-down"></i></th>
+				<th>Modified By <i class="file-table__dropdown-indicator fa-solid fa-chevron-down"></i></th>
+				<th><i class="file-table__header-icon fa-solid fa-add"></i> Add column</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -100,28 +102,36 @@
 				</tr>
 				<tr>
 					<td><i class="fa-solid fa-file-excel"></i></td>
-					<td>CoasterAndBargelLoading.xlsx</td>
+					<td>
+						<span class="text--with-icon text--is-file-synced">CoasterAndBargelLoading.xlsx</span>
+					</td>
 					<td>A few seconds ago</td>
 					<td>Administrator MOD</td>
 					<td></td>
 				</tr>
 				<tr>
 					<td><i class="fa-solid fa-file-excel"></i></td>
-					<td>RevenueByServices.xlsx</td>
+					<td>
+						<span class="text--with-icon text--is-file-synced">RevenueByServices.xlsx</span>
+					</td>
 					<td>A few seconds ago</td>
 					<td>Administrator MOD</td>
 					<td></td>
 				</tr>
 				<tr>
 					<td><i class="fa-solid fa-file-excel"></i></td>
-					<td>RevenueByServices2016.xlsx</td>
+					<td>
+						<span class="text--with-icon text--is-file-synced">RevenueByServices2016.xlsx</span>
+					</td>
 					<td>A few seconds ago</td>
 					<td>Administrator MOD</td>
 					<td></td>
 				</tr>
 				<tr>
 					<td><i class="fa-solid fa-file-excel"></i></td>
-					<td>RevenueByServices2017.xlsx</td>
+					<td>
+						<span class="text--with-icon text--is-file-synced">RevenueByServices2017.xlsx</span>
+					</td>
 					<td>A few seconds ago</td>
 					<td>Administrator MOD</td>
 					<td></td>

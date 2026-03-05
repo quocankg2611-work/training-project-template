@@ -1,1 +1,6 @@
 // Typography Rules
+
+html {
+    font-family: $font-system-ui;
+    font-size: clamp(16px, 1vw + 1rem, 24px);
+}

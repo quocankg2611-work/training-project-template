@@ -2,13 +2,9 @@
 @import "master-page";
 
 .home-page {
-    font-family: "Oswald", sans-serif;
-    font-style: normal;
-
     .fa-file-excel {
         color: $excel-file-color;
     }
-
     .fa-file-word {
         color: $word-file-color;
     }

@@ -5,9 +5,9 @@
   table-layout: fixed;
   cursor: pointer;
 
-    &:hover {
-      background-color: $hover-gray;
-    }
+  &:hover {
+    background-color: $hover-gray;
+  }
 
   th,
   td {
