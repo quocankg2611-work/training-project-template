@@ -25,7 +25,7 @@
 
   &__text-file {
     @include text-with-icon('self--synced');
-    @include text-with-icon-offset(-6px, -12px, 12px, 12px);
+    @include text-with-icon-offset(-4px, -8px, 8px, 8px);
     margin-left: $spacer-base;
   }
 

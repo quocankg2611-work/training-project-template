@@ -29,20 +29,14 @@
         }
 
         &--folder {
-            @include icon-mask('tdesign--folder-filled');
-            @include icon-sizer(0.875);
+            @include icon-mask('ph--folder-fill');
+            @include icon-sizer(1);
         }
 
         &--excel {
-            @include icon-mask('ph--microsoft-excel-logo-fill');
+            @include icon-mask('uiw--file-excel');
             @include icon-sizer(1);
             color: $color-excel;
-        }
-
-        &--word {
-            @include icon-mask('ph--microsoft-word-logo-fill');
-            @include icon-sizer(1);
-            color: $color-word;
         }
     }
 

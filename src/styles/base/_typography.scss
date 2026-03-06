@@ -11,6 +11,7 @@ body {
 
 
     @media screen and (min-width: $breakpoint-lg ) {
-        font-family: $font-system-ui;
+        font-family: $font-roboto-condensed;
+        // font-family: $font-system-ui;
     }
 }
