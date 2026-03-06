@@ -1,9 +1,12 @@
 // Import global styles
+
+@import '../abstracts/icons';
+@import '../abstracts/texts';
+
 @import '../utilities/variables';
 @import '../utilities/functions';
 @import '../utilities/mixins';
 @import '../utilities/fonts';
-@import '../utilities/icons';
 
 @import '../base/variables';
 @import '../base/reset';

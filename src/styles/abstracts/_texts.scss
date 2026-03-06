@@ -1,0 +1,20 @@
+@mixin text-with-icon($icon-name) {
+    position: relative;
+
+    &::before {
+        content: '';
+        position: absolute;
+        background-repeat: no-repeat;
+        background-size: contain;
+        background-image: url("../../../assets/icons/#{$icon-name}.svg");
+    }
+}
+
+@mixin text-with-icon-offset($top, $left, $width, $height) {
+    &::before {
+        top: $top;
+        left: $left;
+        width: $width;
+        height: $height;
+    }
+}

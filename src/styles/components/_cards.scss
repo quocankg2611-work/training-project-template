@@ -2,14 +2,36 @@
   width: 100%;
   table-layout: auto;
   cursor: pointer;
+  font-size: font-sizer(0.875);
 
-  &:hover {
-    background-color: $hover-gray;
+  &__icon {
+    &--folder {
+      @include icon-mask('tdesign--folder-filled');
+      @include icon-sizer(0.825);
+    }
+
+    &--excel {
+      @include icon-mask('ph--microsoft-excel-logo-fill');
+      @include icon-sizer(1);
+      color: $color-excel;
+    }
+
+    &--word {
+      @include icon-mask('ph--microsoft-word-logo-fill');
+      @include icon-sizer(1);
+      color: $color-word;
+    }
+  }
+
+  &__text-file {
+    @include text-with-icon('self--synced');
+    @include text-with-icon-offset(-6px, -12px, 12px, 12px);
+    margin-left: spacer(1);
   }
 
   th,
   td {
-    padding: $spacer-base * 2 $spacer-base *3;
+    padding: padding-x-y(1.5, 2);
   }
 
   tr {
@@ -17,7 +39,7 @@
   }
 
   th {
-    background-color: $light-gray;
+    background-color: $color-card-header;
 
     &:nth-child(2) {
       text-align: right;
@@ -27,7 +49,7 @@
   th:nth-child(1),
   td:nth-child(1) {
     width: 1%;
-    font-weight: 500;
+    font-weight: 400;
     font-style: italic;
     white-space: nowrap;
   }

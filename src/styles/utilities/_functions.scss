@@ -1,1 +1,13 @@
 // Define functions
+
+@function spacer($multiplier) {
+    @return $spacer-base * $multiplier;
+}
+
+@function font-sizer($multiplier) {
+    @return $font-size-base * $multiplier;
+}
+
+@function padding-x-y($multiplier-x, $multiplier-y) {
+    @return spacer($multiplier-y) spacer($multiplier-x);
+}

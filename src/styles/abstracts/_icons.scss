@@ -1,0 +1,32 @@
+@mixin icon-sizer($multiplier) {
+    height: $multiplier * $icon-size-base;
+    width: $multiplier * $icon-size-base;
+}
+
+%icon-mask-base {
+    display: inline-block;
+    background-color: currentColor;
+    -webkit-mask-image: var(--svg);
+    mask-image: var(--svg);
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+}
+
+@mixin icon-mask($name) {
+    @extend %icon-mask-base;
+    --svg: url('../../../assets/icons/#{$name}.svg');
+}
+
+%icon-image-base {
+    display: inline-block;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-position: center;
+}
+
+@mixin icon-image($name) {
+    @extend %icon-image-base;
+    background-image: url('../../../assets/icons/#{$name}.svg');
+}

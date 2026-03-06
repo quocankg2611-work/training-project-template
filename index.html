@@ -19,7 +19,7 @@
 	<!-- Navbar section -->
 
 	<nav class="navbar navbar-expand-lg py-0">
-		<div class="container-fluid px-0">
+		<div class="container-fluid px-0 overflow-hidden w-100">
 
 			<!-- Toggle button (appear when collapsed) -->
 
@@ -37,35 +37,35 @@
 				<ul class="navbar-nav me-auto mb-lg-0">
 					<li class="nav-item">
 						<button class="nav-button">
-							<span class="nav-button__icon fluent-mdl2--add"></span>
+							<span class="nav-button__icon--add"></span>
 							<span>New</span>
-							<span class="nav-button__dropdown-indicator fluent-mdl2--chevron-down"></span>
+							<span class="nav-button__dropdown-indicator "></span>
 						</button>
 					</li>
 					<li class="nav-item">
 						<button class="nav-button">
-							<span class="nav-button__icon fluent-mdl2--upload"></span>
+							<span class="nav-button__icon--upload"></span>
 							<span>Upload</span>
-							<span class="nav-button__dropdown-indicator fluent-mdl2--chevron-down"></span>
+							<span class="nav-button__dropdown-indicator "></span>
 						</button>
 					</li>
 					<li class="nav-item">
 						<button class="nav-button">
-							<span class="nav-button__icon fluent-mdl2--sync-to-p-c"></span>
+							<span class="nav-button__icon--sync"></span>
 							<span>Sync</span>
 						</button>
 					</li>
 					<li class="nav-item">
 						<button class="nav-button">
-							<span class="nav-button__icon vscode-icons--file-type-excel2"></span>
+							<span class="nav-button__icon--export-to-excel"></span>
 							<span>Export to Excel</span>
 						</button>
 					</li>
 					<li class="nav-item">
 						<button class="nav-button">
-							<span class="nav-button__icon fluent-mdl2--flow"></span>
+							<span class="nav-button__icon--flow"></span>
 							<span>Flow</span>
-							<span class="nav-button__dropdown-indicator fluent-mdl2--chevron-down"></span>
+							<span class="nav-button__dropdown-indicator "></span>
 						</button>
 					</li>
 					<li class="nav-item">
@@ -80,27 +80,27 @@
 
 	<!-- Body section (table - desktop) -->
 	<div class="d-none d-lg-block px-4" style="overflow-x: auto;">
-		<h1 class="ms-4 my-4 fw-light">Documents</h1>
+		<h1 class="mt-5 mb-4 fw-light">Documents</h1>
 
 		<table class="file-table">
 			<thead>
-				<th><i class="fa-regular fa-file"></i></th>
-				<th>Name</th>
-				<th>Modified <i class="file-table__dropdown-indicator fa-solid fa-chevron-down"></i></th>
-				<th>Modified By <i class="file-table__dropdown-indicator fa-solid fa-chevron-down"></i></th>
-				<th><i class="file-table__header-icon fa-solid fa-add"></i> Add column</th>
+				<th><span class="file-table__icon--file"></span></th>
+				<th>Name <span class="file-table__dropdown-indicator"></span></th>
+				<th>Modified <span class="file-table__dropdown-indicator"></span></th>
+				<th>Modified By <span class="file-table__dropdown-indicator"></span></th>
+				<th><span class="file-table__header-icon--add"></span> Add column</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
-					<td><i class="fa-solid fa-folder"></i></td>
+					<td><i class="file-table__icon--folder"></i></td>
 					<td>CAS</td>
 					<td>April 30</td>
 					<td>Megan Bowen</td>
 					<td></td>
 				</tr>
 				<tr>
-					<td><i class="fa-solid fa-file-excel"></i></td>
+					<td><i class="file-table__icon--excel"></i></td>
 					<td>
 						<span class="text--with-icon text--is-file-synced">CoasterAndBargelLoading.xlsx</span>
 					</td>
@@ -109,7 +109,7 @@
 					<td></td>
 				</tr>
 				<tr>
-					<td><i class="fa-solid fa-file-excel"></i></td>
+					<td><i class="file-table__icon--word"></i></td>
 					<td>
 						<span class="text--with-icon text--is-file-synced">RevenueByServices.xlsx</span>
 					</td>
@@ -118,7 +118,7 @@
 					<td></td>
 				</tr>
 				<tr>
-					<td><i class="fa-solid fa-file-excel"></i></td>
+					<td><i class="file-table__icon--excel"></i></td>
 					<td>
 						<span class="text--with-icon text--is-file-synced">RevenueByServices2016.xlsx</span>
 					</td>
@@ -127,7 +127,7 @@
 					<td></td>
 				</tr>
 				<tr>
-					<td><i class="fa-solid fa-file-excel"></i></td>
+					<td><i class="file-table__icon--excel"></i></td>
 					<td>
 						<span class="text--with-icon text--is-file-synced">RevenueByServices2017.xlsx</span>
 					</td>
@@ -151,7 +151,9 @@
 			<table class="file-card">
 				<tr>
 					<th>File Type</th>
-					<th><i class="fa-solid fa-folder"></i></th>
+					<th>
+						<span class="file-card__icon--folder"></span>
+					</th>
 				</tr>
 				<tr>
 					<td>Name</td>
@@ -169,12 +171,14 @@
 			<table class="file-card">
 				<tr>
 					<th>File Type</th>
-					<th><i class="fa-solid fa-file-excel"></i></th>
+					<th>
+						<span class="file-card__icon--excel"></span>
+					</th>
 				</tr>
 				<tr>
 					<td>Name</td>
 					<td>
-						<span class="text--with-icon text--is-file-synced">
+						<span class="file-card__text-file">
 							CoasterAndBargelLoading.xlsx
 						</span>
 					</td>
@@ -191,12 +195,14 @@
 			<table class="file-card">
 				<tr>
 					<th>File Type</th>
-					<th><i class="fa-solid fa-file-word"></i></th>
+					<th>
+						<span class="file-card__icon--word"></span>
+					</th>
 				</tr>
 				<tr>
 					<td>Name</td>
 					<td>
-						<span class="text--with-icon text--is-file-synced">
+						<span class="file-card__text-file">
 							RevRevenueByServices
 						</span>
 					</td>
@@ -213,12 +219,14 @@
 			<table class="file-card">
 				<tr>
 					<th>File Type</th>
-					<th><i class="fa-solid fa-file-excel"></i></th>
+					<th>
+						<span class="file-card__icon--excel"></span>
+					</th>
 				</tr>
 				<tr>
 					<td>Name</td>
 					<td>
-						<span class="text--with-icon text--is-file-synced">
+						<span class="file-card__text-file">
 							RevenueByServices2016
 						</span>
 					</td>
@@ -235,12 +243,14 @@
 			<table class="file-card">
 				<tr>
 					<th>File Type</th>
-					<th><i class="fa-solid fa-file-excel"></i></th>
+					<th>
+						<span class="file-card__icon--excel"></span>
+					</th>
 				</tr>
 				<tr>
 					<td>Name</td>
 					<td>
-						<span class="text--with-icon text--is-file-synced">
+						<span class="file-card__text-file">
 							RevenueByServices2017
 						</span>
 					</td>

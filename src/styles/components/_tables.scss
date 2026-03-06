@@ -1,36 +1,79 @@
 .file-table {
+
+    // Variables
+
     $block-font-size: $font-size-base * 0.875;
     $block-header-border-color: $color-gray-300;
     $block-body-border-color: $color-gray-200;
     $block-hover-background-color: $color-gray-100;
+
+    // Abstract
+
+    %header-icon {
+        color: $color-gray-600;
+        font-size: $block-font-size * 1.125;
+        margin-right: $spacer-base;
+    }
+
+    // Properties
 
     width: 100%;
     table-layout: auto;
     font-weight: 300;
 
     &__dropdown-indicator {
-        font-size: $block-font-size;
         color: $color-dropdown-indicator;
-        margin-left: $spacer-base;
+        margin-left: $spacer-base * 1.25;
+        margin-top: $spacer-base * 2;
+        @include icon-mask('fluent-mdl2--chevron-down');
+        @include icon-sizer(0.675);
     }
 
     &__header-icon {
-        color: $color-gray-400;
-        font-size: $block-font-size * 1.125;
-        margin-left: $spacer-base;
+        &--add {
+            @extend %header-icon;
+            @include icon-mask('fluent-mdl2--add');
+            @include icon-sizer(0.675)
+        }
     }
 
+    &__icon {
+        &--file {
+            @include icon-mask('tdesign--file');
+            @include icon-sizer(1);
+            margin-top: spacer(2);
+        }
+
+        &--folder {
+            @include icon-mask('tdesign--folder-filled');
+            @include icon-sizer(0.875);
+        }
+
+        &--excel {
+            @include icon-mask('ph--microsoft-excel-logo-fill');
+            @include icon-sizer(1);
+            color: $color-excel;
+        }
+
+        &--word {
+            @include icon-mask('ph--microsoft-word-logo-fill');
+            @include icon-sizer(1);
+            color: $color-word;
+        }
+    }
 
     tr>td,
     tr>th {
-        padding: $block-font-size * 0.75 $block-font-size;
+        padding: padding-x-y(3, 3);
 
         &:nth-child(1) {
-            width: 5%;
+            text-align: right;
+            width: spacer(24);
         }
 
         &:nth-child(2) {
             width: 40%;
+            font-weight: normal;
         }
 
         &:nth-child(3) {
@@ -60,11 +103,13 @@
         >tr {
             >th {
                 font-weight: normal;
-                border-bottom: 2px solid $block-header-border-color;
+                border-bottom: 3px solid $color-table-header-border;
                 cursor: pointer;
+                vertical-align: middle;
+                line-height: 16px;
 
                 &:hover {
-                    background-color: $block-hover-background-color;
+                    background-color: $color-table-body-border;
                 }
 
                 &:nth-child(1) {

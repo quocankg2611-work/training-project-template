@@ -1,9 +1,20 @@
 .nav-button {
+
+  // Variables
+
   $block-primary-color: $color-raspberry;
   $block-hover-color: $color-gray-200;
-  $block-font-size: $font-size-base * 1;
-  $block-padding: $spacer-base * 2;
-  $block-gap: $spacer-base * 2;
+
+  // Abstracts
+
+  %nav-icon-base {
+    color: $block-primary-color;
+    height: $icon-size-base;
+    width: $icon-size-base;
+    margin-right: $spacer-base * 0.75;
+  }
+
+  // Properties
 
   border: none;
   background: transparent;
@@ -13,24 +24,53 @@
   flex-direction: row;
   align-items: center;
   font-weight: 300;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 
-  font-size: $block-font-size;
-  padding: $block-padding * 1.5 $block-padding * 2;
-  gap: $block-gap;
+  font-size: font-sizer(1.125);
+  padding: padding-x-y(3, 2);
+
+  @media screen and (min-width: $breakpoint-lg) {
+    padding: padding-x-y(4, 3);
+  }
+
+  gap: spacer(2);
   width: 100%;
 
   &__icon {
-    color: $block-primary-color;
-    height: $icon-size-base;
-    width: $icon-size-base;
-    margin-left: $spacer-base * 0.5;
+    &--add {
+      @extend %nav-icon-base;
+      @include icon-mask('fluent-mdl2--add');
+    }
+
+    &--upload {
+      @extend %nav-icon-base;
+      @include icon-mask('fluent-mdl2--upload');
+    }
+
+    &--sync {
+      @extend %nav-icon-base;
+      @include icon-mask('fluent-mdl2--sync-to-p-c');
+    }
+
+    // Use icon-image type
+    &--export-to-excel {
+      @extend %nav-icon-base;
+      @include icon-image('vscode-icons--file-type-excel2');
+    }
+
+    &--flow {
+      @extend %nav-icon-base;
+      @include icon-mask('fluent-mdl2--flow');
+    }
   }
 
   &__dropdown-indicator {
     color: $color-dropdown-indicator;
-    height: $icon-size-base * 0.5;
-    width: $icon-size-base * 0.5;
-    margin-right: $spacer-base * 0.5;
+    margin-left: $spacer-base * 0.5;
+    @include icon-mask('fluent-mdl2--chevron-down');
+    @include icon-sizer(0.675);
   }
 
   &__more-option {
