@@ -7,11 +7,10 @@
 	<title>Training SCSS and Bootstrap</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="description" content="A sample web application">
-	<link rel="stylesheet" href="./dist/css/home-page.css">
-	<link rel="stylesheet" href="./test.css">
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
 		integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 
+	<link rel="stylesheet" href="./dist/css/home-page.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 
@@ -38,35 +37,35 @@
 				<ul class="navbar-nav me-auto mb-lg-0">
 					<li class="nav-item">
 						<button class="nav-button">
-							<i class="nav-button__icon fa-solid fa-plus"></i>
+							<span class="nav-button__icon fluent-mdl2--add"></span>
 							<span>New</span>
-							<i class="nav-button__dropdown-indicator fa-solid fa-chevron-down"></i>
+							<span class="nav-button__dropdown-indicator fluent-mdl2--chevron-down"></span>
 						</button>
 					</li>
 					<li class="nav-item">
 						<button class="nav-button">
-							<i class=" nav-button__icon fa-solid fa-upload"></i>
+							<span class="nav-button__icon fluent-mdl2--upload"></span>
 							<span>Upload</span>
-							<i class="nav-button__dropdown-indicator fa-solid fa-chevron-down"></i>
+							<span class="nav-button__dropdown-indicator fluent-mdl2--chevron-down"></span>
 						</button>
 					</li>
 					<li class="nav-item">
 						<button class="nav-button">
-							<i class="nav-button__icon fa-solid fa-sync"></i>
+							<span class="nav-button__icon fluent-mdl2--sync-to-p-c"></span>
 							<span>Sync</span>
 						</button>
 					</li>
 					<li class="nav-item">
 						<button class="nav-button">
-							<i class="nav-button__icon fa-solid fa-file-excel" style="color: green;"></i>
+							<span class="nav-button__icon vscode-icons--file-type-excel2"></span>
 							<span>Export to Excel</span>
 						</button>
 					</li>
 					<li class="nav-item">
 						<button class="nav-button">
-							<i class="nav-button__icon fa-solid fa-diagram-project"></i>
+							<span class="nav-button__icon fluent-mdl2--flow"></span>
 							<span>Flow</span>
-							<i class="nav-button__dropdown-indicator fa-solid fa-chevron-down"></i>
+							<span class="nav-button__dropdown-indicator fluent-mdl2--chevron-down"></span>
 						</button>
 					</li>
 					<li class="nav-item">
@@ -142,10 +141,10 @@
 
 
 	<!-- Body section (item list - mobile) -->
-	<div class="d-lg-none px-2">
+	<div class="d-lg-none px-2 pb-5">
 
 		<!-- Title -->
-		<h1 class="my-3">Documents</h1>
+		<h1 class="mb-3 mt-4 fw-normal">Documents</h1>
 
 		<div class="d-flex flex-column gap-4">
 
@@ -174,7 +173,11 @@
 				</tr>
 				<tr>
 					<td>Name</td>
-					<td>CoasterAndBargelLoading.xlsx</td>
+					<td>
+						<span class="text--with-icon text--is-file-synced">
+							CoasterAndBargelLoading.xlsx
+						</span>
+					</td>
 				</tr>
 				<tr>
 					<td>Modified</td>
@@ -192,7 +195,11 @@
 				</tr>
 				<tr>
 					<td>Name</td>
-					<td>RevenueByServices</td>
+					<td>
+						<span class="text--with-icon text--is-file-synced">
+							RevRevenueByServices
+						</span>
+					</td>
 				</tr>
 				<tr>
 					<td>Modified</td>
@@ -210,7 +217,11 @@
 				</tr>
 				<tr>
 					<td>Name</td>
-					<td>RevenueByServices2016</td>
+					<td>
+						<span class="text--with-icon text--is-file-synced">
+							RevenueByServices2016
+						</span>
+					</td>
 				</tr>
 				<tr>
 					<td>Modified</td>
@@ -228,7 +239,11 @@
 				</tr>
 				<tr>
 					<td>Name</td>
-					<td>RevenueByServices2017</td>
+					<td>
+						<span class="text--with-icon text--is-file-synced">
+							RevenueByServices2017
+						</span>
+					</td>
 				</tr>
 				<tr>
 					<td>Modified</td>

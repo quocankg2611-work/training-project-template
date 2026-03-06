@@ -1,6 +1,12 @@
 // Typography Rules
 
 html {
-    font-family: $font-system-ui;
-    font-size: clamp(16px, 1vw + 1rem, 24px);
+    font-size: clamp(16px, 1vw + 1.5rem, 24px);
+}
+
+body {
+    @media screen and (max-width: 999px) {
+        font-family: $font-oswald;
+        font-weight: 300;
+    }
 }

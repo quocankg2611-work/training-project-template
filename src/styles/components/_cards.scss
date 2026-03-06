@@ -1,8 +1,6 @@
 .file-card {
   width: 100%;
-  padding: 8px 12px;
-  border: 1px solid $border-gray;
-  table-layout: fixed;
+  table-layout: auto;
   cursor: pointer;
 
   &:hover {
@@ -11,11 +9,11 @@
 
   th,
   td {
-    padding: 8px 12px;
+    padding: $spacer-base * 2 $spacer-base *3;
   }
 
   tr {
-    border: 1px solid $border-gray;
+    border: 1px solid $color-card-border;
   }
 
   th {
@@ -28,13 +26,16 @@
 
   th:nth-child(1),
   td:nth-child(1) {
-    width: 25%;
-    font-weight: bold;
+    width: 1%;
+    font-weight: 500;
     font-style: italic;
+    white-space: nowrap;
   }
 
   th:nth-child(2),
   td:nth-child(2) {
-    width: 75%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-all;
   }
 }

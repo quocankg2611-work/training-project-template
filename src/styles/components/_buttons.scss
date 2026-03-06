@@ -21,13 +21,16 @@
 
   &__icon {
     color: $block-primary-color;
-    font-size: $block-font-size * 1.125;
-    font-weight: 200;
+    height: $icon-size-base;
+    width: $icon-size-base;
+    margin-left: $spacer-base * 0.5;
   }
 
   &__dropdown-indicator {
-    font-size: $block-font-size * 0.875;
     color: $color-dropdown-indicator;
+    height: $icon-size-base * 0.5;
+    width: $icon-size-base * 0.5;
+    margin-right: $spacer-base * 0.5;
   }
 
   &__more-option {
