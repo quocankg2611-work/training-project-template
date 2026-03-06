@@ -27,6 +27,14 @@
   background-position: center;
 }
 
+/* 
+Usage: 
+    @include icon-sizer((
+        default: 0.6,
+        md: 0.675,
+        lg: 0.75
+    ));
+*/
 html {
   font-size: clamp(12px, 1vw + 1.5rem, 24px);
 }
@@ -40,33 +48,38 @@ html {
 
 .nav-button .nav-button__icon--flow, .nav-button .nav-button__icon--export-to-excel, .nav-button .nav-button__icon--sync, .nav-button .nav-button__icon--upload, .nav-button .nav-button__icon--add {
   color: rgb(168, 0, 93);
-  height: 1.25rem;
-  width: 1.25rem;
   margin-right: 0.1875rem;
+  height: 0.9375rem;
+  width: 0.9375rem;
+}
+@media screen and (min-width: 992px) {
+  .nav-button .nav-button__icon--flow, .nav-button .nav-button__icon--export-to-excel, .nav-button .nav-button__icon--sync, .nav-button .nav-button__icon--upload, .nav-button .nav-button__icon--add {
+    height: 1.25rem;
+    width: 1.25rem;
+  }
 }
 .nav-button {
   border: none;
   background: transparent;
   text-align: center;
   text-decoration: none;
+  width: 100%;
   display: flex;
   flex-direction: row;
+  gap: 0.5rem;
   align-items: center;
   font-weight: 300;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  font-size: 1.125rem;
+  font-size: 0.875rem;
   padding: 0.5rem 0.75rem;
 }
 @media screen and (min-width: 992px) {
   .nav-button {
+    font-size: 1rem;
     padding: 0.75rem 1rem;
   }
-}
-.nav-button {
-  gap: 0.5rem;
-  width: 100%;
 }
 .nav-button__icon--add {
   --svg: url(../d7469d8ffc6d9065ac00.svg);
@@ -106,19 +119,19 @@ html {
 }
 .file-card__icon--folder {
   --svg: url(../ca8857f5128424823c08.svg);
-  height: 1.03125rem;
-  width: 1.03125rem;
+  height: 0.9375rem;
+  width: 0.9375rem;
 }
 .file-card__icon--excel {
   --svg: url(../d137bac60ae20b45e9d0.svg);
-  height: 1.25rem;
-  width: 1.25rem;
+  height: 1.09375rem;
+  width: 1.09375rem;
   color: rgb(21, 128, 61);
 }
 .file-card__icon--word {
   --svg: url(../bdfff5e2558e952f8200.svg);
-  height: 1.25rem;
-  width: 1.25rem;
+  height: 1.09375rem;
+  width: 1.09375rem;
   color: rgb(29, 78, 216);
 }
 .file-card__text-file {
@@ -170,26 +183,32 @@ html {
 .navbar {
   background-color: rgb(243, 244, 246);
 }
-
-.file-table .file-table__header-icon--add {
-  color: rgb(75, 85, 99);
-  font-size: 0.984375rem;
-  margin-right: 0.25rem;
+.navbar .navbar-toggler-icon {
+  width: 1rem;
+  height: 1rem;
 }
+.navbar .navbar-toggler {
+  padding: 0.1875rem 0.375rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .file-table {
   width: 100%;
   table-layout: auto;
-  font-weight: 300;
+  font-weight: lighter;
 }
 .file-table__dropdown-indicator {
   color: rgb(156, 163, 175);
   margin-left: 0.3125rem;
-  margin-top: 0.5rem;
   --svg: url(../110d687e46eb3ab739d5.svg);
   height: 0.84375rem;
   width: 0.84375rem;
 }
 .file-table__header-icon--add {
+  color: rgb(75, 85, 99);
+  margin-right: 0.25rem;
   --svg: url(../d7469d8ffc6d9065ac00.svg);
   height: 0.84375rem;
   width: 0.84375rem;
@@ -198,7 +217,6 @@ html {
   --svg: url(../27ebdb8d6b4bbeb73a4a.svg);
   height: 1.25rem;
   width: 1.25rem;
-  margin-top: 0.5rem;
 }
 .file-table__icon--folder {
   --svg: url(../ca8857f5128424823c08.svg);
@@ -217,6 +235,22 @@ html {
   width: 1.25rem;
   color: rgb(29, 78, 216);
 }
+.file-table__text-file {
+  position: relative;
+}
+.file-table__text-file::before {
+  content: "";
+  position: absolute;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-image: url(../14a9f936ab66999548ab.svg);
+}
+.file-table__text-file::before {
+  top: -8px;
+  left: -16px;
+  width: 16px;
+  height: 16px;
+}
 .file-table tr > td,
 .file-table tr > th {
   padding: 0.75rem 0.75rem;
@@ -224,7 +258,7 @@ html {
 .file-table tr > td:nth-child(1),
 .file-table tr > th:nth-child(1) {
   text-align: right;
-  width: 6rem;
+  width: spacer(24);
 }
 .file-table tr > td:nth-child(2),
 .file-table tr > th:nth-child(2) {
@@ -278,10 +312,10 @@ html {
   border-bottom: 3px solid rgb(209, 213, 219);
   cursor: pointer;
   vertical-align: middle;
-  line-height: 16px;
+  line-height: 1rem;
 }
 .file-table thead > tr > th:hover {
-  background-color: rgb(209, 213, 219);
+  background-color: rgb(243, 244, 246);
 }
 .file-table thead > tr > th:nth-child(1) {
   text-align: right;
@@ -301,30 +335,6 @@ html {
 }
 .file-table tbody > tr:hover {
   background-color: rgb(243, 244, 246);
-}
-
-.text--with-icon {
-  position: relative;
-}
-.text--with-icon::before {
-  content: "";
-  position: absolute;
-  top: -8px;
-  left: -16px;
-  width: 16px;
-  height: 16px;
-  background-repeat: no-repeat;
-  background-size: contain;
-}
-.text--is-file-synced::before {
-  background-image: url(../14a9f936ab66999548ab.svg);
-}
-
-.home-page .fa-file-excel {
-  color: rgb(0, 128, 0);
-}
-.home-page .fa-file-word {
-  color: rgb(0, 0, 255);
 }
 
 /*# sourceMappingURL=home-page.css.map*/

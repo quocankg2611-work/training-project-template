@@ -62,7 +62,9 @@ $color-slate-950: rgb(2, 6, 23);
 $color-text-muted: $color-gray-500;
 
 $color-table-header-border: $color-gray-300;
-$color-table-body-border: $color-gray-300;
+$color-table-body-border: $color-gray-200;
+$color-table-header-hover: $color-gray-100;
+$color-table-body-hover: $color-gray-100;
 
 $color-card-border: $color-gray-300;
 $color-card-header: $color-gray-200;
@@ -76,11 +78,10 @@ $color-word: $color-blue-700;
 // =====================
 
 $spacer-base: 1rem * 0.25; // 0.25rem = 4px
-$font-size-base: 1rem;
 $icon-size-base: 1rem * 1.25; // 1.25rem = 20px
 
 // =====================
-// Breaking points (bootstrap-like)
+// Breakpoints (bootstrap-like, use min-width)
 // =====================
 
 $breakpoint-sm: 576px;
@@ -88,3 +89,11 @@ $breakpoint-md: 768px;
 $breakpoint-lg: 992px;
 $breakpoint-xl: 1200px;
 $breakpoint-xxl: 1400px;
+
+$breakpoints: (
+    sm: 576px,
+    md: 768px,
+    lg: 992px,
+    xl: 1200px,
+    xxl: 1400px,
+);

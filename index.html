@@ -9,7 +9,6 @@
 	<meta name="description" content="A sample web application">
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
 		integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-
 	<link rel="stylesheet" href="./dist/css/home-page.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
@@ -79,9 +78,13 @@
 	</nav>
 
 	<!-- Body section (table - desktop) -->
+
 	<div class="d-none d-lg-block px-4" style="overflow-x: auto;">
+
+		<!-- Title -->
 		<h1 class="mt-5 mb-4 fw-light">Documents</h1>
 
+		<!-- Content -->
 		<table class="file-table">
 			<thead>
 				<th><span class="file-table__icon--file"></span></th>
@@ -102,16 +105,7 @@
 				<tr>
 					<td><i class="file-table__icon--excel"></i></td>
 					<td>
-						<span class="text--with-icon text--is-file-synced">CoasterAndBargelLoading.xlsx</span>
-					</td>
-					<td>A few seconds ago</td>
-					<td>Administrator MOD</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td><i class="file-table__icon--word"></i></td>
-					<td>
-						<span class="text--with-icon text--is-file-synced">RevenueByServices.xlsx</span>
+						<span class="file-table__text-file">CoasterAndBargelLoading.xlsx</span>
 					</td>
 					<td>A few seconds ago</td>
 					<td>Administrator MOD</td>
@@ -120,7 +114,7 @@
 				<tr>
 					<td><i class="file-table__icon--excel"></i></td>
 					<td>
-						<span class="text--with-icon text--is-file-synced">RevenueByServices2016.xlsx</span>
+						<span class="file-table__text-file">RevenueByServices.xlsx</span>
 					</td>
 					<td>A few seconds ago</td>
 					<td>Administrator MOD</td>
@@ -129,7 +123,16 @@
 				<tr>
 					<td><i class="file-table__icon--excel"></i></td>
 					<td>
-						<span class="text--with-icon text--is-file-synced">RevenueByServices2017.xlsx</span>
+						<span class="file-table__text-file">RevenueByServices2016.xlsx</span>
+					</td>
+					<td>A few seconds ago</td>
+					<td>Administrator MOD</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><i class="file-table__icon--excel"></i></td>
+					<td>
+						<span class="file-table__text-file">RevenueByServices2017.xlsx</span>
 					</td>
 					<td>A few seconds ago</td>
 					<td>Administrator MOD</td>
@@ -139,13 +142,14 @@
 		</table>
 	</div>
 
-
 	<!-- Body section (item list - mobile) -->
+
 	<div class="d-lg-none px-2 pb-5">
 
 		<!-- Title -->
 		<h1 class="mb-3 mt-4 fw-normal">Documents</h1>
 
+		<!-- Content -->
 		<div class="d-flex flex-column gap-4">
 
 			<table class="file-card">
@@ -276,8 +280,3 @@
 </body>
 
 </html>
-
-
-<!-- 
-Excel icon: <img src="https://files.svgcdn.io/vscode-icons/file-type-excel2.svg" alt="Excel Icon">
--->

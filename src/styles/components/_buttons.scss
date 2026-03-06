@@ -5,13 +5,16 @@
   $block-primary-color: $color-raspberry;
   $block-hover-color: $color-gray-200;
 
-  // Abstracts
+  // Common
 
   %nav-icon-base {
     color: $block-primary-color;
-    height: $icon-size-base;
-    width: $icon-size-base;
     margin-right: $spacer-base * 0.75;
+    @include icon-sizer(0.75);
+
+    @media screen and (min-width: $breakpoint-lg) {
+      @include icon-sizer(1);
+    }
   }
 
   // Properties
@@ -20,23 +23,23 @@
   background: transparent;
   text-align: center;
   text-decoration: none;
+  width: 100%;
   display: flex;
   flex-direction: row;
+  gap: $spacer-base * 2;
   align-items: center;
   font-weight: 300;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 
-  font-size: font-sizer(1.125);
+  font-size: fs(sm);
   padding: padding-x-y(3, 2);
 
   @media screen and (min-width: $breakpoint-lg) {
+    font-size: fs(base);
     padding: padding-x-y(4, 3);
   }
-
-  gap: spacer(2);
-  width: 100%;
 
   &__icon {
     &--add {

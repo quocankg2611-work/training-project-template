@@ -1,37 +1,22 @@
 .file-table {
 
-    // Variables
-
-    $block-font-size: $font-size-base * 0.875;
-    $block-header-border-color: $color-gray-300;
-    $block-body-border-color: $color-gray-200;
-    $block-hover-background-color: $color-gray-100;
-
-    // Abstract
-
-    %header-icon {
-        color: $color-gray-600;
-        font-size: $block-font-size * 1.125;
-        margin-right: $spacer-base;
-    }
-
     // Properties
 
     width: 100%;
     table-layout: auto;
-    font-weight: 300;
+    font-weight: lighter;
 
     &__dropdown-indicator {
         color: $color-dropdown-indicator;
         margin-left: $spacer-base * 1.25;
-        margin-top: $spacer-base * 2;
         @include icon-mask('fluent-mdl2--chevron-down');
         @include icon-sizer(0.675);
     }
 
     &__header-icon {
         &--add {
-            @extend %header-icon;
+            color: $color-gray-600;
+            margin-right: $spacer-base;
             @include icon-mask('fluent-mdl2--add');
             @include icon-sizer(0.675)
         }
@@ -41,7 +26,6 @@
         &--file {
             @include icon-mask('tdesign--file');
             @include icon-sizer(1);
-            margin-top: spacer(2);
         }
 
         &--folder {
@@ -60,6 +44,11 @@
             @include icon-sizer(1);
             color: $color-word;
         }
+    }
+
+    &__text-file {
+        @include text-with-icon('self--synced');
+        @include text-with-icon-offset(-8px, -16px, 16px, 16px);
     }
 
     tr>td,
@@ -97,8 +86,6 @@
         }
     }
 
-
-
     thead {
         >tr {
             >th {
@@ -106,10 +93,10 @@
                 border-bottom: 3px solid $color-table-header-border;
                 cursor: pointer;
                 vertical-align: middle;
-                line-height: 16px;
+                line-height: 1rem;
 
                 &:hover {
-                    background-color: $color-table-body-border;
+                    background-color: $color-table-header-hover;
                 }
 
                 &:nth-child(1) {
@@ -136,11 +123,10 @@
             }
 
             cursor: pointer;
-            border-bottom: 1px solid $block-body-border-color;
+            border-bottom: 1px solid $color-table-body-border;
 
             &:hover {
-                background-color: $block-hover-background-color;
-
+                background-color: $color-table-body-hover;
             }
         }
     }

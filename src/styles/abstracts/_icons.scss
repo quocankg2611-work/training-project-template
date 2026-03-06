@@ -1,8 +1,3 @@
-@mixin icon-sizer($multiplier) {
-    height: $multiplier * $icon-size-base;
-    width: $multiplier * $icon-size-base;
-}
-
 %icon-mask-base {
     display: inline-block;
     background-color: currentColor;
@@ -14,11 +9,6 @@
     mask-size: 100% 100%;
 }
 
-@mixin icon-mask($name) {
-    @extend %icon-mask-base;
-    --svg: url('../../../assets/icons/#{$name}.svg');
-}
-
 %icon-image-base {
     display: inline-block;
     background-repeat: no-repeat;
@@ -26,7 +16,42 @@
     background-position: center;
 }
 
+@mixin icon-mask($name) {
+    @extend %icon-mask-base;
+    --svg: url('../../../assets/icons/#{$name}.svg');
+}
+
 @mixin icon-image($name) {
     @extend %icon-image-base;
     background-image: url('../../../assets/icons/#{$name}.svg');
+}
+
+@mixin icon-sizer($multiplier) {
+    height: $multiplier * $icon-size-base;
+    width: $multiplier * $icon-size-base;
+}
+
+/* 
+Usage: 
+    @include icon-sizer((
+        default: 0.6,
+        md: 0.675,
+        lg: 0.75
+    ));
+*/
+
+@mixin icon-sizer-responsive($sizes-map) {
+    $default: map-get($sizes-map, default);
+
+    @if $default {
+        @include icon-sizer($default);
+    }
+
+    @each $bp, $size in $sizes-map {
+        @if $bp !=default {
+            @media (min-width: map-get($breakpoints, $bp)) {
+                @include icon-sizer($size);
+            }
+        }
+    }
 }

@@ -1,3 +1,15 @@
 .navbar {
   background-color: $color-gray-100;
+
+  .navbar-toggler-icon {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .navbar-toggler {
+    padding: padding-x-y(1.5, 0.75);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 }

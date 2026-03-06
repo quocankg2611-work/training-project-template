@@ -2,23 +2,23 @@
   width: 100%;
   table-layout: auto;
   cursor: pointer;
-  font-size: font-sizer(0.875);
+  font-size: fs(sm);
 
   &__icon {
     &--folder {
       @include icon-mask('tdesign--folder-filled');
-      @include icon-sizer(0.825);
+      @include icon-sizer(0.75);
     }
 
     &--excel {
       @include icon-mask('ph--microsoft-excel-logo-fill');
-      @include icon-sizer(1);
+      @include icon-sizer(0.875);
       color: $color-excel;
     }
 
     &--word {
       @include icon-mask('ph--microsoft-word-logo-fill');
-      @include icon-sizer(1);
+      @include icon-sizer(0.875);
       color: $color-word;
     }
   }
@@ -26,7 +26,7 @@
   &__text-file {
     @include text-with-icon('self--synced');
     @include text-with-icon-offset(-6px, -12px, 12px, 12px);
-    margin-left: spacer(1);
+    margin-left: $spacer-base;
   }
 
   th,
