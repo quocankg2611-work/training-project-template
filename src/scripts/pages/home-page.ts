@@ -8,18 +8,18 @@ import setupAddFolderModal from '../components/_add-folder-modal';
 import setupUploadFileModal from '../components/_upload-file-modal';
 import { FileModel } from '../model/_file.model';
 import { FileExtensionsType } from '../types/_file-extensions.types';
+import { DocumentView } from '../components/views/_document.view';
 
 onAppReady(async () => {
 
 	const documentService = new DocumentService();
+	let selectedItem: DocumentView | null = null;
 	documentService.seedDataIfNotExists();
 
 	renderHomePageIsLoading(true);
 
 	const rootFolder = await documentService.getRootFolder();
 	const folderStack: FolderModel[] = [rootFolder];
-
-	// Compute
 	const folderRef = () => folderStack[folderStack.length - 1];
 
 	renderHomePageIsLoading(false);
@@ -62,8 +62,14 @@ onAppReady(async () => {
 
 	function render() {
 		renderBreadcrumb(folderStack, (selectedFolder) => navigateBackOnFolderStack(folderStack, selectedFolder.id) && render());
-		renderTable(folderRef(), (selectedFolder) => navigateIntoFolderStack(folderStack, selectedFolder.id) && render());
+		renderTable(
+			folderRef(),
+			(selectedFolder) => navigateIntoFolderStack(folderStack, selectedFolder.id) && render(),
+			selectedItem,
+			(item) => onItemSelected(item) && render()
+		);
 		renderCardList(folderRef(), (selectedFolder) => navigateIntoFolderStack(folderStack, selectedFolder.id) && render());
+		renderHomePageIsEditing(selectedItem);
 	}
 
 	// ===============================
@@ -88,6 +94,11 @@ onAppReady(async () => {
 		}
 		return false;
 	}
+
+	function onItemSelected(item: DocumentView): boolean {
+		selectedItem = item;
+		return true;
+	}
 });
 
 function renderHomePageIsLoading(isShow: boolean) {
@@ -103,3 +114,9 @@ function renderHomePageIsLoading(isShow: boolean) {
 	}
 }
 
+function renderHomePageIsEditing(selectedItem: DocumentView | null) {
+	const homePageActionElements = document.getElementsByClassName("home-page-actions");
+	for (let i = 0; i < homePageActionElements.length; i++) {
+		homePageActionElements[i].classList.toggle("hidden", selectedItem == null);
+	}
+}

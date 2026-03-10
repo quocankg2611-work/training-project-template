@@ -85,3 +85,64 @@
     color: $block-primary-color;
   }
 }
+
+.act-button {
+
+  // Variables
+
+  $block-primary-color: $color-raspberry;
+  $block-hover-text-color: $color-gray-200;
+  $block-hover-background-color: darken($color-raspberry, 10%);
+
+  // Common
+
+  %nav-icon-base {
+    color: white;
+    margin-right: $spacer-base * 0.75;
+  }
+
+  // Properties
+
+  border: none;
+  background: $block-primary-color;
+  color: white;
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+  gap: $spacer-base * 1;
+  align-items: center;
+  font-weight: 300;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
+  font-size: fs(sm);
+  padding: padding-x-y(3, 2);
+
+  &__icon {
+    &--edit {
+      @extend %nav-icon-base;
+      @include icon-mask('fluent-mdl2--edit');
+      @include icon-sizer(0.75);
+    }
+
+    &--delete {
+      @include icon-mask('fluent-mdl2--delete');
+      @include icon-sizer(0.75);
+    }
+  }
+
+  &:hover {
+    background-color: $block-hover-background-color;
+    color: $block-hover-text-color;
+  }
+
+  &--cancel {
+    background-color: $color-gray-400;
+
+    &:hover {
+      background-color: darken($color-gray-400, 10%);
+      color: $block-hover-text-color;
+    }
+  }
+}

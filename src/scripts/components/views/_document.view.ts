@@ -21,7 +21,7 @@ export type DocumentView = {
 }
 
 export function documentViewFromFileModel(file: FileModel): DocumentView {
-    const iconName = FileExtensionToIconName.get(file.extension);
+    const iconName = FileExtensionToIconName.get(file.extension) ?? "excel" // Default icon display;
     return {
         ...file,
         modifiedStr: formatTimeAgo(file.modified),

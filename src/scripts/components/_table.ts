@@ -1,8 +1,15 @@
 import { FolderModel } from "../model/_folder.model";
 import { DocumentView, documentViewFromFileModel, documentViewFromFolderModel } from "./views/_document.view";
 
-export default function renderTable(currentFolder: FolderModel, onFolderClicked: (folder: FolderModel) => void): void {
+export default function renderTable(
+    currentFolder: FolderModel,
+    onFolderClicked: (folder: FolderModel) => void,
+    selectedItem: DocumentView | null,
+    onItemSelected: (item: DocumentView) => void
+): void {
     const placeholderList = document.getElementById("documents-table--placeholder--list");
+    if (!placeholderList) return;
+
     placeholderList.replaceChildren(); // Clear existing content before re-rendering
 
     const documentItemViews: DocumentView[] = [];
@@ -16,16 +23,20 @@ export default function renderTable(currentFolder: FolderModel, onFolderClicked:
         return a.modified.getTime() - b.modified.getTime();
     });
     for (const documentItemView of documentItemViews) {
-        const tableRow = createTableRow(documentItemView);
+        const tableRow = createTableRow(documentItemView, selectedItem, onItemSelected);
         placeholderList.appendChild(tableRow);
     }
 }
 
-function createTableRow(documentView: DocumentView): HTMLElement {
+function createTableRow(
+    documentView: DocumentView,
+    selectedItem: DocumentView | null,
+    onItemSelected: (item: DocumentView) => void
+): HTMLElement {
     const templateItem = document.getElementById("documents-table--template--item") as HTMLTemplateElement;
     const cloned = templateItem.content.cloneNode(true) as HTMLElement;
     if (documentView.onDocumentClicked != null) {
-        cloned.querySelector("tr").addEventListener("click", documentView.onDocumentClicked);
+        cloned.querySelector("tr")?.addEventListener("click", documentView.onDocumentClicked);
     }
 
     const rowIcon = createTableRowIcon(documentView.iconName);
@@ -33,10 +44,19 @@ function createTableRow(documentView: DocumentView): HTMLElement {
         ? document.createTextNode(documentView.name)
         : createTableRowName(documentView.name);
 
-    cloned.querySelector("tr>td:nth-child(1)").appendChild(rowIcon);
-    cloned.querySelector("tr>td:nth-child(2)").appendChild(rowName);
-    cloned.querySelector("tr>td:nth-child(3)").appendChild(document.createTextNode(documentView.modifiedStr));
-    cloned.querySelector("tr>td:nth-child(4)").appendChild(document.createTextNode(documentView.modifiedBy));
+    cloned.querySelector("tr>td:nth-child(1)")?.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        onItemSelected(documentView);
+    });
+    const radioInput = cloned.querySelector<HTMLInputElement>("tr>td:nth-child(1)>input[type='radio'][name='file-table-select']");
+    if (radioInput) {
+        radioInput.checked = documentView.id === selectedItem?.id;
+    }
+    cloned.querySelector("tr>td:nth-child(2)")?.appendChild(rowIcon);
+    cloned.querySelector("tr>td:nth-child(3)")?.appendChild(rowName);
+    cloned.querySelector("tr>td:nth-child(4)")?.appendChild(document.createTextNode(documentView.modifiedStr));
+    cloned.querySelector("tr>td:nth-child(5)")?.appendChild(document.createTextNode(documentView.modifiedBy));
 
     return cloned;
 }
