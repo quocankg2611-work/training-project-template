@@ -1,13 +1,13 @@
 import { FolderModel } from "../model/_folder.model";
 import { DocumentView, documentViewFromFileModel, documentViewFromFolderModel } from "./views/_document.view";
 
-export default function renderCardList(currentFolder: FolderModel) {
+export default function renderCardList(currentFolder: FolderModel, onFolderClicked: (folder: FolderModel) => void): void {
     const documentItemViews: DocumentView[] = [];
     currentFolder.files.forEach(file => {
         documentItemViews.push(documentViewFromFileModel(file));
     });
     currentFolder.subFolders.forEach(folder => {
-        documentItemViews.push(documentViewFromFolderModel(folder));
+        documentItemViews.push(documentViewFromFolderModel(folder, onFolderClicked));
     });
     documentItemViews.sort((a, b) => {
         return a.modified.getTime() - b.modified.getTime();
@@ -21,6 +21,10 @@ function renderCardItem(documentView: DocumentView) {
     const templateItem = document.getElementById("card-list--template--item") as HTMLTemplateElement;
     const placeholderList = document.getElementById("card-list--placeholder--list");
     const cloned = templateItem.content.cloneNode(true) as HTMLElement;
+
+    if (documentView.onDocumentClicked != null) {
+        cloned.querySelector(".file-card")?.addEventListener("click", documentView.onDocumentClicked);
+    }
 
     const rowIcon = createCardItemIcon(documentView.iconName);
     const rowName = createCardItemName(documentView.name);

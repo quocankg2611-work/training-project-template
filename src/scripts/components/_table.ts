@@ -1,7 +1,7 @@
 import { FolderModel } from "../model/_folder.model";
 import { DocumentView, documentViewFromFileModel, documentViewFromFolderModel } from "./views/_document.view";
 
-export default function renderTable(currentFolder: FolderModel): void {
+export default function renderTable(currentFolder: FolderModel, onFolderClicked: (folder: FolderModel) => void): void {
     const placeholderList = document.getElementById("documents-table--placeholder--list");
     placeholderList.replaceChildren(); // Clear existing content before re-rendering
 
@@ -10,7 +10,7 @@ export default function renderTable(currentFolder: FolderModel): void {
         documentItemViews.push(documentViewFromFileModel(file));
     });
     currentFolder.subFolders.forEach(folder => {
-        documentItemViews.push(documentViewFromFolderModel(folder));
+        documentItemViews.push(documentViewFromFolderModel(folder, onFolderClicked));
     });
     documentItemViews.sort((a, b) => {
         return a.modified.getTime() - b.modified.getTime();
@@ -24,6 +24,9 @@ export default function renderTable(currentFolder: FolderModel): void {
 function createTableRow(documentView: DocumentView): HTMLElement {
     const templateItem = document.getElementById("documents-table--template--item") as HTMLTemplateElement;
     const cloned = templateItem.content.cloneNode(true) as HTMLElement;
+    if (documentView.onDocumentClicked != null) {
+        cloned.querySelector("tr").addEventListener("click", documentView.onDocumentClicked);
+    }
 
     const rowIcon = createTableRowIcon(documentView.iconName);
     const rowName = documentView.iconName === "folder"

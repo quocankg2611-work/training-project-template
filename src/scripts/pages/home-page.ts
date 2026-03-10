@@ -10,18 +10,21 @@ import { FileModel } from '../model/_file.model';
 import { FileExtensionsType } from '../types/_file-extensions.types';
 
 onAppReady(async () => {
-	const documentService = new DocumentService();
-	const pathsStack = ["Home"];
 
+	const documentService = new DocumentService();
 	documentService.seedDataIfNotExists();
 
-	renderBreadcrumb(pathsStack, (crumb) => {
-		console.log(`Breadcrumb clicked: ${crumb}`);
-	});
 	renderHomePageIsLoading(true);
+
 	const rootFolder = await documentService.getRootFolder();
+	const folderStack: FolderModel[] = [rootFolder];
+
+	// Compute
+	const folderRef = () => folderStack[folderStack.length - 1];
+
 	renderHomePageIsLoading(false);
-	renderHomePageData(rootFolder);
+
+	render();
 
 	setupAddFolderModal((folderName: string) => {
 		const newFolder: FolderModel = {
@@ -32,8 +35,8 @@ onAppReady(async () => {
 			subFolders: [],
 			files: [],
 		};
-		rootFolder.subFolders.push(newFolder);
-		renderHomePageData(rootFolder);
+		folderRef().subFolders.push(newFolder);
+		render();
 	});
 
 	setupUploadFileModal((fileName: string, extension: string, content: string) => {
@@ -45,13 +48,46 @@ onAppReady(async () => {
 			extension: extension as FileExtensionsType,
 			content,
 		};
-		rootFolder.files.push(newFile);
-		renderHomePageData(rootFolder);
+		folderRef().files.push(newFile);
+		render();
 	});
 
 	onAppBeforeUnload(() => {
 		documentService.saveRootFolder(rootFolder);
 	});
+
+	// ===============================
+	// View
+	// ===============================
+
+	function render() {
+		renderBreadcrumb(folderStack, (selectedFolder) => navigateBackOnFolderStack(folderStack, selectedFolder.id) && render());
+		renderTable(folderRef(), (selectedFolder) => navigateIntoFolderStack(folderStack, selectedFolder.id) && render());
+		renderCardList(folderRef(), (selectedFolder) => navigateIntoFolderStack(folderStack, selectedFolder.id) && render());
+	}
+
+	// ===============================
+	// Model
+	// ===============================
+
+	function navigateBackOnFolderStack(folderStack: FolderModel[], targetFolderId: string): boolean {
+		const index = folderStack.findIndex(f => f.id === targetFolderId);
+		if (index !== -1) {
+			folderStack.splice(index + 1);
+			return true;
+		}
+		return false;
+	}
+
+	function navigateIntoFolderStack(folderStack: FolderModel[], targetFolderId: string): boolean {
+		const currentFolder = folderStack[folderStack.length - 1];
+		const targetFolder = currentFolder.subFolders.find(f => f.id === targetFolderId);
+		if (targetFolder) {
+			folderStack.push(targetFolder);
+			return true;
+		}
+		return false;
+	}
 });
 
 function renderHomePageIsLoading(isShow: boolean) {
@@ -67,7 +103,3 @@ function renderHomePageIsLoading(isShow: boolean) {
 	}
 }
 
-function renderHomePageData(rootFolder: FolderModel) {
-	renderTable(rootFolder);
-	renderCardList(rootFolder);
-}

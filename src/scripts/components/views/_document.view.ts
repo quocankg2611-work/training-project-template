@@ -17,6 +17,7 @@ export type DocumentView = {
     modifiedStr: string;
     modifiedBy: string;
     iconName: PossibleIconNames;
+    onDocumentClicked?: () => void;
 }
 
 export function documentViewFromFileModel(file: FileModel): DocumentView {
@@ -28,10 +29,11 @@ export function documentViewFromFileModel(file: FileModel): DocumentView {
     };
 }
 
-export function documentViewFromFolderModel(folder: FolderModel): DocumentView {
+export function documentViewFromFolderModel(folder: FolderModel, onFolderClicked: (folder: FolderModel) => void): DocumentView {
     return {
         ...folder,
         modifiedStr: formatTimeAgo(folder.modified),
         iconName: "folder",
+        onDocumentClicked: () => onFolderClicked(folder)
     };
 }

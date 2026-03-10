@@ -1,4 +1,6 @@
-export default function renderBreadcrumb(paths: string[], onClick: (crumb: string) => void): void {
+import { FolderModel } from "../model/_folder.model";
+
+export default function renderBreadcrumb(folderStack: FolderModel[], onClick: (selectedFolder: FolderModel) => void): void {
     const placeholders = document.querySelectorAll<HTMLDivElement>('#home-page-body--desktop .breadcrumb--placeholder');
 
     const breadcrumbContainerTemplate = document.getElementById('breadcrumb-container--template') as HTMLTemplateElement;
@@ -8,25 +10,26 @@ export default function renderBreadcrumb(paths: string[], onClick: (crumb: strin
     const breadcrumbContainer = breadcrumbContainerTemplate.content.cloneNode(true) as HTMLElement;
     const breadcrumbList = breadcrumbContainer.querySelector('.breadcrumb') as HTMLElement;
 
-    paths.forEach((path, index) => {
+    folderStack.forEach((folder, index) => {
         let item: HTMLElement;
-        if (index === paths.length - 1) {
+        if (index === folderStack.length - 1) {
             item = breadcrumbItemActiveTemplate.content.cloneNode(true) as HTMLElement;
             const liElement = item.querySelector('li') as HTMLLIElement;
-            liElement.textContent = path;
+            liElement.textContent = folder.name;
         } else {
             item = breadcrumbItemTemplate.content.cloneNode(true) as HTMLElement;
             const linkElement = item.querySelector('a') as HTMLAnchorElement;
-            linkElement.innerText = path;
+            linkElement.innerText = folder.name;
             linkElement.addEventListener('click', (e) => {
                 e.preventDefault();
-                onClick(path);
+                onClick(folder);
             });
         }
         breadcrumbList.appendChild(item);
     });
 
     placeholders.forEach((placeholder) => {
+        placeholder.replaceChildren();
         placeholder.appendChild(breadcrumbContainer);
     });
 }
