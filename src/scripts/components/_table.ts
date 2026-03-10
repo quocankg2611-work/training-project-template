@@ -2,7 +2,8 @@ import { FolderModel } from "../model/_folder.model";
 import { DocumentView, documentViewFromFileModel, documentViewFromFolderModel } from "./views/_document.view";
 
 export default function renderTable(currentFolder: FolderModel): void {
-    var placeholderList = document.getElementById("documents-table--placeholder--list");
+    const placeholderList = document.getElementById("documents-table--placeholder--list");
+    placeholderList.replaceChildren(); // Clear existing content before re-rendering
 
     const documentItemViews: DocumentView[] = [];
     currentFolder.files.forEach(file => {
@@ -25,7 +26,9 @@ function createTableRow(documentView: DocumentView): HTMLElement {
     const cloned = templateItem.content.cloneNode(true) as HTMLElement;
 
     const rowIcon = createTableRowIcon(documentView.iconName);
-    const rowName = createTableRowName(documentView.name);
+    const rowName = documentView.iconName === "folder"
+        ? document.createTextNode(documentView.name)
+        : createTableRowName(documentView.name);
 
     cloned.querySelector("tr>td:nth-child(1)").appendChild(rowIcon);
     cloned.querySelector("tr>td:nth-child(2)").appendChild(rowName);

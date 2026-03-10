@@ -20,19 +20,22 @@ onAppReady(async () => {
 	renderHomePageIsLoading(false);
 	renderHomePageData(rootFolder);
 
-	// Add Folder modal
 	setupAddFolderModal((folderName: string) => {
-		// TODO: Implement your folder creation logic here.
-		// Example:
-		//   1. Create a new FolderModel and push it into rootFolder.subFolders
-		//   2. Re-render the page
-		//   3. The folder will be persisted on page unload via saveRootFolder
-		console.log(`Add folder: "${folderName}"`);
+		const newFolder: FolderModel = {
+			id: crypto.randomUUID(),
+			modified: new Date(),
+			name: folderName,
+			modifiedBy: "Current User",
+			subFolders: [],
+			files: [],
+		};
+		rootFolder.subFolders.push(newFolder);
+		renderHomePageData(rootFolder);
 	});
 
 	onAppBeforeUnload(() => {
 		documentService.saveRootFolder(rootFolder);
-	})
+	});
 });
 
 function renderHomePageIsLoading(isShow: boolean) {

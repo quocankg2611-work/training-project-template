@@ -7,5 +7,9 @@ export const onAppReady = (fn: () => void) => {
 };
 
 export const onAppBeforeUnload = (fn: () => void) => {
-  window.addEventListener("beforeunload", fn);
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') {
+      fn();
+    }
+  });
 }

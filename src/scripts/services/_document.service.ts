@@ -44,18 +44,21 @@ export default class DocumentService {
         });
     }
 
-    public saveRootFolder(folder: FolderModel): Promise<void> {
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                try {
-                    const jsonStr = JSON.stringify(folder);
-                    localStorage.setItem(this._KEY, jsonStr);
-                    resolve();
-                } catch (err) {
-                    reject(err);
-                }
-            }, 2000);
-        })
+    public saveRootFolder(folder: FolderModel): void {
+        // return new Promise((resolve, reject) => {
+        //     setTimeout(() => {
+        //         try {
+        //             const jsonStr = JSON.stringify(folder);
+        //             localStorage.setItem(this._KEY, jsonStr);
+        //             resolve();
+        //         } catch (err) {
+        //             reject(err);
+        //         }
+        //     }, 2000);
+        // })
+
+        const jsonStr = JSON.stringify(folder);
+        localStorage.setItem(this._KEY, jsonStr);
     }
 }
 
