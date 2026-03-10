@@ -26,7 +26,7 @@ function renderCardItem(documentView: DocumentView) {
         cloned.querySelector(".file-card")?.addEventListener("click", documentView.onDocumentClicked);
     }
 
-    const rowIcon = createCardItemIcon(documentView.iconName);
+    const rowIcon = createCardItemIcon(documentView.documentType);
     const rowName = createCardItemName(documentView.name);
 
     cloned.querySelector("table>thead>tr:nth-child(1)>th:nth-child(2)").appendChild(rowIcon);

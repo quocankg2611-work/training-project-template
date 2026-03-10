@@ -7,14 +7,14 @@
 export default function setupUploadFileModal(
     onUploadFile: (fileName: string, extension: string, content: string) => void
 ): void {
-    const modalEl = document.getElementById("uploadFileModal");
+    const modalEl = document.getElementById("uploadFileModal")!;
     const fileInput = document.getElementById("fileInput") as HTMLInputElement;
-    const fileInputError = document.getElementById("fileInputError");
-    const uploadedFileGroup = document.getElementById("uploadedFileGroup");
+    const fileInputError = document.getElementById("fileInputError")!;
+    const uploadedFileGroup = document.getElementById("uploadedFileGroup")!;
     const uploadedFileName = document.getElementById("uploadedFileName") as HTMLInputElement;
-    const fileNameGroup = document.getElementById("fileNameGroup");
+    const fileNameGroup = document.getElementById("fileNameGroup")!;
     const fileNameInput = document.getElementById("fileNameInput") as HTMLInputElement;
-    const fileNameError = document.getElementById("fileNameError");
+    const fileNameError = document.getElementById("fileNameError")!;
     const uploadBtn = document.getElementById("uploadFileBtn") as HTMLButtonElement;
 
     const ALLOWED_EXTENSIONS = ["docx", "xlsx"];

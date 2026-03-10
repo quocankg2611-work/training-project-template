@@ -3,9 +3,9 @@ import { FolderModel } from "../../model/_folder.model";
 import { FileExtensionsType } from "../../types/_file-extensions.types";
 import formatTimeAgo from "../../utilities/_format-strings";
 
-type PossibleIconNames = "folder" | "excel" | "word";
+type PossibleDocumentTypes = "folder" | "excel" | "word";
 
-const FileExtensionToIconName = new Map<FileExtensionsType, PossibleIconNames>([
+const FileExtensionToIconName = new Map<FileExtensionsType, PossibleDocumentTypes>([
     ["xlsx", "excel"],
     ["docx", "word"]
 ]);
@@ -16,7 +16,7 @@ export type DocumentView = {
     modified: Date;
     modifiedStr: string;
     modifiedBy: string;
-    iconName: PossibleIconNames;
+    documentType: PossibleDocumentTypes;
     onDocumentClicked?: () => void;
 }
 
@@ -25,7 +25,7 @@ export function documentViewFromFileModel(file: FileModel): DocumentView {
     return {
         ...file,
         modifiedStr: formatTimeAgo(file.modified),
-        iconName,
+        documentType: iconName,
     };
 }
 
@@ -33,7 +33,7 @@ export function documentViewFromFolderModel(folder: FolderModel, onFolderClicked
     return {
         ...folder,
         modifiedStr: formatTimeAgo(folder.modified),
-        iconName: "folder",
+        documentType: "folder",
         onDocumentClicked: () => onFolderClicked(folder)
     };
 }

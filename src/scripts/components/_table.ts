@@ -39,8 +39,8 @@ function createTableRow(
         cloned.querySelector("tr")?.addEventListener("click", documentView.onDocumentClicked);
     }
 
-    const rowIcon = createTableRowIcon(documentView.iconName);
-    const rowName = documentView.iconName === "folder"
+    const rowIcon = createTableRowIcon(documentView.documentType);
+    const rowName = documentView.documentType === "folder"
         ? document.createTextNode(documentView.name)
         : createTableRowName(documentView.name);
 
