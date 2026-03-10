@@ -1,7 +1,9 @@
 import { FolderModel } from "../model/_folder.model";
 import { DocumentView, documentViewFromFileModel, documentViewFromFolderModel } from "./views/_document.view";
 
-export default function renderTable(currentFolder: FolderModel) {
+export default function renderTable(currentFolder: FolderModel): void {
+    var placeholderList = document.getElementById("documents-table--placeholder--list");
+
     const documentItemViews: DocumentView[] = [];
     currentFolder.files.forEach(file => {
         documentItemViews.push(documentViewFromFileModel(file));
@@ -13,13 +15,13 @@ export default function renderTable(currentFolder: FolderModel) {
         return a.modified.getTime() - b.modified.getTime();
     });
     for (const documentItemView of documentItemViews) {
-        renderTableRow(documentItemView);
+        const tableRow = createTableRow(documentItemView);
+        placeholderList.appendChild(tableRow);
     }
 }
 
-function renderTableRow(documentView: DocumentView) {
+function createTableRow(documentView: DocumentView): HTMLElement {
     const templateItem = document.getElementById("documents-table--template--item") as HTMLTemplateElement;
-    const placeholderList = document.getElementById("documents-table--placeholder--list");
     const cloned = templateItem.content.cloneNode(true) as HTMLElement;
 
     const rowIcon = createTableRowIcon(documentView.iconName);
@@ -30,7 +32,7 @@ function renderTableRow(documentView: DocumentView) {
     cloned.querySelector("tr>td:nth-child(3)").appendChild(document.createTextNode(documentView.modifiedStr));
     cloned.querySelector("tr>td:nth-child(4)").appendChild(document.createTextNode(documentView.modifiedBy));
 
-    placeholderList.appendChild(cloned);
+    return cloned;
 }
 
 function createTableRowIcon(iconName: string): HTMLSpanElement {

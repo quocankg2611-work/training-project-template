@@ -5,172 +5,289 @@
 <head>
 	<meta charset="utf-8">
 	<title>Training SCSS and Bootstrap</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="description" content="A sample web application">
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
-		integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-	<link rel="stylesheet" href="./dist/css/home-page.css">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+	<meta name="viewport"
+		  content="width=device-width, initial-scale=1.0">
+	<meta name="description"
+		  content="A sample web application">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+		  rel="stylesheet"
+		  integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+		  crossorigin="anonymous">
+	<link rel="stylesheet"
+		  href="./dist/css/home-page.css">
+	<link rel="stylesheet"
+		  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 
 <body id="home-page">
 
 	<!-- Navbar -->
 
-	<div id="navbar--placeholder"></div>
+	<nav class="navbar navbar-expand-lg py-0">
+		<div class="container-fluid px-0 w-100">
 
-	<template id="navbar--template">
-		<nav class="navbar navbar-expand-lg py-0">
-			<div class="container-fluid px-0 overflow-hidden w-100">
+			<!-- Toggle button (appear when collapsed) -->
 
-				<!-- Toggle button (appear when collapsed) -->
-
-				<div class="d-lg-none d-flex border-bottom border-1 border-terretri container-fluid px-3 py-2">
-					<button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse"
-						data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-						aria-expanded="false" aria-label="Toggle navigation">
-						<span class="navbar-toggler-icon"></span>
-					</button>
-				</div>
-
-				<!-- Nav Collpase -->
-
-				<div class="collapse navbar-collapse" id="navbarSupportedContent">
-					<ul class="navbar-nav me-auto mb-lg-0">
-						<li class="nav-item">
-							<button class="nav-button">
-								<span class="nav-button__icon--add"></span>
-								<span>New</span>
-								<span class="nav-button__dropdown-indicator "></span>
-							</button>
-						</li>
-						<li class="nav-item">
-							<button class="nav-button">
-								<span class="nav-button__icon--upload"></span>
-								<span>Upload</span>
-								<span class="nav-button__dropdown-indicator "></span>
-							</button>
-						</li>
-						<li class="nav-item">
-							<button class="nav-button">
-								<span class="nav-button__icon--sync"></span>
-								<span>Sync</span>
-							</button>
-						</li>
-						<li class="nav-item">
-							<button class="nav-button">
-								<span class="nav-button__icon--export-to-excel"></span>
-								<span>Export to Excel</span>
-							</button>
-						</li>
-						<li class="nav-item">
-							<button class="nav-button">
-								<span class="nav-button__icon--flow"></span>
-								<span>Flow</span>
-								<span class="nav-button__dropdown-indicator "></span>
-							</button>
-						</li>
-						<li class="nav-item">
-							<button class="nav-button">
-								<span class="nav-button__more-option">...</span>
-							</button>
-						</li>
-					</ul>
-				</div>
+			<div class="d-lg-none d-flex border-bottom border-1 border-terretri container-fluid px-3 py-2">
+				<button class="navbar-toggler ms-auto"
+						type="button"
+						data-bs-toggle="collapse"
+						data-bs-target="#navbarSupportedContent"
+						aria-controls="navbarSupportedContent"
+						aria-expanded="false"
+						aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
 			</div>
-		</nav>
-	</template>
+
+			<!-- Nav Collpase -->
+
+			<div class="collapse navbar-collapse"
+				 id="navbarSupportedContent">
+				<ul class="navbar-nav me-auto mb-lg-0">
+					<li class="nav-item dropdown">
+						<button class="nav-button dropdown-button"
+								type="button"
+								data-bs-toggle="dropdown"
+								aria-expanded="false">
+							<span class="nav-button__icon--add"></span>
+							<span>New</span>
+							<span class="nav-button__dropdown-indicator "></span>
+						</button>
+						<div class="dropdown-menu"
+							 aria-labelledby="dropdownMenuButton">
+							<a class="dropdown-item"
+							   href="#"
+							   data-bs-toggle="modal"
+							   data-bs-target="#addFolderModal">Folder</a>
+						</div>
+					</li>
+					<li class="nav-item">
+						<button class="nav-button">
+							<span class="nav-button__icon--upload"></span>
+							<span>Upload</span>
+							<span class="nav-button__dropdown-indicator "></span>
+						</button>
+					</li>
+					<li class="nav-item">
+						<button class="nav-button">
+							<span class="nav-button__icon--sync"></span>
+							<span>Sync</span>
+						</button>
+					</li>
+					<li class="nav-item">
+						<button class="nav-button">
+							<span class="nav-button__icon--export-to-excel"></span>
+							<span>Export to Excel</span>
+						</button>
+					</li>
+					<li class="nav-item">
+						<button class="nav-button">
+							<span class="nav-button__icon--flow"></span>
+							<span>Flow</span>
+							<span class="nav-button__dropdown-indicator "></span>
+						</button>
+					</li>
+					<li class="nav-item">
+						<button class="nav-button">
+							<span class="nav-button__more-option">...</span>
+						</button>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
 
 	<!-- Body section (table - desktop) -->
 
-	<div class="d-none d-lg-block px-4" style="overflow-x: auto;">
+	<div id="home-page-body--desktop"
+		 class="home-page__desktop d-none d-lg-block px-4">
 
 		<!-- Title -->
 		<h1 class="mt-5 mb-4 fw-light">Documents</h1>
 
+		<!-- Breadcrumb -->
+		<div class="breadcrumb--placeholder"></div>
+
 		<!-- Documents table -->
-		<table class="file-table">
-			<thead>
-				<th><span class="file-table__icon--file"></span></th>
-				<th>Name <span class="file-table__dropdown-indicator"></span></th>
-				<th>Modified <span class="file-table__dropdown-indicator"></span></th>
-				<th>Modified By <span class="file-table__dropdown-indicator"></span></th>
-				<th><span class="file-table__header-icon--add"></span> Add column</th>
-				</tr>
-			</thead>
-			<tbody id="documents-table--placeholder--list">
-				<template id="documents-table--template--item">
-					<tr>
-						<td>
-							<!-- {{icon}} -->
-						</td>
-						<td>
-							<!-- {{name}} -->
-						</td>
-						<td>
-							<!-- {{modified}} -->
-						</td>
-						<td>
-							<!-- {{modifiedBy}} -->
-						</td>
-						<td>
-							<!-- Left empty for "Add column" -->
-						</td>
+		<div class="home-page__table">
+			<div class="home-page__table-loading-container">
+				<div class="loader loader--spinner"></div>
+			</div>
+
+			<table class="file-table">
+				<thead>
+					<th><span class="file-table__icon--file"></span></th>
+					<th>Name <span class="file-table__dropdown-indicator"></span></th>
+					<th>Modified <span class="file-table__dropdown-indicator"></span></th>
+					<th>Modified By <span class="file-table__dropdown-indicator"></span></th>
+					<th><span class="file-table__header-icon--add"></span> Add column</th>
 					</tr>
-				</template>
-			<tbody>
-		</table>
+				</thead>
+
+				<tbody id="documents-table--placeholder--list">
+					<template id="documents-table--template--item">
+						<tr>
+							<td>
+								<!-- {{icon}} -->
+							</td>
+							<td>
+								<!-- {{name}} -->
+							</td>
+							<td>
+								<!-- {{modified}} -->
+							</td>
+							<td>
+								<!-- {{modifiedBy}} -->
+							</td>
+							<td>
+								<!-- Left empty for "Add column" -->
+							</td>
+						</tr>
+					</template>
+				<tbody>
+			</table>
+		</div>
 	</div>
 
 	<!-- Body section (item list - mobile) -->
 
-	<div class="d-lg-none px-2 pb-5">
+	<div id="home-page-body--mobile"
+		 class="d-lg-none px-2 pb-5">
 
 		<!-- Title -->
 		<h1 class="mb-3 mt-4 fw-light">Documents</h1>
 
-		<!-- Card list -->
-		<div id="card-list--placeholder--list" class="d-flex flex-column gap-4">
-			<template id="card-list--template--item">
-				<table class="file-card">
-					<thead>
-						<tr>
-							<th>File Type</th>
-							<th>
-								<!-- {{icon}} -->
-							</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>Name</td>
-							<td>
-								<!-- {{name}} -->
-							</td>
-						</tr>
-						<tr>
-							<td>Modified</td>
-							<td>
-								<!-- {{modified}} -->
-							</td>
-						</tr>
-						<tr>
-							<td>Modified By</td>
-							<td>
-								<!-- {{modifiedBy}} -->
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</template>
+		<!-- Breadcrumb -->
+		<div class="breadcrumb--placeholder"></div>
+
+		<div class="home-page__list">
+			<div class="home-page__list-loading-container">
+				<div class=" loader loader--spinner"></div>
+			</div>
+
+			<!-- Card list -->
+			<div id="card-list--placeholder--list"
+				 class="d-flex flex-column gap-4">
+				<template id="card-list--template--item">
+					<table class="file-card">
+						<thead>
+							<tr>
+								<th>File Type</th>
+								<th>
+									<!-- {{icon}} -->
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>Name</td>
+								<td>
+									<!-- {{name}} -->
+								</td>
+							</tr>
+							<tr>
+								<td>Modified</td>
+								<td>
+									<!-- {{modified}} -->
+								</td>
+							</tr>
+							<tr>
+								<td>Modified By</td>
+								<td>
+									<!-- {{modifiedBy}} -->
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</template>
+			</div>
 		</div>
 	</div>
+
+
+	<!-- === Modals === -->
+
+	<!-- Add Folder Modal -->
+	<div class="modal fade"
+		 id="addFolderModal"
+		 tabindex="-1"
+		 aria-labelledby="addFolderModalLabel"
+		 aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered"
+			 style="max-width:420px;">
+			<div class="modal-content">
+				<div class="modal-header">
+					<div class="modal-title-group">
+						<div>
+							<div class="modal-title"
+								 id="addFolderModalLabel">New Folder</div>
+							<div class="modal-subtitle">Fill in the details below</div>
+						</div>
+					</div>
+					<button class="btn-close-modal"
+							data-bs-dismiss="modal"
+							aria-label="Close">✕</button>
+				</div>
+
+				<div class="modal-body">
+					<div class="mb-3">
+						<label for="folderName"
+							   class="form-label">Folder Name</label>
+						<input type="text"
+							   class="form-control"
+							   id="folderName"
+							   placeholder="e.g. Project Assets"
+							   maxlength="40"
+							   autocomplete="off" />
+						<div class="invalid-feedback"
+							 id="folderNameError">Please enter a folder name.</div>
+					</div>
+				</div>
+
+				<div class="modal-footer">
+					<button class="btn-cancel"
+							data-bs-dismiss="modal"
+							id="cancelBtn">Cancel</button>
+					<button class="btn-add"
+							id="addFolderBtn">
+						Add
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- === Reusable templates === -->
+
+	<!--  <<< Breadcrumb components template -->
+
+	<template id="breadcrumb-container--template">
+		<nav aria-label="breadcrumb">
+			<ol class="breadcrumb"></ol>
+		</nav>
+	</template>
+
+	<template id="breadcrumb-item--template">
+		<li class="breadcrumb-item">
+			<a href="#"></a>
+		</li>
+	</template>
+
+	<template id="breadcrumb-item-active--template">
+		<li class="breadcrumb-item active"
+			aria-current="page"></li>
+	</template>
+
+	<!-- >>> Breadcrumb components template -->
+
 
 	<!-- === Scripts import === -->
 
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-		integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-		crossorigin="anonymous"></script>
+			integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+			crossorigin="anonymous"></script>
 	<script src="./dist/js/home-page.js"></script>
 </body>
 

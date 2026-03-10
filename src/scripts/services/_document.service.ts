@@ -65,7 +65,7 @@ export default class DocumentService {
  */
 const seedFolder: FolderModel = {
     id: crypto.randomUUID(),
-    name: "Documents",
+    name: "Home",
     modified: new Date("2026-01-01"),
     modifiedBy: "Megan Bowen",
     files: [

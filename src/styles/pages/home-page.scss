@@ -1,2 +1,35 @@
 // Home page styles
 @import "master-page";
+
+.home-page {
+    &__desktop {
+        overflow-x: auto;
+    }
+
+    &__table {
+        position: relative;
+        min-height: 16rem;
+    }
+
+    &__table-loading-container {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+    }
+
+    &__list {
+        position: relative;
+        min-height: 16rem;
+    }
+
+    &__list-loading-container {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}

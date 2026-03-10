@@ -49,6 +49,8 @@
         @include text-with-icon-offset(-8px, -16px, 16px, 16px);
     }
 
+    &__loader {}
+
     tr>td,
     tr>th {
         padding: padding-x-y(3, 3);
