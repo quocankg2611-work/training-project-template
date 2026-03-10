@@ -34,9 +34,13 @@
         }
 
         &--excel {
-            @include icon-mask('uiw--file-excel');
+            @include icon-image('vscode-icons--file-type-excel');
             @include icon-sizer(1);
-            color: $color-excel;
+        }
+
+        &--word {
+            @include icon-image('vscode-icons--file-type-word');
+            @include icon-sizer(1);
         }
     }
 

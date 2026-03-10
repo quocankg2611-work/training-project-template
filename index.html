@@ -13,69 +13,73 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 
-<body class="home-page">
+<body id="home-page">
 
-	<!-- Navbar section -->
+	<!-- Navbar -->
 
-	<nav class="navbar navbar-expand-lg py-0">
-		<div class="container-fluid px-0 overflow-hidden w-100">
+	<div id="navbar--placeholder"></div>
 
-			<!-- Toggle button (appear when collapsed) -->
+	<template id="navbar--template">
+		<nav class="navbar navbar-expand-lg py-0">
+			<div class="container-fluid px-0 overflow-hidden w-100">
 
-			<div class="d-lg-none d-flex border-bottom border-1 border-terretri container-fluid px-3 py-2">
-				<button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse"
-					data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-					aria-expanded="false" aria-label="Toggle navigation">
-					<span class="navbar-toggler-icon"></span>
-				</button>
+				<!-- Toggle button (appear when collapsed) -->
+
+				<div class="d-lg-none d-flex border-bottom border-1 border-terretri container-fluid px-3 py-2">
+					<button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse"
+						data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+						aria-expanded="false" aria-label="Toggle navigation">
+						<span class="navbar-toggler-icon"></span>
+					</button>
+				</div>
+
+				<!-- Nav Collpase -->
+
+				<div class="collapse navbar-collapse" id="navbarSupportedContent">
+					<ul class="navbar-nav me-auto mb-lg-0">
+						<li class="nav-item">
+							<button class="nav-button">
+								<span class="nav-button__icon--add"></span>
+								<span>New</span>
+								<span class="nav-button__dropdown-indicator "></span>
+							</button>
+						</li>
+						<li class="nav-item">
+							<button class="nav-button">
+								<span class="nav-button__icon--upload"></span>
+								<span>Upload</span>
+								<span class="nav-button__dropdown-indicator "></span>
+							</button>
+						</li>
+						<li class="nav-item">
+							<button class="nav-button">
+								<span class="nav-button__icon--sync"></span>
+								<span>Sync</span>
+							</button>
+						</li>
+						<li class="nav-item">
+							<button class="nav-button">
+								<span class="nav-button__icon--export-to-excel"></span>
+								<span>Export to Excel</span>
+							</button>
+						</li>
+						<li class="nav-item">
+							<button class="nav-button">
+								<span class="nav-button__icon--flow"></span>
+								<span>Flow</span>
+								<span class="nav-button__dropdown-indicator "></span>
+							</button>
+						</li>
+						<li class="nav-item">
+							<button class="nav-button">
+								<span class="nav-button__more-option">...</span>
+							</button>
+						</li>
+					</ul>
+				</div>
 			</div>
-
-			<!-- Nav Collpase -->
-
-			<div class="collapse navbar-collapse" id="navbarSupportedContent">
-				<ul class="navbar-nav me-auto mb-lg-0">
-					<li class="nav-item">
-						<button class="nav-button">
-							<span class="nav-button__icon--add"></span>
-							<span>New</span>
-							<span class="nav-button__dropdown-indicator "></span>
-						</button>
-					</li>
-					<li class="nav-item">
-						<button class="nav-button">
-							<span class="nav-button__icon--upload"></span>
-							<span>Upload</span>
-							<span class="nav-button__dropdown-indicator "></span>
-						</button>
-					</li>
-					<li class="nav-item">
-						<button class="nav-button">
-							<span class="nav-button__icon--sync"></span>
-							<span>Sync</span>
-						</button>
-					</li>
-					<li class="nav-item">
-						<button class="nav-button">
-							<span class="nav-button__icon--export-to-excel"></span>
-							<span>Export to Excel</span>
-						</button>
-					</li>
-					<li class="nav-item">
-						<button class="nav-button">
-							<span class="nav-button__icon--flow"></span>
-							<span>Flow</span>
-							<span class="nav-button__dropdown-indicator "></span>
-						</button>
-					</li>
-					<li class="nav-item">
-						<button class="nav-button">
-							<span class="nav-button__more-option">...</span>
-						</button>
-					</li>
-				</ul>
-			</div>
-		</div>
-	</nav>
+		</nav>
+	</template>
 
 	<!-- Body section (table - desktop) -->
 
@@ -84,7 +88,7 @@
 		<!-- Title -->
 		<h1 class="mt-5 mb-4 fw-light">Documents</h1>
 
-		<!-- Content -->
+		<!-- Documents table -->
 		<table class="file-table">
 			<thead>
 				<th><span class="file-table__icon--file"></span></th>
@@ -94,50 +98,26 @@
 				<th><span class="file-table__header-icon--add"></span> Add column</th>
 				</tr>
 			</thead>
-			<tbody>
-				<tr>
-					<td><i class="file-table__icon--folder"></i></td>
-					<td>CAS</td>
-					<td>April 30</td>
-					<td>Megan Bowen</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td><i class="file-table__icon--excel"></i></td>
-					<td>
-						<span class="file-table__text-file">CoasterAndBargelLoading.xlsx</span>
-					</td>
-					<td>A few seconds ago</td>
-					<td>Administrator MOD</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td><i class="file-table__icon--excel"></i></td>
-					<td>
-						<span class="file-table__text-file">RevenueByServices.xlsx</span>
-					</td>
-					<td>A few seconds ago</td>
-					<td>Administrator MOD</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td><i class="file-table__icon--excel"></i></td>
-					<td>
-						<span class="file-table__text-file">RevenueByServices2016.xlsx</span>
-					</td>
-					<td>A few seconds ago</td>
-					<td>Administrator MOD</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td><i class="file-table__icon--excel"></i></td>
-					<td>
-						<span class="file-table__text-file">RevenueByServices2017.xlsx</span>
-					</td>
-					<td>A few seconds ago</td>
-					<td>Administrator MOD</td>
-					<td></td>
-				</tr>
+			<tbody id="documents-table--placeholder--list">
+				<template id="documents-table--template--item">
+					<tr>
+						<td>
+							<!-- {{icon}} -->
+						</td>
+						<td>
+							<!-- {{name}} -->
+						</td>
+						<td>
+							<!-- {{modified}} -->
+						</td>
+						<td>
+							<!-- {{modifiedBy}} -->
+						</td>
+						<td>
+							<!-- Left empty for "Add column" -->
+						</td>
+					</tr>
+				</template>
 			<tbody>
 		</table>
 	</div>
@@ -149,125 +129,40 @@
 		<!-- Title -->
 		<h1 class="mb-3 mt-4 fw-light">Documents</h1>
 
-		<!-- Content -->
-		<div class="d-flex flex-column gap-4">
-
-			<table class="file-card">
-				<tr>
-					<th>File Type</th>
-					<th>
-						<span class="file-card__icon--folder"></span>
-					</th>
-				</tr>
-				<tr>
-					<td>Name</td>
-					<td>CAS</td>
-				</tr>
-				<tr>
-					<td>Modified</td>
-					<td>April 30</td>
-				</tr>
-				<tr>
-					<td>Modified By</td>
-					<td>Megan Bowen</td>
-				</tr>
-			</table>
-			<table class="file-card">
-				<tr>
-					<th>File Type</th>
-					<th>
-						<span class="file-card__icon--excel"></span>
-					</th>
-				</tr>
-				<tr>
-					<td>Name</td>
-					<td>
-						<span class="file-card__text-file">
-							CoasterAndBargelLoading.xlsx
-						</span>
-					</td>
-				</tr>
-				<tr>
-					<td>Modified</td>
-					<td>A few seconds ago</td>
-				</tr>
-				<tr>
-					<td>Modified By</td>
-					<td>Administrator MOD</td>
-				</tr>
-			</table>
-			<table class="file-card">
-				<tr>
-					<th>File Type</th>
-					<th>
-						<span class="file-card__icon--word"></span>
-					</th>
-				</tr>
-				<tr>
-					<td>Name</td>
-					<td>
-						<span class="file-card__text-file">
-							RevRevenueByServices
-						</span>
-					</td>
-				</tr>
-				<tr>
-					<td>Modified</td>
-					<td>A few seconds ago</td>
-				</tr>
-				<tr>
-					<td>Modified By</td>
-					<td>Administrator MOD</td>
-				</tr>
-			</table>
-			<table class="file-card">
-				<tr>
-					<th>File Type</th>
-					<th>
-						<span class="file-card__icon--excel"></span>
-					</th>
-				</tr>
-				<tr>
-					<td>Name</td>
-					<td>
-						<span class="file-card__text-file">
-							RevenueByServices2016
-						</span>
-					</td>
-				</tr>
-				<tr>
-					<td>Modified</td>
-					<td>A few seconds ago</td>
-				</tr>
-				<tr>
-					<td>Modified By</td>
-					<td>Administrator MOD</td>
-				</tr>
-			</table>
-			<table class="file-card">
-				<tr>
-					<th>File Type</th>
-					<th>
-						<span class="file-card__icon--excel"></span>
-					</th>
-				</tr>
-				<tr>
-					<td>Name</td>
-					<td>
-						<span class="file-card__text-file">
-							RevenueByServices2017
-						</span>
-					</td>
-				</tr>
-				<tr>
-					<td>Modified</td>
-					<td>A few seconds ago</td>
-				</tr>
-				<tr>
-					<td>Modified By</td>
-					<td>Administrator MOD</td>
-				</tr>
-			</table>
+		<!-- Card list -->
+		<div id="card-list--placeholder--list" class="d-flex flex-column gap-4">
+			<template id="card-list--template--item">
+				<table class="file-card">
+					<thead>
+						<tr>
+							<th>File Type</th>
+							<th>
+								<!-- {{icon}} -->
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Name</td>
+							<td>
+								<!-- {{name}} -->
+							</td>
+						</tr>
+						<tr>
+							<td>Modified</td>
+							<td>
+								<!-- {{modified}} -->
+							</td>
+						</tr>
+						<tr>
+							<td>Modified By</td>
+							<td>
+								<!-- {{modifiedBy}} -->
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</template>
 		</div>
 	</div>
 
