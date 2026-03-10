@@ -3,7 +3,7 @@ Functions to retrive value from (any) object
  */
 
 
-function requireString(obj: any, key: string): string {
+export function requireString(obj: any, key: string): string {
     const value = obj[key];
 
     if (value == null) {
@@ -17,7 +17,7 @@ function requireString(obj: any, key: string): string {
     return value;
 }
 
-function requireArray(obj: any, key: string): any[] {
+export function requireArray(obj: any, key: string): any[] {
     const value = obj[key];
 
     if (value == null) {

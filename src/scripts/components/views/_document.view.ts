@@ -1,6 +1,6 @@
-import { FileModel } from "../../model/file.model";
-import { FolderModel } from "../../model/folder.model";
-import { FileExtensionsType } from "../../types/file-extensions.types";
+import { FileModel } from "../../model/_file.model";
+import { FolderModel } from "../../model/_folder.model";
+import { FileExtensionsType } from "../../types/_file-extensions.types";
 import formatTimeAgo from "../../utilities/_format-strings";
 
 type PossibleIconNames = "folder" | "excel" | "word";

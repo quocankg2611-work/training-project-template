@@ -1,6 +1,7 @@
-import { FileModel } from "../model/file.model";
-import { FolderModel } from "../model/folder.model"
-import { FileExtensionsType } from "../types/file-extensions.types";
+import { FileModel } from "../model/_file.model";
+import { FolderModel } from "../model/_folder.model"
+import { FileExtensionsType } from "../types/_file-extensions.types";
+import { requireArray, requireString } from "../utilities/_require";
 import { stringsIsNullOrBlank } from "../utilities/_strings";
 
 export default class DocumentService {

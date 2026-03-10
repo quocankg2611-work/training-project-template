@@ -1,5 +1,5 @@
-import { FolderModel } from "../model/folder.model";
-import { DocumentView, documentViewFromFileModel, documentViewFromFolderModel } from "./views/document.view";
+import { FolderModel } from "../model/_folder.model";
+import { DocumentView, documentViewFromFileModel, documentViewFromFolderModel } from "./views/_document.view";
 
 export default function renderCardList(currentFolder: FolderModel) {
     const documentItemViews: DocumentView[] = [];

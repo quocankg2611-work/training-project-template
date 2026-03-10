@@ -12,56 +12,44 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": function() { return /* binding */ renderCardList; }
 /* harmony export */ });
-/* harmony import */ var _model_enums_file_extensions__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../model/enums/file-extensions */ "./src/scripts/model/enums/file-extensions.ts");
-/* harmony import */ var _services_user_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../services/user.service */ "./src/scripts/services/user.service.ts");
-/* harmony import */ var _utilities_format_strings__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utilities/_format-strings */ "./src/scripts/utilities/_format-strings.ts");
-
-
+/* harmony import */ var _views_document_view__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./views/_document.view */ "./src/scripts/components/views/_document.view.ts");
 
 function renderCardList(currentFolder) {
-    const userService = new _services_user_service__WEBPACK_IMPORTED_MODULE_1__.UserService();
-    const users = userService.getUsers();
-    const userByIdMap = users.reduce((acc, user) => {
-        acc.set(user.id, user);
-        return acc;
-    }, new Map());
-    const documentModelItems = currentFolder.getItems();
-    for (const documentModel of documentModelItems) {
-        const userView = userByIdMap.get(documentModel.getModifiedByUserId());
-        const documentView = documentModel.getView();
-        renderCardItem(documentView, userView);
+    const documentItemViews = [];
+    currentFolder.files.forEach(file => {
+        documentItemViews.push((0,_views_document_view__WEBPACK_IMPORTED_MODULE_0__.documentViewFromFileModel)(file));
+    });
+    currentFolder.subFolders.forEach(folder => {
+        documentItemViews.push((0,_views_document_view__WEBPACK_IMPORTED_MODULE_0__.documentViewFromFolderModel)(folder));
+    });
+    documentItemViews.sort((a, b) => {
+        return a.modified.getTime() - b.modified.getTime();
+    });
+    for (const documentItemView of documentItemViews) {
+        renderCardItem(documentItemView);
     }
 }
-function renderCardItem(documentView, userview) {
+function renderCardItem(documentView) {
     const templateItem = document.getElementById("card-list--template--item");
     const placeholderList = document.getElementById("card-list--placeholder--list");
     const cloned = templateItem.content.cloneNode(true);
-    const rowIcon = createCardItemIcon(documentView.extension);
-    const rowName = createCardItemName(documentView.name, documentView.isSynced);
+    const rowIcon = createCardItemIcon(documentView.iconName);
+    const rowName = createCardItemName(documentView.name);
     cloned.querySelector("table>thead>tr:nth-child(1)>th:nth-child(2)").appendChild(rowIcon);
     cloned.querySelector("table>tbody>tr:nth-child(1)>td:nth-child(2)").appendChild(rowName);
-    cloned.querySelector("table>tbody>tr:nth-child(2)>td:nth-child(2)").appendChild(document.createTextNode((0,_utilities_format_strings__WEBPACK_IMPORTED_MODULE_2__["default"])(documentView.modified)));
-    cloned.querySelector("table>tbody>tr:nth-child(3)>td:nth-child(2)").appendChild(document.createTextNode(userview.name));
+    cloned.querySelector("table>tbody>tr:nth-child(2)>td:nth-child(2)").appendChild(document.createTextNode(documentView.modifiedStr));
+    cloned.querySelector("table>tbody>tr:nth-child(3)>td:nth-child(2)").appendChild(document.createTextNode(documentView.modifiedBy));
     placeholderList.appendChild(cloned);
 }
-function createCardItemIcon(extension) {
-    let iconName;
-    if (extension == null) {
-        iconName = "folder";
-    }
-    else {
-        iconName = _model_enums_file_extensions__WEBPACK_IMPORTED_MODULE_0__.ExtensionToIconName.get(extension) ?? "excel";
-    }
+function createCardItemIcon(iconName) {
     const spanElement = document.createElement("span");
     spanElement.className = `file-card__icon--${iconName}`;
     return spanElement;
 }
-function createCardItemName(name, hasSyncIcon) {
+function createCardItemName(name) {
     const spanElement = document.createElement("span");
     spanElement.textContent = name;
-    if (hasSyncIcon) {
-        spanElement.className = `file-card__text-file`;
-    }
+    spanElement.className = `file-card__text-file`;
     return spanElement;
 }
 
@@ -98,201 +86,239 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": function() { return /* binding */ renderTable; }
 /* harmony export */ });
-/* harmony import */ var _model_enums_file_extensions__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../model/enums/file-extensions */ "./src/scripts/model/enums/file-extensions.ts");
-/* harmony import */ var _services_user_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../services/user.service */ "./src/scripts/services/user.service.ts");
-/* harmony import */ var _utilities_format_strings__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utilities/_format-strings */ "./src/scripts/utilities/_format-strings.ts");
-
-
+/* harmony import */ var _views_document_view__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./views/_document.view */ "./src/scripts/components/views/_document.view.ts");
 
 function renderTable(currentFolder) {
-    const userService = new _services_user_service__WEBPACK_IMPORTED_MODULE_1__.UserService();
-    const users = userService.getUsers();
-    const userByIdMap = users.reduce((acc, user) => {
-        acc.set(user.id, user);
-        return acc;
-    }, new Map());
-    const documentModelItems = currentFolder.getItems();
-    for (const documentModel of documentModelItems) {
-        const userView = userByIdMap.get(documentModel.getModifiedByUserId());
-        const documentView = documentModel.getView();
-        renderTableRow(documentView, userView);
+    const documentItemViews = [];
+    currentFolder.files.forEach(file => {
+        documentItemViews.push((0,_views_document_view__WEBPACK_IMPORTED_MODULE_0__.documentViewFromFileModel)(file));
+    });
+    currentFolder.subFolders.forEach(folder => {
+        documentItemViews.push((0,_views_document_view__WEBPACK_IMPORTED_MODULE_0__.documentViewFromFolderModel)(folder));
+    });
+    documentItemViews.sort((a, b) => {
+        return a.modified.getTime() - b.modified.getTime();
+    });
+    for (const documentItemView of documentItemViews) {
+        renderTableRow(documentItemView);
     }
 }
-function renderTableRow(documentView, userview) {
+function renderTableRow(documentView) {
     const templateItem = document.getElementById("documents-table--template--item");
     const placeholderList = document.getElementById("documents-table--placeholder--list");
     const cloned = templateItem.content.cloneNode(true);
-    const rowIcon = createTableRowIcon(documentView.extension);
-    const rowName = createTableRowName(documentView.name, documentView.isSynced);
+    const rowIcon = createTableRowIcon(documentView.iconName);
+    const rowName = createTableRowName(documentView.name);
     cloned.querySelector("tr>td:nth-child(1)").appendChild(rowIcon);
     cloned.querySelector("tr>td:nth-child(2)").appendChild(rowName);
-    cloned.querySelector("tr>td:nth-child(3)").appendChild(document.createTextNode((0,_utilities_format_strings__WEBPACK_IMPORTED_MODULE_2__["default"])(documentView.modified)));
-    cloned.querySelector("tr>td:nth-child(4)").appendChild(document.createTextNode(userview.name));
+    cloned.querySelector("tr>td:nth-child(3)").appendChild(document.createTextNode(documentView.modifiedStr));
+    cloned.querySelector("tr>td:nth-child(4)").appendChild(document.createTextNode(documentView.modifiedBy));
     placeholderList.appendChild(cloned);
 }
-function createTableRowIcon(extension) {
-    let iconName;
-    if (extension == null) {
-        iconName = "folder";
-    }
-    else {
-        iconName = _model_enums_file_extensions__WEBPACK_IMPORTED_MODULE_0__.ExtensionToIconName.get(extension) ?? "excel";
-    }
+function createTableRowIcon(iconName) {
     const spanElement = document.createElement("span");
     spanElement.className = `file-table__icon--${iconName}`;
     return spanElement;
 }
-function createTableRowName(name, hasSyncIcon) {
+function createTableRowName(name) {
     const spanElement = document.createElement("span");
     spanElement.textContent = name;
-    if (hasSyncIcon) {
-        spanElement.className = `file-table__text-file`;
-    }
+    spanElement.className = `file-table__text-file`;
     return spanElement;
 }
 
 
 /***/ }),
 
-/***/ "./src/scripts/model/abstracts/document-model.base.ts":
-/*!************************************************************!*\
-  !*** ./src/scripts/model/abstracts/document-model.base.ts ***!
-  \************************************************************/
+/***/ "./src/scripts/components/views/_document.view.ts":
+/*!********************************************************!*\
+  !*** ./src/scripts/components/views/_document.view.ts ***!
+  \********************************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   DocumentModelBase: function() { return /* binding */ DocumentModelBase; }
+/* harmony export */   documentViewFromFileModel: function() { return /* binding */ documentViewFromFileModel; },
+/* harmony export */   documentViewFromFolderModel: function() { return /* binding */ documentViewFromFolderModel; }
 /* harmony export */ });
-/* harmony import */ var _model_base__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./model.base */ "./src/scripts/model/abstracts/model.base.ts");
+/* harmony import */ var _utilities_format_strings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../utilities/_format-strings */ "./src/scripts/utilities/_format-strings.ts");
 
-class DocumentModelBase extends _model_base__WEBPACK_IMPORTED_MODULE_0__.ModelBase {
-    constructor(name, modifiedByUserId, modifiedAt) {
-        super();
-        this._name = name;
-        this._modifiedByUserId = modifiedByUserId;
-        this._modified = modifiedAt;
-    }
-    _getDocumentInfo() {
-        return {
-            name: this._name,
-            modifiedByUserId: this._modifiedByUserId,
-            modified: this._modified,
-        };
-    }
-    getModifiedByUserId() {
-        return this._modifiedByUserId;
-    }
+const FileExtensionToIconName = new Map([
+    ["xlsx", "excel"],
+    ["docx", "word"]
+]);
+function documentViewFromFileModel(file) {
+    const iconName = FileExtensionToIconName.get(file.extension);
+    return {
+        ...file,
+        modifiedStr: (0,_utilities_format_strings__WEBPACK_IMPORTED_MODULE_0__["default"])(file.modified),
+        iconName,
+    };
+}
+function documentViewFromFolderModel(folder) {
+    return {
+        ...folder,
+        modifiedStr: (0,_utilities_format_strings__WEBPACK_IMPORTED_MODULE_0__["default"])(folder.modified),
+        iconName: "folder",
+    };
 }
 
 
 /***/ }),
 
-/***/ "./src/scripts/model/abstracts/model.base.ts":
+/***/ "./src/scripts/services/_document.service.ts":
 /*!***************************************************!*\
-  !*** ./src/scripts/model/abstracts/model.base.ts ***!
+  !*** ./src/scripts/services/_document.service.ts ***!
   \***************************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   ModelBase: function() { return /* binding */ ModelBase; }
+/* harmony export */   "default": function() { return /* binding */ DocumentService; }
 /* harmony export */ });
-class ModelBase {
+/* harmony import */ var _utilities_require__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utilities/_require */ "./src/scripts/utilities/_require.ts");
+/* harmony import */ var _utilities_strings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utilities/_strings */ "./src/scripts/utilities/_strings.ts");
+
+
+class DocumentService {
+    constructor() {
+        this._KEY = "document-service";
+    }
+    seedDataIfNotExists() {
+        return new Promise((resolve, reject) => {
+            try {
+                const existingJsonStr = localStorage.getItem(this._KEY);
+                if ((0,_utilities_strings__WEBPACK_IMPORTED_MODULE_1__.stringsIsNullOrBlank)(existingJsonStr)) {
+                    const seedJsonStr = JSON.stringify(seedFolder);
+                    localStorage.setItem(this._KEY, seedJsonStr);
+                }
+                else {
+                    console.log("Did not seed data. There is an existing record.");
+                }
+                resolve();
+            }
+            catch (err) {
+                console.error(err);
+                reject("There's an error while seeding data");
+            }
+        });
+    }
+    getRootFolder() {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                try {
+                    const jsonStr = localStorage.getItem(this._KEY);
+                    if ((0,_utilities_strings__WEBPACK_IMPORTED_MODULE_1__.stringsIsNullOrBlank)(jsonStr) === true) {
+                        reject("Not found.");
+                    }
+                    else {
+                        const json = JSON.parse(jsonStr);
+                        const folder = folderParser(json);
+                        resolve(folder);
+                    }
+                }
+                catch (error) {
+                    reject(error);
+                }
+            }, 2000);
+        });
+    }
+    saveRootFolder(folder) {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                try {
+                    const jsonStr = JSON.stringify(folder);
+                    localStorage.setItem(this._KEY, jsonStr);
+                    resolve();
+                }
+                catch (err) {
+                    reject(err);
+                }
+            }, 2000);
+        });
+    }
 }
-
-
-/***/ }),
-
-/***/ "./src/scripts/model/enums/file-extensions.ts":
-/*!****************************************************!*\
-  !*** ./src/scripts/model/enums/file-extensions.ts ***!
-  \****************************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   ExtensionToIconName: function() { return /* binding */ ExtensionToIconName; }
-/* harmony export */ });
-const FileExtensionsConst = [
-    "docx",
-    "xlsx"
-];
-const ExtensionToIconName = new Map([
-    [undefined, "folder"],
-    ["xlsx", "excel"],
-    ["docx", "word"]
-]);
-
-
-/***/ }),
-
-/***/ "./src/scripts/model/folder-model.ts":
-/*!*******************************************!*\
-  !*** ./src/scripts/model/folder-model.ts ***!
-  \*******************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   FolderModel: function() { return /* binding */ FolderModel; }
-/* harmony export */ });
-/* harmony import */ var _abstracts_document_model_base__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./abstracts/document-model.base */ "./src/scripts/model/abstracts/document-model.base.ts");
-
-class FolderModel extends _abstracts_document_model_base__WEBPACK_IMPORTED_MODULE_0__.DocumentModelBase {
-    constructor(name, modifiedByUserId, modified) {
-        super(name, modifiedByUserId, modified);
-        this._items = [];
-    }
-    getItems() {
-        return this._items;
-    }
-    addDocument(document) {
-        this._items.push(document);
-        return this;
-    }
-    getView() {
-        let baseInfo = this._getDocumentInfo();
-        return {
-            ...baseInfo,
-            isSynced: false,
-        };
-    }
+/**
+ * Initial data
+ */
+const seedFolder = {
+    id: crypto.randomUUID(),
+    name: "Documents",
+    modified: new Date("2026-01-01"),
+    modifiedBy: "Megan Bowen",
+    files: [
+        {
+            id: crypto.randomUUID(),
+            name: "CoasterAndBargelLoading",
+            modified: new Date(),
+            modifiedBy: "Administrator MOD",
+            extension: "docx"
+        },
+        {
+            id: crypto.randomUUID(),
+            name: "RevenueByServices",
+            modified: new Date(),
+            modifiedBy: "Administrator MOD",
+            extension: "xlsx"
+        },
+        {
+            id: crypto.randomUUID(),
+            name: "RevenueByServices2016",
+            modified: new Date(),
+            modifiedBy: "Administrator MOD",
+            extension: "xlsx"
+        },
+        {
+            id: crypto.randomUUID(),
+            name: "RevenueByServices2017",
+            modified: new Date(),
+            modifiedBy: "Administrator MOD",
+            extension: "xlsx"
+        }
+    ],
+    subFolders: [
+        {
+            id: crypto.randomUUID(),
+            name: "CAS",
+            modified: new Date("2025-04-30"),
+            modifiedBy: "Megan Bowen",
+            files: [],
+            subFolders: []
+        }
+    ]
+};
+/**
+ * Parsers
+ */
+function folderParser(obj) {
+    const id = (0,_utilities_require__WEBPACK_IMPORTED_MODULE_0__.requireString)(obj, "id");
+    const name = (0,_utilities_require__WEBPACK_IMPORTED_MODULE_0__.requireString)(obj, "name");
+    const modified = new Date((0,_utilities_require__WEBPACK_IMPORTED_MODULE_0__.requireString)(obj, "modified"));
+    const modifiedBy = (0,_utilities_require__WEBPACK_IMPORTED_MODULE_0__.requireString)(obj, "modifiedBy");
+    const files = (0,_utilities_require__WEBPACK_IMPORTED_MODULE_0__.requireArray)(obj, "files").map(fileParser);
+    const subFolders = (0,_utilities_require__WEBPACK_IMPORTED_MODULE_0__.requireArray)(obj, "subFolders").map(folderParser);
+    return {
+        id,
+        name,
+        modified,
+        modifiedBy,
+        files,
+        subFolders,
+    };
 }
-
-
-/***/ }),
-
-/***/ "./src/scripts/services/user.service.ts":
-/*!**********************************************!*\
-  !*** ./src/scripts/services/user.service.ts ***!
-  \**********************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   UserService: function() { return /* binding */ UserService; }
-/* harmony export */ });
-class UserService {
-    getUsers() {
-        return [
-            {
-                id: "1",
-                name: "Megan Bowen",
-                email: "megan@mail.com",
-            },
-            {
-                id: "2",
-                name: "Administrator MOD",
-                email: "megan@mail.com",
-            },
-            {
-                id: "3",
-                name: "Mowen Began",
-                email: "megan@mail.com",
-            },
-        ];
-    }
+function fileParser(obj) {
+    const id = (0,_utilities_require__WEBPACK_IMPORTED_MODULE_0__.requireString)(obj, "id");
+    const name = (0,_utilities_require__WEBPACK_IMPORTED_MODULE_0__.requireString)(obj, "name");
+    const modified = new Date((0,_utilities_require__WEBPACK_IMPORTED_MODULE_0__.requireString)(obj, "modified"));
+    const modifiedBy = (0,_utilities_require__WEBPACK_IMPORTED_MODULE_0__.requireString)(obj, "modifiedBy");
+    const extension = (0,_utilities_require__WEBPACK_IMPORTED_MODULE_0__.requireString)(obj, "extension") ?? "docx";
+    return {
+        id,
+        name,
+        modified,
+        modifiedBy,
+        extension,
+    };
 }
 
 
@@ -306,10 +332,10 @@ class UserService {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   beforeAppUnload: function() { return /* binding */ beforeAppUnload; },
-/* harmony export */   ready: function() { return /* binding */ ready; }
+/* harmony export */   onAppBeforeUnload: function() { return /* binding */ onAppBeforeUnload; },
+/* harmony export */   onAppReady: function() { return /* binding */ onAppReady; }
 /* harmony export */ });
-const ready = (fn) => {
+const onAppReady = (fn) => {
     if (document.readyState !== 'loading') {
         fn();
     }
@@ -317,7 +343,7 @@ const ready = (fn) => {
         document.addEventListener('DOMContentLoaded', fn);
     }
 };
-const beforeAppUnload = (fn) => {
+const onAppBeforeUnload = (fn) => {
     window.addEventListener("beforeunload", fn);
 };
 
@@ -370,6 +396,65 @@ function formatTimeAgo(date) {
     }
     const year = date.getFullYear();
     return `${year} ${month} ${day}`;
+}
+
+
+/***/ }),
+
+/***/ "./src/scripts/utilities/_require.ts":
+/*!*******************************************!*\
+  !*** ./src/scripts/utilities/_require.ts ***!
+  \*******************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   requireArray: function() { return /* binding */ requireArray; },
+/* harmony export */   requireString: function() { return /* binding */ requireString; }
+/* harmony export */ });
+/*
+Functions to retrive value from (any) object
+ */
+function requireString(obj, key) {
+    const value = obj[key];
+    if (value == null) {
+        throw new Error(`Missing required field: ${key}`);
+    }
+    if (typeof value !== "string") {
+        throw new Error(`Field ${key} must be a string`);
+    }
+    return value;
+}
+function requireArray(obj, key) {
+    const value = obj[key];
+    if (value == null) {
+        throw new Error(`Missing required field: ${key}`);
+    }
+    if (!Array.isArray(value)) {
+        throw new Error(`Field ${key} must be an array`);
+    }
+    return value;
+}
+
+
+/***/ }),
+
+/***/ "./src/scripts/utilities/_strings.ts":
+/*!*******************************************!*\
+  !*** ./src/scripts/utilities/_strings.ts ***!
+  \*******************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   stringsIsNullOrBlank: function() { return /* binding */ stringsIsNullOrBlank; }
+/* harmony export */ });
+function stringsIsNullOrBlank(str) {
+    if (str == null)
+        return true;
+    if (str.trim() === '')
+        return true;
+    return false;
 }
 
 
@@ -447,27 +532,26 @@ var __webpack_exports__ = {};
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_table__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../components/_table */ "./src/scripts/components/_table.ts");
 /* harmony import */ var _components_navbar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/_navbar */ "./src/scripts/components/_navbar.ts");
-/* harmony import */ var _model_folder_model__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../model/folder-model */ "./src/scripts/model/folder-model.ts");
-Object(function webpackMissingModule() { var e = new Error("Cannot find module '../model/file-model'"); e.code = 'MODULE_NOT_FOUND'; throw e; }());
-/* harmony import */ var _components_card_list__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../components/_card-list */ "./src/scripts/components/_card-list.ts");
-/* harmony import */ var _utilities_events__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../utilities/_events */ "./src/scripts/utilities/_events.ts");
+/* harmony import */ var _components_card_list__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../components/_card-list */ "./src/scripts/components/_card-list.ts");
+/* harmony import */ var _utilities_events__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utilities/_events */ "./src/scripts/utilities/_events.ts");
+/* harmony import */ var _services_document_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../services/_document.service */ "./src/scripts/services/_document.service.ts");
 
 
 
 
 
-
-(0,_utilities_events__WEBPACK_IMPORTED_MODULE_5__.ready)(() => {
-    const rootFolder = new _model_folder_model__WEBPACK_IMPORTED_MODULE_2__.FolderModel("Documents", "123", new Date("2026-01-01"));
-    rootFolder
-        .addDocument(new _model_folder_model__WEBPACK_IMPORTED_MODULE_2__.FolderModel("CAS", "1", new Date("2025-04-30")))
-        .addDocument(new Object(function webpackMissingModule() { var e = new Error("Cannot find module '../model/file-model'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())("CoasterAndBargelLoading", "2", new Date(), "docx", true))
-        .addDocument(new Object(function webpackMissingModule() { var e = new Error("Cannot find module '../model/file-model'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())("RevenueByServices", "2", new Date(), "xlsx", true))
-        .addDocument(new Object(function webpackMissingModule() { var e = new Error("Cannot find module '../model/file-model'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())("RevenueByServices2016", "2", new Date(), "xlsx", true))
-        .addDocument(new Object(function webpackMissingModule() { var e = new Error("Cannot find module '../model/file-model'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())("RevenueByServices2017", "2", new Date(), "xlsx", true));
+(0,_utilities_events__WEBPACK_IMPORTED_MODULE_3__.onAppReady)(() => {
+    const documentService = new _services_document_service__WEBPACK_IMPORTED_MODULE_4__["default"]();
+    documentService.seedDataIfNotExists();
     (0,_components_navbar__WEBPACK_IMPORTED_MODULE_1__["default"])();
-    (0,_components_table__WEBPACK_IMPORTED_MODULE_0__["default"])(rootFolder);
-    (0,_components_card_list__WEBPACK_IMPORTED_MODULE_4__["default"])(rootFolder);
+    documentService.getRootFolder()
+        .then(rootFolder => {
+        (0,_components_table__WEBPACK_IMPORTED_MODULE_0__["default"])(rootFolder);
+        (0,_components_card_list__WEBPACK_IMPORTED_MODULE_2__["default"])(rootFolder);
+    })
+        .catch(err => {
+        console.log(err);
+    });
 });
 
 }();

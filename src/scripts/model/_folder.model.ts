@@ -1,5 +1,5 @@
-import { DocumentModel } from "./document.model";
-import { FileModel } from "./file.model";
+import { DocumentModel } from "./_document.model";
+import { FileModel } from "./_file.model";
 
 export type FolderModel = DocumentModel & {
     files: FileModel[];
