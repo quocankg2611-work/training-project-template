@@ -62,12 +62,22 @@
 							   data-bs-target="#addFolderModal">Folder</a>
 						</div>
 					</li>
-					<li class="nav-item">
-						<button class="nav-button">
+					<li class="nav-item dropdown">
+						<button class="nav-button"
+								type="button"
+								data-bs-toggle="dropdown"
+								aria-expanded="false">
 							<span class="nav-button__icon--upload"></span>
 							<span>Upload</span>
 							<span class="nav-button__dropdown-indicator "></span>
 						</button>
+						<div class="dropdown-menu"
+							 aria-labelledby="dropdownMenuButton">
+							<a class="dropdown-item"
+							   href="#"
+							   data-bs-toggle="modal"
+							   data-bs-target="#uploadFileModal">Files</a>
+						</div>
 					</li>
 					<li class="nav-item">
 						<button class="nav-button">
@@ -259,6 +269,80 @@
 		</div>
 	</div>
 
+	<!-- Upload File Modal -->
+	<div class="modal fade"
+		 id="uploadFileModal"
+		 tabindex="-1"
+		 aria-labelledby="uploadFileModalLabel"
+		 aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered"
+			 style="max-width:420px;">
+			<div class="modal-content">
+				<div class="modal-header">
+					<div class="modal-title-group">
+						<div>
+							<div class="modal-title"
+								 id="uploadFileModalLabel">Upload File</div>
+							<div class="modal-subtitle">Select a file to upload</div>
+						</div>
+					</div>
+					<button class="btn-close-modal"
+							data-bs-dismiss="modal"
+							aria-label="Close">✕</button>
+				</div>
+
+				<div class="modal-body">
+					<div class="mb-3">
+						<label for="fileInput"
+							   class="form-label">Choose file</label>
+						<input type="file"
+							   class="form-control"
+							   id="fileInput"
+							   accept="
+								.docx,
+								.xlsx,
+								application/vnd.openxmlformats-officedocument.wordprocessingml.document,
+								application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
+						<div class="invalid-feedback"
+							 id="fileInputError">Please select a file to upload.</div>
+					</div>
+					<div class="mb-3"
+						 id="uploadedFileGroup"
+						 style="display:none;">
+						<label class="form-label">Uploaded file</label>
+						<input type="text"
+							   class="form-control"
+							   id="uploadedFileName"
+							   readonly />
+					</div>
+					<div class="mb-3"
+						 id="fileNameGroup"
+						 style="display:none;">
+						<label for="fileNameInput"
+							   class="form-label">File name</label>
+						<input type="text"
+							   class="form-control"
+							   id="fileNameInput"
+							   placeholder="Enter file name"
+							   maxlength="40"
+							   autocomplete="off" />
+						<div class="invalid-feedback"
+							 id="fileNameError">Please enter a file name.</div>
+					</div>
+				</div>
+
+				<div class="modal-footer">
+					<button class="btn-cancel"
+							data-bs-dismiss="modal"
+							id="cancelBtn">Cancel</button>
+					<button class="btn-add"
+							id="uploadFileBtn">
+						Upload
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
 	<!-- === Reusable templates === -->
 

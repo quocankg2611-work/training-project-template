@@ -3,4 +3,5 @@ import { DocumentModel } from "./_document.model";
 
 export type FileModel = DocumentModel & {
     extension: FileExtensionsType;
+    content: string;
 }

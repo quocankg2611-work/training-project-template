@@ -77,28 +77,32 @@ const seedFolder: FolderModel = {
             name: "CoasterAndBargelLoading",
             modified: new Date(),
             modifiedBy: "Administrator MOD",
-            extension: "docx"
+            extension: "docx",
+            content: ""
         },
         {
             id: crypto.randomUUID(),
             name: "RevenueByServices",
             modified: new Date(),
             modifiedBy: "Administrator MOD",
-            extension: "xlsx"
+            extension: "xlsx",
+            content: ""
         },
         {
             id: crypto.randomUUID(),
             name: "RevenueByServices2016",
             modified: new Date(),
             modifiedBy: "Administrator MOD",
-            extension: "xlsx"
+            extension: "xlsx",
+            content: ""
         },
         {
             id: crypto.randomUUID(),
             name: "RevenueByServices2017",
             modified: new Date(),
             modifiedBy: "Administrator MOD",
-            extension: "xlsx"
+            extension: "xlsx",
+            content: ""
         }
     ],
     subFolders: [
@@ -142,6 +146,7 @@ function fileParser(obj: any): FileModel {
     const modified = new Date(requireString(obj, "modified"));
     const modifiedBy = requireString(obj, "modifiedBy");
     const extension = requireString(obj, "extension") as FileExtensionsType ?? "docx";
+    const content = obj.content ?? "";
 
     return {
         id,
@@ -149,5 +154,6 @@ function fileParser(obj: any): FileModel {
         modified,
         modifiedBy,
         extension,
+        content,
     }
 }

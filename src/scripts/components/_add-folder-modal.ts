@@ -27,10 +27,8 @@ export default function setupAddFolderModal(onAddFolder: (folderName: string) =>
             return;
         }
 
-        // TODO: Implement the folder creation logic inside the callback in home-page.ts
         onAddFolder(folderName);
 
-        // Close the modal programmatically
         const bsModal = (window as any).bootstrap.Modal.getInstance(modalEl);
         bsModal?.hide();
     });

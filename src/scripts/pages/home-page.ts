@@ -5,6 +5,9 @@ import DocumentService from '../services/_document.service';
 import { FolderModel } from '../model/_folder.model';
 import renderBreadcrumb from '../components/_breadcrumb';
 import setupAddFolderModal from '../components/_add-folder-modal';
+import setupUploadFileModal from '../components/_upload-file-modal';
+import { FileModel } from '../model/_file.model';
+import { FileExtensionsType } from '../types/_file-extensions.types';
 
 onAppReady(async () => {
 	const documentService = new DocumentService();
@@ -30,6 +33,19 @@ onAppReady(async () => {
 			files: [],
 		};
 		rootFolder.subFolders.push(newFolder);
+		renderHomePageData(rootFolder);
+	});
+
+	setupUploadFileModal((fileName: string, extension: string, content: string) => {
+		const newFile: FileModel = {
+			id: crypto.randomUUID(),
+			modified: new Date(),
+			name: fileName,
+			modifiedBy: "Current User",
+			extension: extension as FileExtensionsType,
+			content,
+		};
+		rootFolder.files.push(newFile);
 		renderHomePageData(rootFolder);
 	});
 
