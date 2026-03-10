@@ -1,7 +1,12 @@
 import { FolderModel } from "../model/_folder.model";
 import { DocumentView, documentViewFromFileModel, documentViewFromFolderModel } from "./views/_document.view";
 
-export default function renderCardList(currentFolder: FolderModel, onFolderClicked: (folder: FolderModel) => void): void {
+export default function renderCardList(
+    currentFolder: FolderModel,
+    onFolderClicked: (folder: FolderModel) => void,
+    seletedItem: DocumentView | null,
+    onItemSelected: (item: DocumentView) => void,
+): void {
     const documentItemViews: DocumentView[] = [];
     currentFolder.files.forEach(file => {
         documentItemViews.push(documentViewFromFileModel(file));

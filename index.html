@@ -19,7 +19,7 @@
 		  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 
-<body id="home-page">
+<body id="home-page d-flex flex-column">
 
 	<!-- Navbar -->
 
@@ -189,7 +189,7 @@
 
 	<!-- Body section (item list - mobile) -->
 
-	<div id="home-page-body--mobile"
+	<div id="home-page-body--mobile flex-grow-1 d-flex flex-column"
 		 class="d-lg-none px-2 pb-5">
 
 		<!-- Title -->
@@ -198,14 +198,14 @@
 		<!-- Breadcrumb -->
 		<div class="breadcrumb--placeholder"></div>
 
-		<div class="home-page__list">
+		<div class="home-page__list flex-grow-1">
 			<div class="home-page__list-loading-container">
 				<div class=" loader loader--spinner"></div>
 			</div>
 
 			<!-- Card list -->
 			<div id="card-list--placeholder--list"
-				 class="d-flex flex-column gap-4">
+				 class="d-flex flex-column gap-4 overflow-y-auto">
 				<template id="card-list--template--item">
 					<table class="file-card">
 						<thead>

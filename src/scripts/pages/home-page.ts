@@ -111,7 +111,12 @@ onAppReady(async () => {
 			selectedItem,
 			(item) => onItemSelected(item) && render()
 		);
-		renderCardList(folderRef(), (selectedFolder) => navigateIntoFolderStack(folderStack, selectedFolder.id) && render());
+		renderCardList(
+			folderRef(),
+			(selectedFolder) => navigateIntoFolderStack(folderStack, selectedFolder.id) && render(),
+			selectedItem,
+			(item) => onItemSelected(item) && render()
+		);
 		renderHomePageIsEditing(selectedItem);
 	}
 
@@ -186,3 +191,4 @@ function renderHomePageIsEditing(selectedItem: DocumentView | null) {
 		homePageActionElements[i].classList.toggle("hidden", selectedItem == null);
 	}
 }
+
