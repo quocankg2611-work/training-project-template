@@ -21,6 +21,7 @@
     "@babel/plugin-transform-object-assign": "^7.24.0",
     "@babel/plugin-transform-object-rest-spread": "^7.24.0",
     "@babel/preset-env": "^7.24.0",
+    "@types/bootstrap": "^5.2.10",
     "@types/lodash": "^4.17.0",
     "autoprefixer": "^10.4.19",
     "babel-loader": "^9.1.3",

@@ -1,11 +1,12 @@
 import { createReactiveValue } from "../abstracts/reactive-obj";
-import renderBreadcrumb from "../components_2/_breadcrumb";
+import buildBreadcrumbElement from "../components_2/_breadcrumb";
+// import renderBreadcrumb from "../components_2/_breadcrumb";
 import buildCardList from "../components_2/_card-list";
 import buildTable from "../components_2/_table";
 // import renderTable from "../components/_table";
 import { FolderModel } from "../model/_folder.model";
 import DocumentService from "../services/_document.service";
-import { DocumentBreadcrumbViewModel } from "../view-model/_document-breadcrumb.view-model";
+import { DocumentBreadcrumbView } from "../view-model/_document-breadcrumb.view";
 import { documentViewFromFileModel, documentViewFromFolderModel, DocumentViewModel } from "../view-model/_document.view";
 
 // TODO: Refactor code from home-page.ts to home-page2.ts
@@ -20,33 +21,64 @@ export function homePageViewModel(documentService: DocumentService) {
 
     // Children
 
-    const actionViewModel = homePageActionViewModel(
-        selectedDocumentIdState.subscribe
+    homePageActionViewModel(
+        selectedDocumentIdState.subscribe,
+        handleActionEditSelectedItem,
+        handleActionDeleteSelectedItem,
+        handleActionCancelSelectedItem
     );
-    const breadcrumbViewModel = homePageBreadcrumbViewModel(
+    homePageBreadcrumbViewModel(
         currentFolderState.subscribe,
         handleOnBreadcrumbFolderIdSelected
     );
-    const bodyViewModel = homePageBodyViewModel(
+    homePageBodyViewModel(
         selectedDocumentIdState.subscribe,
         currentFolderState.subscribe,
         isLoadingState.subscribe,
-        onBodyDocumentItemSelected
+        handleOnDocumentItemSelected
     );
+
+    // Handlers
+
+    function handleActionEditSelectedItem() {
+    }
+
+    function handleActionDeleteSelectedItem() {
+    }
+
+    function handleActionCancelSelectedItem() {
+    }
 
     function handleOnBreadcrumbFolderIdSelected(selectedFolder: string) {
         // Handle when user click on breadcrumb item to navigate back to specific folder
     }
+
+    function handleOnDocumentItemSelected(documentItem: DocumentViewModel | null) {
+        // Handle when user click on document item in table or card list
+    }
+
+    // Init
+
+    documentService.loadRootFolder().then(() => {
+        documentService.getCurrentFolder().then((currentFolder) => {
+            currentFolderState.set(currentFolder);
+        });
+    });
 }
 
 function homePageBreadcrumbViewModel(
     listenOnFCurrentFolderChange: (onChange: (currentFolder: FolderModel | null) => void) => void,
     onBreadcrumbFolderIdSelected: (selectedFolderId: string) => void
 ) {
-    const folderStackState = createReactiveValue<DocumentBreadcrumbViewModel[]>([]);
-    folderStackState.subscribe((folderStack) => {
-        renderBreadcrumb(folderStack, onBreadcrumbFolderIdSelected);
+
+    // State
+
+    const folderStackState = createReactiveValue<DocumentBreadcrumbView[]>([]);
+    folderStackState.subscribe((_) => {
+        render();
     });
+
+    // Listen
 
     listenOnFCurrentFolderChange((currentFolder) => {
         if (!currentFolder) {
@@ -58,7 +90,23 @@ function homePageBreadcrumbViewModel(
         }
     });
 
-    renderBreadcrumb([], onBreadcrumbFolderIdSelected);
+    // View
+
+    function render(): void {
+        const breadcrumbDocuments = folderStackState.get();
+        const breadcrumbElement = buildBreadcrumbElement(
+            breadcrumbDocuments,
+            onBreadcrumbFolderIdSelected
+        );
+        const breadcrumbPlaceholder = document.getElementById("homePageBreadcrumb--placeholder");
+        if (breadcrumbPlaceholder) {
+            breadcrumbPlaceholder.replaceChildren(breadcrumbElement);
+        }
+    }
+
+    // Init
+
+    render();
 }
 
 function homePageBodyViewModel(
@@ -120,12 +168,20 @@ function homePageBodyViewModel(
 
     function renderList(): void {
         const documentItemViews = computeDocumentItems();
-        const tableHtml = buildTable(documentItemViews, selectedDocumentIdState.get(), onDocumentItemSelected);
+        const tableHtml = buildTable(
+            documentItemViews,
+            selectedDocumentIdState.get(),
+            onDocumentItemSelected
+        );
         const tablePlaceholder = document.getElementById("homePageBodyTable--placeholder");
         if (tablePlaceholder) {
             tablePlaceholder.innerHTML = tableHtml;
         }
-        const cardListHtml = buildCardList(documentItemViews, selectedDocumentIdState.get(), onDocumentItemSelected);
+        const cardListHtml = buildCardList(
+            documentItemViews,
+            selectedDocumentIdState.get(),
+            onDocumentItemSelected
+        );
         const cardListPlaceholder = document.getElementById("homePageBodyCardList--placeholder");
         if (cardListPlaceholder) {
             cardListPlaceholder.innerHTML = cardListHtml;
@@ -147,7 +203,10 @@ function homePageBodyViewModel(
 }
 
 function homePageActionViewModel(
-    listenOnSelectedItemChange: (onChange: (selectedDocumentId: string | null) => void) => void
+    listenOnSelectedItemChange: (onChange: (selectedDocumentId: string | null) => void) => void,
+    onEditSelectedItem: () => void,
+    onDeleteSelectedItem: () => void,
+    onCancelSelectedItem: () => void
 ) {
     const selectedDocumentIdState = createReactiveValue<string | null>(null);
     selectedDocumentIdState.subscribe((selectedItem) => {
@@ -165,19 +224,15 @@ function homePageActionViewModel(
         }
     }
 
+    // Init
 
-
-    document.getElementById("editBtnHomePage")!.addEventListener("click", () => {
+    document.getElementById("editBtnHomePage")?.addEventListener("click", () => {
         onEditSelectedItem();
     });
-
-    document.getElementById("deleteBtnHomePage")!.addEventListener("click", () => {
+    document.getElementById("deleteBtnHomePage")?.addEventListener("click", () => {
         onDeleteSelectedItem();
     });
-
-    document.getElementById("cancelBtnHomePage")!.addEventListener("click", () => {
-        selectedItem = null;
-        renderHomePageIsEditing(selectedItem);
-        renderBodyWhenSelected(currentFolder, selectedItem);
+    document.getElementById("cancelBtnHomePage")?.addEventListener("click", () => {
+        onCancelSelectedItem();
     });
 }
