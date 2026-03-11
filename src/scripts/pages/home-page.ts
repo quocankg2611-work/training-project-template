@@ -12,8 +12,13 @@ import setupUpdateFileModal from '../components/_update-file-modal';
 import setupDeleteDocumentModal from '../components/_delete-document-modal';
 import { FolderModel } from '../model/_folder.model';
 
-onAppReady(async () => {
+onAppReady(() => bootstrap());
 
+async function bootstrap2() {
+
+}
+
+async function bootstrap() {
 	const documentService = new DocumentService();
 
 	renderHomePageIsLoading(true);
@@ -21,6 +26,7 @@ onAppReady(async () => {
 	renderHomePageIsLoading(false);
 
 	let selectedItem: DocumentView | null = null;
+	let currentFolder: FolderModel = await documentService.getCurrentFolder();
 
 	render();
 
@@ -35,7 +41,7 @@ onAppReady(async () => {
 	document.getElementById("cancelBtnHomePage")!.addEventListener("click", () => {
 		selectedItem = null;
 		renderHomePageIsEditing(selectedItem);
-		render();
+		renderBodyWhenSelected(currentFolder, selectedItem);
 	});
 
 	setupAddFolderModal(async (folderName: string) => {
@@ -46,29 +52,37 @@ onAppReady(async () => {
 	});
 
 	const updateFolderModal = setupUpdateFolderModal(async (folderId: string, folderName: string) => {
+		renderHomePageIsLoading(true);
 		await documentService.updateFolder(folderId, folderName);
 		selectedItem = null;
+		renderHomePageIsLoading(false);
 		render();
 	});
 
 	const updateFileModal = setupUpdateFileModal(async (fileId: string, fileName: string) => {
+		renderHomePageIsLoading(true);
 		await documentService.updateFile(fileId, fileName);
 		selectedItem = null;
+		renderHomePageIsLoading(false);
 		render();
 	});
 
 	const deleteDocumentModal = setupDeleteDocumentModal(async (documentId: string, documentType: "folder" | "file") => {
+		renderHomePageIsLoading(true);
 		if (documentType === "folder") {
 			await documentService.deleteFolder(documentId);
 		} else {
 			await documentService.deleteFile(documentId);
 		}
 		selectedItem = null;
+		renderHomePageIsLoading(false);
 		render();
 	});
 
 	setupUploadFileModal(async (fileName: string, extension: string, content: string) => {
+		renderHomePageIsLoading(true);
 		await documentService.addFile(fileName, extension as FileExtensionsType, content);
+		renderHomePageIsLoading(false);
 		render();
 	});
 
@@ -76,9 +90,33 @@ onAppReady(async () => {
 		documentService.saveRootFolder();
 	});
 
+	async function onFolderSeletectedFromBody(selectedFolder: FolderModel): Promise<void> {
+		await documentService.navigateToFolder(selectedFolder.id);
+		selectedItem = null;
+		currentFolder = selectedFolder;
+		renderHomePageIsEditing(null);
+		render();
+	}
+
 	// ===============================
 	// View
 	// ===============================
+
+	async function renderBodyWhenSelected(currentFolder: FolderModel, selectedItem: DocumentView | null): Promise<void> {
+		renderTable(
+			currentFolder,
+			onFolderSeletectedFromBody,
+			selectedItem,
+			(item) => { selectedItem = item; renderBodyWhenSelected(currentFolder, item); }
+		);
+		renderCardList(
+			currentFolder,
+			onFolderSeletectedFromBody,
+			selectedItem,
+			(item) => { selectedItem = item; renderBodyWhenSelected(currentFolder, item); }
+		);
+		renderHomePageIsEditing(selectedItem);
+	}
 
 	async function render() {
 		renderHomePageIsLoading(true);
@@ -94,27 +132,16 @@ onAppReady(async () => {
 		});
 		renderTable(
 			currentFolder,
-			async (selectedFolder) => {
-				await documentService.navigateToFolder(selectedFolder.id);
-				selectedItem = null;
-				renderHomePageIsEditing(null);
-				render();
-			},
+			onFolderSeletectedFromBody,
 			selectedItem,
-			(item) => { selectedItem = item; render(); }
+			(item) => { selectedItem = item; renderBodyWhenSelected(currentFolder, item); }
 		);
 		renderCardList(
 			currentFolder,
-			async (selectedFolder) => {
-				await documentService.navigateToFolder(selectedFolder.id);
-				selectedItem = null;
-				renderHomePageIsEditing(null);
-				render();
-			},
+			onFolderSeletectedFromBody,
 			selectedItem,
-			(item) => { selectedItem = item; render(); }
+			(item) => { selectedItem = item; renderBodyWhenSelected(currentFolder, item); }
 		);
-		renderHomePageIsEditing(null);
 	}
 
 	// ===============================
@@ -135,7 +162,8 @@ onAppReady(async () => {
 		const docType = selectedItem.documentType === "folder" ? "folder" : "file";
 		deleteDocumentModal.open(selectedItem.id, selectedItem.name, docType);
 	}
-});
+}
+
 
 function renderHomePageIsLoading(isShow: boolean) {
 	const homePage = document.getElementById("homePage")!;
@@ -156,41 +184,3 @@ function renderHomePageIsEditing(selectedItem: DocumentView | null) {
 		homePageActionElements[i].classList.toggle("hidden", selectedItem == null);
 	}
 }
-
-// function homePageViewModel(documentService: DocumentService) {
-// 	// States
-
-// 	let isLoading = true;
-// 	let isFetching = false;
-// 	let seletedItem: DocumentView | null = null;
-
-// 	// Handlers
-
-// 	async function onBreadcrumbFolderSelected(selectedFolder: FolderModel): Promise<void> {
-// 		await documentService.navigateBackToFolder(selectedFolder.id);
-// 		selectedItem = null;
-// 		renderHomePageIsEditing(selectedItem);
-// 		render();
-// 	}
-
-// 	// View models
-
-// 	const breadcrumbViewModel = homePageBreadcrumbViewModel(onBreadcrumbFolderSelected);
-
-
-// 	return {
-// 		render(): void {
-// 			homePageBreadcrumbViewModel(folderStack, onBreadcrumbFolderSelected);
-// 		}
-// 	}
-// }
-
-// function homePageBreadcrumbViewModel(onFolderSelected: (selectedFolder: FolderModel) => void) {
-// 	let folderStack: FolderModel[] = [];
-// 	return {
-// 		render(): void {
-// 			renderBreadcrumb(folderStack, onFolderSelected);
-// 		}
-// 	}
-
-// }
