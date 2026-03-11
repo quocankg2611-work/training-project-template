@@ -1,7 +1,6 @@
 import { FileModel } from "../model/_file.model";
 import { FolderModel } from "../model/_folder.model"
 import { FileExtensionsType } from "../types/_file-extensions.types";
-import { requireArray, requireString } from "../utilities/_require";
 import { stringsIsNullOrBlank } from "../utilities/_strings";
 
 const DELAY_TIME = 500;
@@ -13,13 +12,6 @@ export default class DocumentService {
 
     constructor() {
         this._repository = new DocumentRepository();
-    }
-
-    private getRootFolderLoaded(): FolderModel {
-        if (this._rootFolder === null) {
-            throw new Error("Root folder is not loaded yet.");
-        }
-        return this._rootFolder;
     }
 
     public loadRootFolder(): Promise<void> {
@@ -213,6 +205,7 @@ export default class DocumentService {
     }
 }
 
+
 /**
  * Will seed data upon initialization.
  */
@@ -256,8 +249,7 @@ class DocumentRepository {
                     if (stringsIsNullOrBlank(jsonStr) === true) {
                         reject("Not found.")
                     } else {
-                        const json = JSON.parse(jsonStr);
-                        const folder = folderParser(json);
+                        const folder = JSON.parse(jsonStr) as FolderModel;
                         resolve(folder);
                     }
                 } catch (error) {
@@ -326,44 +318,3 @@ const seedFolderData: FolderModel = {
         }
     ]
 };
-
-/**
- * Parsers
- */
-
-function folderParser(obj: any): FolderModel {
-    const id = requireString(obj, "id");
-    const name = requireString(obj, "name");
-    const modified = new Date(requireString(obj, "modified"));
-    const modifiedBy = requireString(obj, "modifiedBy");
-
-    const files = requireArray(obj, "files").map(fileParser);
-    const subFolders = requireArray(obj, "subFolders").map(folderParser);
-
-    return {
-        id,
-        name,
-        modified,
-        modifiedBy,
-        files,
-        subFolders,
-    }
-}
-
-function fileParser(obj: any): FileModel {
-    const id = requireString(obj, "id");
-    const name = requireString(obj, "name");
-    const modified = new Date(requireString(obj, "modified"));
-    const modifiedBy = requireString(obj, "modifiedBy");
-    const extension = requireString(obj, "extension") as FileExtensionsType ?? "docx";
-    const content = obj.content ?? "";
-
-    return {
-        id,
-        name,
-        modified,
-        modifiedBy,
-        extension,
-        content,
-    }
-}

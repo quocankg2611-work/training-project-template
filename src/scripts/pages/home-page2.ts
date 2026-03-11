@@ -1,7 +1,7 @@
 import renderBreadcrumb from "../components/_breadcrumb";
 import renderCardList from "../components/_card-list";
 import renderTable from "../components/_table";
-import { DocumentView } from "../components/views/_document.view";
+import { DocumentView } from "../components/view-model/_document.view";
 import { FolderModel } from "../model/_folder.model";
 import DocumentService from "../services/_document.service";
 
@@ -23,7 +23,6 @@ export function homePageViewModel(documentService: DocumentService) {
     );
 
     // Effects
-
 
     async function onBreadcrumbFolderSelected(selectedFolder: FolderModel): Promise<void> {
         await documentService.navigateBackToFolder(selectedFolder.id);

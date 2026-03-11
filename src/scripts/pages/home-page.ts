@@ -7,16 +7,12 @@ import setupAddFolderModal from '../components/_add-folder-modal';
 import setupUploadFileModal from '../components/_upload-file-modal';
 import setupUpdateFolderModal from '../components/_update-folder-modal';
 import { FileExtensionsType } from '../types/_file-extensions.types';
-import { DocumentView } from '../components/views/_document.view';
+import { DocumentView } from '../components/view-model/_document.view';
 import setupUpdateFileModal from '../components/_update-file-modal';
 import setupDeleteDocumentModal from '../components/_delete-document-modal';
 import { FolderModel } from '../model/_folder.model';
 
 onAppReady(() => bootstrap());
-
-async function bootstrap2() {
-
-}
 
 async function bootstrap() {
 	const documentService = new DocumentService();
