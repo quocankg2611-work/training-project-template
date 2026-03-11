@@ -1,0 +1,47 @@
+<div class="home-page__table">
+    <div class="home-page__table-loading-container">
+        <div class="loader loader--spinner"></div>
+    </div>
+
+    <table class="file-table">
+        <thead>
+            <th>
+                <!-- Left empty for modify actions -->
+            </th>
+            <th><span class="file-table__icon--file"></span></th>
+            <th>Name <span class="file-table__dropdown-indicator"></span></th>
+            <th>Modified <span class="file-table__dropdown-indicator"></span></th>
+            <th>Modified By <span class="file-table__dropdown-indicator"></span></th>
+            <th><span class="file-table__header-icon--add"></span> Add column</th>
+            </tr>
+        </thead>
+
+        <tbody id="documentsTable--placeholder-list">
+
+        <tbody>
+            <template id="documentsTable--template-item">
+                <tr>
+                    <td>
+                        <input class="form-check-input"
+                               type="radio"
+                               name="file-table-select" />
+                    </td>
+                    <td>
+                        <!-- {{icon}} -->
+                    </td>
+                    <td>
+                        <!-- {{name}} -->
+                    </td>
+                    <td>
+                        <!-- {{modified}} -->
+                    </td>
+                    <td>
+                        <!-- {{modifiedBy}} -->
+                    </td>
+                    <td>
+                        <!-- Left empty for "Add column" -->
+                    </td>
+                </tr>
+            </template>
+    </table>
+</div>

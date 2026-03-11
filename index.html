@@ -142,53 +142,7 @@
 			 class="home-page__desktop d-none d-lg-block flex-grow-1">
 
 			<!-- Documents table -->
-			<div class="home-page__table">
-				<div class="home-page__table-loading-container">
-					<div class="loader loader--spinner"></div>
-				</div>
-
-				<table class="file-table">
-					<thead>
-						<th>
-							<!-- Left empty for modify actions -->
-						</th>
-						<th><span class="file-table__icon--file"></span></th>
-						<th>Name <span class="file-table__dropdown-indicator"></span></th>
-						<th>Modified <span class="file-table__dropdown-indicator"></span></th>
-						<th>Modified By <span class="file-table__dropdown-indicator"></span></th>
-						<th><span class="file-table__header-icon--add"></span> Add column</th>
-						</tr>
-					</thead>
-
-					<tbody id="documentsTable--placeholder-list">
-
-					<tbody>
-						<template id="documentsTable--template-item">
-							<tr>
-								<td>
-									<input class="form-check-input"
-										   type="radio"
-										   name="file-table-select" />
-								</td>
-								<td>
-									<!-- {{icon}} -->
-								</td>
-								<td>
-									<!-- {{name}} -->
-								</td>
-								<td>
-									<!-- {{modified}} -->
-								</td>
-								<td>
-									<!-- {{modifiedBy}} -->
-								</td>
-								<td>
-									<!-- Left empty for "Add column" -->
-								</td>
-							</tr>
-						</template>
-				</table>
-			</div>
+			<div id="homePageBodyTable--placeholder"></div>
 		</div>
 
 		<!-- Body section (item list - mobile) -->
@@ -196,53 +150,8 @@
 		<div id="homePageBody--mobile"
 			 class="d-lg-none d-flex flex-column flex-grow-1 overflow-y-auto">
 
-			<div class="home-page__list d-flex flex-column flex-grow-1">
-				<div class="home-page__list-loading-container">
-					<div class="loader loader--spinner"></div>
-				</div>
-
-				<!-- Card list -->
-				<div id="cardList--placeholder-list"
-					 class="d-flex flex-column gap-4 pb-5">
-				</div>
-				<template id="cardList--template-item">
-					<table class="file-card">
-						<thead>
-							<tr>
-								<th class="file-card__action-select-area">
-									<input class="form-check-input"
-										   type="radio"
-										   name="file-card-select" />
-									<span>File Type</span>
-								</th>
-								<th>
-									<!-- {{icon}} -->
-								</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td>Name</td>
-								<td>
-									<!-- {{name}} -->
-								</td>
-							</tr>
-							<tr>
-								<td>Modified</td>
-								<td>
-									<!-- {{modified}} -->
-								</td>
-							</tr>
-							<tr>
-								<td>Modified By</td>
-								<td>
-									<!-- {{modifiedBy}} -->
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				</template>
-			</div>
+			<!-- Card list -->
+			<div id="homePageBodyCardList--placeholder"></div>
 		</div>
 	</div>
 

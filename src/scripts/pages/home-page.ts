@@ -7,10 +7,10 @@ import setupAddFolderModal from '../components/_add-folder-modal';
 import setupUploadFileModal from '../components/_upload-file-modal';
 import setupUpdateFolderModal from '../components/_update-folder-modal';
 import { FileExtensionsType } from '../types/_file-extensions.types';
-import { DocumentView } from '../components/view-model/_document.view';
 import setupUpdateFileModal from '../components/_update-file-modal';
 import setupDeleteDocumentModal from '../components/_delete-document-modal';
 import { FolderModel } from '../model/_folder.model';
+import { DocumentViewModel } from '../view-model/_document.view';
 
 onAppReady(() => bootstrap());
 
@@ -21,7 +21,7 @@ async function bootstrap() {
 	await documentService.loadRootFolder();
 	renderHomePageIsLoading(false);
 
-	let selectedItem: DocumentView | null = null;
+	let selectedItem: DocumentViewModel | null = null;
 	let currentFolder: FolderModel = await documentService.getCurrentFolder();
 
 	render();
@@ -98,7 +98,7 @@ async function bootstrap() {
 	// View
 	// ===============================
 
-	async function renderBodyWhenSelected(currentFolder: FolderModel, selectedItem: DocumentView | null): Promise<void> {
+	async function renderBodyWhenSelected(currentFolder: FolderModel, selectedItem: DocumentViewModel | null): Promise<void> {
 		renderTable(
 			currentFolder,
 			onFolderSeletectedFromBody,
@@ -174,7 +174,7 @@ function renderHomePageIsLoading(isShow: boolean) {
 	}
 }
 
-function renderHomePageIsEditing(selectedItem: DocumentView | null) {
+function renderHomePageIsEditing(selectedItem: DocumentViewModel | null) {
 	const homePageActionElements = document.getElementsByClassName("home-page-actions");
 	for (let i = 0; i < homePageActionElements.length; i++) {
 		homePageActionElements[i].classList.toggle("hidden", selectedItem == null);

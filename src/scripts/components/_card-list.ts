@@ -1,18 +1,18 @@
 import { FolderModel } from "../model/_folder.model";
-import { DocumentView, documentViewFromFileModel, documentViewFromFolderModel } from "./view-model/_document.view";
+import { DocumentViewModel, documentViewFromFileModel, documentViewFromFolderModel } from "../view-model/_document.view";
 
 export default function renderCardList(
     currentFolder: FolderModel,
     onFolderClicked: (folder: FolderModel) => void,
-    seletedItem: DocumentView | null,
-    onItemSelected: (item: DocumentView) => void,
+    seletedItem: DocumentViewModel | null,
+    onItemSelected: (item: DocumentViewModel) => void,
 ): void {
     const placeholderList = document.getElementById("cardList--placeholder-list");
     if (!placeholderList) return;
 
     placeholderList.replaceChildren(); // Clear existing content before re-rendering
 
-    const documentItemViews: DocumentView[] = [];
+    const documentItemViews: DocumentViewModel[] = [];
     currentFolder.files.forEach(file => {
         documentItemViews.push(documentViewFromFileModel(file));
     });
@@ -29,9 +29,9 @@ export default function renderCardList(
 }
 
 function createCardItem(
-    documentView: DocumentView,
-    selectedItem: DocumentView | null,
-    onItemSelected: (item: DocumentView) => void
+    documentView: DocumentViewModel,
+    selectedItem: DocumentViewModel | null,
+    onItemSelected: (item: DocumentViewModel) => void
 ): HTMLElement {
     const templateItem = document.getElementById("cardList--template-item") as HTMLTemplateElement;
     const cloned = templateItem.content.cloneNode(true) as HTMLElement;

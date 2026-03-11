@@ -1,7 +1,7 @@
-import { FileModel } from "../../model/_file.model";
-import { FolderModel } from "../../model/_folder.model";
-import { FileExtensionsType } from "../../types/_file-extensions.types";
-import formatTimeAgo from "../../utilities/_format-strings";
+import { FileModel } from "../model/_file.model";
+import { FolderModel } from "../model/_folder.model";
+import { FileExtensionsType } from "../types/_file-extensions.types";
+import formatTimeAgo from "../utilities/_format-strings";
 
 type PossibleDocumentTypes = "folder" | "excel" | "word";
 
@@ -10,7 +10,7 @@ const FileExtensionToIconName = new Map<FileExtensionsType, PossibleDocumentType
     ["docx", "word"]
 ]);
 
-export type DocumentView = {
+export type DocumentViewModel = {
     id: string;
     name: string;
     modified: Date;
@@ -20,7 +20,7 @@ export type DocumentView = {
     onDocumentClicked?: () => void;
 }
 
-export function documentViewFromFileModel(file: FileModel): DocumentView {
+export function documentViewFromFileModel(file: FileModel): DocumentViewModel {
     const iconName = FileExtensionToIconName.get(file.extension) ?? "excel" // Default icon display;
     return {
         ...file,
@@ -29,7 +29,7 @@ export function documentViewFromFileModel(file: FileModel): DocumentView {
     };
 }
 
-export function documentViewFromFolderModel(folder: FolderModel, onFolderClicked: (folder: FolderModel) => void): DocumentView {
+export function documentViewFromFolderModel(folder: FolderModel, onFolderClicked: (folder: FolderModel) => void): DocumentViewModel {
     return {
         ...folder,
         modifiedStr: formatTimeAgo(folder.modified),
