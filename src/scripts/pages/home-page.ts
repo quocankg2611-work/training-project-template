@@ -2,30 +2,25 @@ import renderTable from '../components/_table';
 import renderCardList from '../components/_card-list';
 import { onAppBeforeUnload, onAppReady } from '../utilities/_events';
 import DocumentService from '../services/_document.service';
-import { FolderModel } from '../model/_folder.model';
 import renderBreadcrumb from '../components/_breadcrumb';
 import setupAddFolderModal from '../components/_add-folder-modal';
 import setupUploadFileModal from '../components/_upload-file-modal';
 import setupUpdateFolderModal from '../components/_update-folder-modal';
-import { FileModel } from '../model/_file.model';
 import { FileExtensionsType } from '../types/_file-extensions.types';
 import { DocumentView } from '../components/views/_document.view';
 import setupUpdateFileModal from '../components/_update-file-modal';
 import setupDeleteDocumentModal from '../components/_delete-document-modal';
+import { FolderModel } from '../model/_folder.model';
 
 onAppReady(async () => {
 
 	const documentService = new DocumentService();
-	let selectedItem: DocumentView | null = null;
-	documentService.seedDataIfNotExists();
 
 	renderHomePageIsLoading(true);
-
-	const rootFolder = await documentService.getRootFolder();
-	const folderStack: FolderModel[] = [rootFolder];
-	const folderRef = () => folderStack[folderStack.length - 1];
-
+	await documentService.loadRootFolder();
 	renderHomePageIsLoading(false);
+
+	let selectedItem: DocumentView | null = null;
 
 	render();
 
@@ -43,136 +38,102 @@ onAppReady(async () => {
 		render();
 	});
 
-	setupAddFolderModal((folderName: string) => {
-		const newFolder: FolderModel = {
-			id: crypto.randomUUID(),
-			modified: new Date(),
-			name: folderName,
-			modifiedBy: "Current User",
-			subFolders: [],
-			files: [],
-		};
-		folderRef().subFolders.push(newFolder);
+	setupAddFolderModal(async (folderName: string) => {
+		renderHomePageIsLoading(true);
+		await documentService.addFolder(folderName);
+		renderHomePageIsLoading(false);
 		render();
 	});
 
-	const updateFolderModal = setupUpdateFolderModal((folderId: string, folderName: string) => {
-		const folder = folderRef().subFolders.find(f => f.id === folderId);
-		if (folder) {
-			folder.name = folderName;
-			folder.modified = new Date();
-			folder.modifiedBy = "Current User";
-			selectedItem = null;
-			render();
-		}
+	const updateFolderModal = setupUpdateFolderModal(async (folderId: string, folderName: string) => {
+		await documentService.updateFolder(folderId, folderName);
+		selectedItem = null;
+		render();
 	});
 
-	const updateFileModal = setupUpdateFileModal((fileId: string, fileName: string) => {
-		const file = folderRef().files.find(f => f.id === fileId);
-		if (file) {
-			file.name = fileName;
-			file.modified = new Date();
-			file.modifiedBy = "Current User";
-			selectedItem = null;
-			render();
-		}
+	const updateFileModal = setupUpdateFileModal(async (fileId: string, fileName: string) => {
+		await documentService.updateFile(fileId, fileName);
+		selectedItem = null;
+		render();
 	});
 
-	const deleteDocumentModal = setupDeleteDocumentModal((documentId: string, documentType: "folder" | "file") => {
+	const deleteDocumentModal = setupDeleteDocumentModal(async (documentId: string, documentType: "folder" | "file") => {
 		if (documentType === "folder") {
-			folderRef().subFolders = folderRef().subFolders.filter(f => f.id !== documentId);
+			await documentService.deleteFolder(documentId);
 		} else {
-			folderRef().files = folderRef().files.filter(f => f.id !== documentId);
+			await documentService.deleteFile(documentId);
 		}
 		selectedItem = null;
 		render();
 	});
 
-	setupUploadFileModal((fileName: string, extension: string, content: string) => {
-		const newFile: FileModel = {
-			id: crypto.randomUUID(),
-			modified: new Date(),
-			name: fileName,
-			modifiedBy: "Current User",
-			extension: extension as FileExtensionsType,
-			content,
-		};
-		folderRef().files.push(newFile);
+	setupUploadFileModal(async (fileName: string, extension: string, content: string) => {
+		await documentService.addFile(fileName, extension as FileExtensionsType, content);
 		render();
 	});
 
 	onAppBeforeUnload(() => {
-		documentService.saveRootFolder(rootFolder);
+		documentService.saveRootFolder();
 	});
 
 	// ===============================
 	// View
 	// ===============================
 
-	function render() {
-		renderBreadcrumb(folderStack, (selectedFolder) => navigateBackOnFolderStack(folderStack, selectedFolder.id) && render());
+	async function render() {
+		renderHomePageIsLoading(true);
+		const folderStack = await documentService.getFolderStack();
+		const currentFolder = await documentService.getCurrentFolder();
+		renderHomePageIsLoading(false);
+
+		renderBreadcrumb(folderStack, async (selectedFolder) => {
+			await documentService.navigateBackToFolder(selectedFolder.id);
+			selectedItem = null;
+			renderHomePageIsEditing(null);
+			render();
+		});
 		renderTable(
-			folderRef(),
-			(selectedFolder) => navigateIntoFolderStack(folderStack, selectedFolder.id) && render(),
+			currentFolder,
+			async (selectedFolder) => {
+				await documentService.navigateToFolder(selectedFolder.id);
+				selectedItem = null;
+				renderHomePageIsEditing(null);
+				render();
+			},
 			selectedItem,
-			(item) => onItemSelected(item) && render()
+			(item) => { selectedItem = item; render(); }
 		);
 		renderCardList(
-			folderRef(),
-			(selectedFolder) => navigateIntoFolderStack(folderStack, selectedFolder.id) && render(),
+			currentFolder,
+			async (selectedFolder) => {
+				await documentService.navigateToFolder(selectedFolder.id);
+				selectedItem = null;
+				renderHomePageIsEditing(null);
+				render();
+			},
 			selectedItem,
-			(item) => onItemSelected(item) && render()
+			(item) => { selectedItem = item; render(); }
 		);
-		renderHomePageIsEditing(selectedItem);
+		renderHomePageIsEditing(null);
 	}
 
 	// ===============================
-	// Model
+	// Actions
 	// ===============================
 
-	function navigateBackOnFolderStack(folderStack: FolderModel[], targetFolderId: string): boolean {
-		const index = folderStack.findIndex(f => f.id === targetFolderId);
-		if (index !== -1) {
-			folderStack.splice(index + 1);
-			selectedItem = null;
-			renderHomePageIsEditing(selectedItem);
-			return true;
-		}
-		return false;
-	}
-
-	function navigateIntoFolderStack(folderStack: FolderModel[], targetFolderId: string): boolean {
-		const currentFolder = folderStack[folderStack.length - 1];
-		const targetFolder = currentFolder.subFolders.find(f => f.id === targetFolderId);
-		if (targetFolder) {
-			folderStack.push(targetFolder);
-			selectedItem = null;
-			renderHomePageIsEditing(selectedItem);
-			return true;
-		}
-		return false;
-	}
-
-	function onItemSelected(item: DocumentView): boolean {
-		selectedItem = item;
-		return true;
-	}
-
-	function onEditSelectedItem(): boolean {
-		if (!selectedItem) return false;
-		if (selectedItem && selectedItem.documentType === "folder") {
+	function onEditSelectedItem(): void {
+		if (!selectedItem) return;
+		if (selectedItem.documentType === "folder") {
 			updateFolderModal.open(selectedItem.id, selectedItem.name);
 		} else {
 			updateFileModal.open(selectedItem.id, selectedItem.name);
 		}
-		return false;
 	}
 
-	function onDeleteSelectedItem(): boolean {
-		if (!selectedItem) return false;
+	function onDeleteSelectedItem(): void {
+		if (!selectedItem) return;
 		const docType = selectedItem.documentType === "folder" ? "folder" : "file";
 		deleteDocumentModal.open(selectedItem.id, selectedItem.name, docType);
-		return false;
 	}
 });
 
@@ -196,3 +157,40 @@ function renderHomePageIsEditing(selectedItem: DocumentView | null) {
 	}
 }
 
+// function homePageViewModel(documentService: DocumentService) {
+// 	// States
+
+// 	let isLoading = true;
+// 	let isFetching = false;
+// 	let seletedItem: DocumentView | null = null;
+
+// 	// Handlers
+
+// 	async function onBreadcrumbFolderSelected(selectedFolder: FolderModel): Promise<void> {
+// 		await documentService.navigateBackToFolder(selectedFolder.id);
+// 		selectedItem = null;
+// 		renderHomePageIsEditing(selectedItem);
+// 		render();
+// 	}
+
+// 	// View models
+
+// 	const breadcrumbViewModel = homePageBreadcrumbViewModel(onBreadcrumbFolderSelected);
+
+
+// 	return {
+// 		render(): void {
+// 			homePageBreadcrumbViewModel(folderStack, onBreadcrumbFolderSelected);
+// 		}
+// 	}
+// }
+
+// function homePageBreadcrumbViewModel(onFolderSelected: (selectedFolder: FolderModel) => void) {
+// 	let folderStack: FolderModel[] = [];
+// 	return {
+// 		render(): void {
+// 			renderBreadcrumb(folderStack, onFolderSelected);
+// 		}
+// 	}
+
+// }
