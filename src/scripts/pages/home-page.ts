@@ -173,7 +173,7 @@ onAppReady(async () => {
 });
 
 function renderHomePageIsLoading(isShow: boolean) {
-	const homePage = document.getElementById("home-page")!;
+	const homePage = document.getElementById("homePage")!;
 	const tableLoaderElements = homePage.querySelector<HTMLDivElement>(".home-page__table-loading-container")!;
 	const listLoaderElement = homePage.querySelector<HTMLDivElement>(".home-page__list-loading-container")!;
 	if (isShow) {

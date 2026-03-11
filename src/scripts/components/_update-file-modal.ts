@@ -10,9 +10,9 @@ export default function setupUpdateFileModal(
     onUpdateFile: (fileId: string, fileName: string) => void
 ): { open: (fileId: string, currentName: string) => void } {
     const modalEl = document.getElementById("updateFileModal")!;
-    const input = document.getElementById("updateFileName") as HTMLInputElement;
-    const errorDiv = document.getElementById("updateFileNameError")!
-    const updateBtn = document.getElementById("updateFileBtn") as HTMLButtonElement;
+    const input = document.getElementById("updateFileModal--fileName") as HTMLInputElement;
+    const errorDiv = document.getElementById("updateFileModal--fileNameError")!
+    const updateBtn = document.getElementById("updateFileModal--updateBtn") as HTMLButtonElement;
 
     let currentFileId = "";
 

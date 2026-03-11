@@ -6,9 +6,9 @@
  */
 export default function setupAddFolderModal(onAddFolder: (folderName: string) => void): void {
     const modalEl = document.getElementById("addFolderModal");
-    const input = document.getElementById("folderName") as HTMLInputElement;
-    const errorDiv = document.getElementById("folderNameError");
-    const addBtn = document.getElementById("addFolderBtn") as HTMLButtonElement;
+    const input = document.getElementById("addFolderModal--folderName") as HTMLInputElement;
+    const errorDiv = document.getElementById("addFolderModal--folderNameError");
+    const addBtn = document.getElementById("addFolderModal--addBtn") as HTMLButtonElement;
 
     // Reset form state when modal is opened
     modalEl.addEventListener("show.bs.modal", () => {

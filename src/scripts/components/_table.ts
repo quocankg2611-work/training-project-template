@@ -7,7 +7,7 @@ export default function renderTable(
     selectedItem: DocumentView | null,
     onItemSelected: (item: DocumentView) => void
 ): void {
-    const placeholderList = document.getElementById("documents-table--placeholder--list");
+    const placeholderList = document.getElementById("documentsTable--placeholder-list");
     if (!placeholderList) return;
 
     placeholderList.replaceChildren(); // Clear existing content before re-rendering
@@ -33,7 +33,7 @@ function createTableRow(
     selectedItem: DocumentView | null,
     onItemSelected: (item: DocumentView) => void
 ): HTMLElement {
-    const templateItem = document.getElementById("documents-table--template--item") as HTMLTemplateElement;
+    const templateItem = document.getElementById("documentsTable--template-item") as HTMLTemplateElement;
     const cloned = templateItem.content.cloneNode(true) as HTMLElement;
     if (documentView.onDocumentClicked != null) {
         cloned.querySelector("tr")?.addEventListener("click", documentView.onDocumentClicked);

@@ -23,8 +23,8 @@ export default function renderCardList(
 }
 
 function renderCardItem(documentView: DocumentView) {
-    const templateItem = document.getElementById("card-list--template--item") as HTMLTemplateElement;
-    const placeholderList = document.getElementById("card-list--placeholder--list");
+    const templateItem = document.getElementById("cardList--template-item") as HTMLTemplateElement;
+    const placeholderList = document.getElementById("cardList--placeholder-list");
     const cloned = templateItem.content.cloneNode(true) as HTMLElement;
 
     if (documentView.onDocumentClicked != null) {

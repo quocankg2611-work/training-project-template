@@ -19,227 +19,231 @@
 		  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 
-<body id="home-page d-flex flex-column">
+<body id="homePage">
 
-	<!-- Navbar -->
+	<div class="d-flex flex-column">
 
-	<nav class="navbar navbar-expand-lg py-0">
-		<div class="container-fluid px-0 w-100">
+		<!-- Navbar -->
 
-			<!-- Toggle button (appear when collapsed) -->
+		<nav class="navbar navbar-expand-lg py-0">
+			<div class="container-fluid px-0 w-100">
 
-			<div class="d-lg-none d-flex border-bottom border-1 border-terretri container-fluid px-3 py-2">
-				<button class="navbar-toggler ms-auto"
-						type="button"
-						data-bs-toggle="collapse"
-						data-bs-target="#navbarSupportedContent"
-						aria-controls="navbarSupportedContent"
-						aria-expanded="false"
-						aria-label="Toggle navigation">
-					<span class="navbar-toggler-icon"></span>
-				</button>
+				<!-- Toggle button (appear when collapsed) -->
+
+				<div class="d-lg-none d-flex border-bottom border-1 border-terretri container-fluid px-3 py-2">
+					<button class="navbar-toggler ms-auto"
+							type="button"
+							data-bs-toggle="collapse"
+							data-bs-target="#navbarSupportedContent"
+							aria-controls="navbarSupportedContent"
+							aria-expanded="false"
+							aria-label="Toggle navigation">
+						<span class="navbar-toggler-icon"></span>
+					</button>
+				</div>
+
+				<!-- Nav Collpase -->
+
+				<div class="collapse navbar-collapse"
+					 id="navbarSupportedContent">
+					<ul class="navbar-nav me-auto mb-lg-0">
+						<li class="nav-item dropdown">
+							<button class="nav-button dropdown-button"
+									type="button"
+									data-bs-toggle="dropdown"
+									aria-expanded="false">
+								<span class="nav-button__icon--add"></span>
+								<span>New</span>
+								<span class="nav-button__dropdown-indicator "></span>
+							</button>
+							<div class="dropdown-menu"
+								 aria-labelledby="dropdownMenuButton">
+								<a class="dropdown-item"
+								   href="#"
+								   data-bs-toggle="modal"
+								   data-bs-target="#addFolderModal">Folder</a>
+							</div>
+						</li>
+						<li class="nav-item dropdown">
+							<button class="nav-button"
+									type="button"
+									data-bs-toggle="dropdown"
+									aria-expanded="false">
+								<span class="nav-button__icon--upload"></span>
+								<span>Upload</span>
+								<span class="nav-button__dropdown-indicator "></span>
+							</button>
+							<div class="dropdown-menu"
+								 aria-labelledby="dropdownMenuButton">
+								<a class="dropdown-item"
+								   href="#"
+								   data-bs-toggle="modal"
+								   data-bs-target="#uploadFileModal">Files</a>
+							</div>
+						</li>
+						<li class="nav-item">
+							<button class="nav-button">
+								<span class="nav-button__icon--sync"></span>
+								<span>Sync</span>
+							</button>
+						</li>
+						<li class="nav-item">
+							<button class="nav-button">
+								<span class="nav-button__icon--export-to-excel"></span>
+								<span>Export to Excel</span>
+							</button>
+						</li>
+						<li class="nav-item">
+							<button class="nav-button">
+								<span class="nav-button__icon--flow"></span>
+								<span>Flow</span>
+								<span class="nav-button__dropdown-indicator "></span>
+							</button>
+						</li>
+						<li class="nav-item">
+							<button class="nav-button">
+								<span class="nav-button__more-option">...</span>
+							</button>
+						</li>
+					</ul>
+				</div>
 			</div>
+		</nav>
 
-			<!-- Nav Collpase -->
+		<!-- Body section (table - desktop) -->
 
-			<div class="collapse navbar-collapse"
-				 id="navbarSupportedContent">
-				<ul class="navbar-nav me-auto mb-lg-0">
-					<li class="nav-item dropdown">
-						<button class="nav-button dropdown-button"
-								type="button"
-								data-bs-toggle="dropdown"
-								aria-expanded="false">
-							<span class="nav-button__icon--add"></span>
-							<span>New</span>
-							<span class="nav-button__dropdown-indicator "></span>
-						</button>
-						<div class="dropdown-menu"
-							 aria-labelledby="dropdownMenuButton">
-							<a class="dropdown-item"
-							   href="#"
-							   data-bs-toggle="modal"
-							   data-bs-target="#addFolderModal">Folder</a>
-						</div>
-					</li>
-					<li class="nav-item dropdown">
-						<button class="nav-button"
-								type="button"
-								data-bs-toggle="dropdown"
-								aria-expanded="false">
-							<span class="nav-button__icon--upload"></span>
-							<span>Upload</span>
-							<span class="nav-button__dropdown-indicator "></span>
-						</button>
-						<div class="dropdown-menu"
-							 aria-labelledby="dropdownMenuButton">
-							<a class="dropdown-item"
-							   href="#"
-							   data-bs-toggle="modal"
-							   data-bs-target="#uploadFileModal">Files</a>
-						</div>
-					</li>
-					<li class="nav-item">
-						<button class="nav-button">
-							<span class="nav-button__icon--sync"></span>
-							<span>Sync</span>
-						</button>
-					</li>
-					<li class="nav-item">
-						<button class="nav-button">
-							<span class="nav-button__icon--export-to-excel"></span>
-							<span>Export to Excel</span>
-						</button>
-					</li>
-					<li class="nav-item">
-						<button class="nav-button">
-							<span class="nav-button__icon--flow"></span>
-							<span>Flow</span>
-							<span class="nav-button__dropdown-indicator "></span>
-						</button>
-					</li>
-					<li class="nav-item">
-						<button class="nav-button">
-							<span class="nav-button__more-option">...</span>
-						</button>
-					</li>
-				</ul>
+		<div id="homePageBody--desktop"
+			 class="home-page__desktop d-none d-lg-block px-4">
+
+			<!-- Title -->
+			<div class="d-flex justify-content-between align-items-center">
+				<h1 class="mt-5 mb-4 fw-light">Documents</h1>
+
+				<div class="home-page-actions hidden d-flex gap-2">
+					<button class="act-button"
+							id="editBtn">
+						<span class="act-button__icon--edit"></span>
+						Edit
+					</button>
+					<button class="act-button"
+							id="deleteBtn">
+						<span class="act-button__icon--delete"></span>
+						Delete
+					</button>
+					<button class="act-button act-button--cancel"
+							id="cancelBtn">
+						Cancel
+					</button>
+				</div>
 			</div>
-		</div>
-	</nav>
+			<!-- Breadcrumb -->
+			<div class="breadcrumb--placeholder"></div>
 
-	<!-- Body section (table - desktop) -->
+			<!-- Documents table -->
+			<div class="home-page__table">
+				<div class="home-page__table-loading-container">
+					<div class="loader loader--spinner"></div>
+				</div>
 
-	<div id="home-page-body--desktop"
-		 class="home-page__desktop d-none d-lg-block px-4">
-
-		<!-- Title -->
-		<div class="d-flex justify-content-between align-items-center">
-			<h1 class="mt-5 mb-4 fw-light">Documents</h1>
-
-			<div class="home-page-actions hidden d-flex gap-2">
-				<button class="act-button"
-						id="editBtn">
-					<span class="act-button__icon--edit"></span>
-					Edit
-				</button>
-				<button class="act-button"
-						id="deleteBtn">
-					<span class="act-button__icon--delete"></span>
-					Delete
-				</button>
-				<button class="act-button act-button--cancel"
-						id="cancelBtn">
-					Cancel
-				</button>
-			</div>
-		</div>
-		<!-- Breadcrumb -->
-		<div class="breadcrumb--placeholder"></div>
-
-		<!-- Documents table -->
-		<div class="home-page__table">
-			<div class="home-page__table-loading-container">
-				<div class="loader loader--spinner"></div>
-			</div>
-
-			<table class="file-table">
-				<thead>
-					<th>
-						<!-- Left empty for modify actions -->
-					</th>
-					<th><span class="file-table__icon--file"></span></th>
-					<th>Name <span class="file-table__dropdown-indicator"></span></th>
-					<th>Modified <span class="file-table__dropdown-indicator"></span></th>
-					<th>Modified By <span class="file-table__dropdown-indicator"></span></th>
-					<th><span class="file-table__header-icon--add"></span> Add column</th>
-					</tr>
-				</thead>
-
-				<tbody id="documents-table--placeholder--list">
-
-				<tbody>
-					<template id="documents-table--template--item">
-						<tr>
-							<td>
-								<input class="form-check-input"
-									   type="radio"
-									   name="file-table-select" />
-							</td>
-							<td>
-								<!-- {{icon}} -->
-							</td>
-							<td>
-								<!-- {{name}} -->
-							</td>
-							<td>
-								<!-- {{modified}} -->
-							</td>
-							<td>
-								<!-- {{modifiedBy}} -->
-							</td>
-							<td>
-								<!-- Left empty for "Add column" -->
-							</td>
+				<table class="file-table">
+					<thead>
+						<th>
+							<!-- Left empty for modify actions -->
+						</th>
+						<th><span class="file-table__icon--file"></span></th>
+						<th>Name <span class="file-table__dropdown-indicator"></span></th>
+						<th>Modified <span class="file-table__dropdown-indicator"></span></th>
+						<th>Modified By <span class="file-table__dropdown-indicator"></span></th>
+						<th><span class="file-table__header-icon--add"></span> Add column</th>
 						</tr>
-					</template>
-			</table>
-		</div>
-	</div>
+					</thead>
 
-	<!-- Body section (item list - mobile) -->
+					<tbody id="documentsTable--placeholder-list">
 
-	<div id="home-page-body--mobile flex-grow-1 d-flex flex-column"
-		 class="d-lg-none px-2 pb-5">
-
-		<!-- Title -->
-		<h1 class="mb-3 mt-4 fw-light">Documents</h1>
-
-		<!-- Breadcrumb -->
-		<div class="breadcrumb--placeholder"></div>
-
-		<div class="home-page__list flex-grow-1">
-			<div class="home-page__list-loading-container">
-				<div class=" loader loader--spinner"></div>
-			</div>
-
-			<!-- Card list -->
-			<div id="card-list--placeholder--list"
-				 class="d-flex flex-column gap-4 overflow-y-auto">
-				<template id="card-list--template--item">
-					<table class="file-card">
-						<thead>
+					<tbody>
+						<template id="documentsTable--template-item">
 							<tr>
-								<th>File Type</th>
-								<th>
+								<td>
+									<input class="form-check-input"
+										   type="radio"
+										   name="file-table-select" />
+								</td>
+								<td>
 									<!-- {{icon}} -->
-								</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td>Name</td>
+								</td>
 								<td>
 									<!-- {{name}} -->
 								</td>
-							</tr>
-							<tr>
-								<td>Modified</td>
 								<td>
 									<!-- {{modified}} -->
 								</td>
-							</tr>
-							<tr>
-								<td>Modified By</td>
 								<td>
 									<!-- {{modifiedBy}} -->
 								</td>
+								<td>
+									<!-- Left empty for "Add column" -->
+								</td>
 							</tr>
-						</tbody>
-					</table>
-				</template>
+						</template>
+				</table>
 			</div>
 		</div>
+
+		<!-- Body section (item list - mobile) -->
+
+		<div id="homePageBody--mobile"
+			 class="flex-grow-1 d-flex flex-column d-lg-none px-2 pb-5">
+
+			<!-- Title -->
+			<h1 class="mb-3 mt-4 fw-light">Documents</h1>
+
+			<!-- Breadcrumb -->
+			<div class="breadcrumb--placeholder"></div>
+
+			<div class="home-page__list flex-grow-1">
+				<div class="home-page__list-loading-container">
+					<div class=" loader loader--spinner"></div>
+				</div>
+
+				<!-- Card list -->
+				<div id="cardList--placeholder-list"
+					 class="d-flex flex-column gap-4 overflow-y-auto">
+					<template id="cardList--template-item">
+						<table class="file-card">
+							<thead>
+								<tr>
+									<th>File Type</th>
+									<th>
+										<!-- {{icon}} -->
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>Name</td>
+									<td>
+										<!-- {{name}} -->
+									</td>
+								</tr>
+								<tr>
+									<td>Modified</td>
+									<td>
+										<!-- {{modified}} -->
+									</td>
+								</tr>
+								<tr>
+									<td>Modified By</td>
+									<td>
+										<!-- {{modifiedBy}} -->
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</template>
+				</div>
+			</div>
+		</div>
+
 	</div>
 
 
@@ -249,7 +253,7 @@
 	<div class="modal fade"
 		 id="addFolderModal"
 		 tabindex="-1"
-		 aria-labelledby="addFolderModalLabel"
+		 aria-labelledby="addFolderModal--label"
 		 aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered"
 			 style="max-width:420px;">
@@ -258,7 +262,7 @@
 					<div class="modal-title-group">
 						<div>
 							<div class="modal-title"
-								 id="addFolderModalLabel">New Folder</div>
+								 id="addFolderModal--label">New Folder</div>
 							<div class="modal-subtitle">Fill in the details below</div>
 						</div>
 					</div>
@@ -269,25 +273,25 @@
 
 				<div class="modal-body">
 					<div class="mb-3">
-						<label for="folderName"
+						<label for="addFolderModal--folderName"
 							   class="form-label">Folder Name</label>
 						<input type="text"
 							   class="form-control"
-							   id="folderName"
+							   id="addFolderModal--folderName"
 							   placeholder="e.g. Project Assets"
 							   maxlength="40"
 							   autocomplete="off" />
 						<div class="invalid-feedback"
-							 id="folderNameError">Please enter a folder name.</div>
+							 id="addFolderModal--folderNameError">Please enter a folder name.</div>
 					</div>
 				</div>
 
 				<div class="modal-footer">
 					<button class="btn-cancel"
 							data-bs-dismiss="modal"
-							id="cancelBtn">Cancel</button>
+							id="addFolderModal--cancelBtn">Cancel</button>
 					<button class="btn-add"
-							id="addFolderBtn">
+							id="addFolderModal--addBtn">
 						Add
 					</button>
 				</div>
@@ -299,7 +303,7 @@
 	<div class="modal fade"
 		 id="uploadFileModal"
 		 tabindex="-1"
-		 aria-labelledby="uploadFileModalLabel"
+		 aria-labelledby="uploadFileModal--label"
 		 aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered"
 			 style="max-width:420px;">
@@ -308,7 +312,7 @@
 					<div class="modal-title-group">
 						<div>
 							<div class="modal-title"
-								 id="uploadFileModalLabel">Upload File</div>
+								 id="uploadFileModal--label">Upload File</div>
 							<div class="modal-subtitle">Select a file to upload</div>
 						</div>
 					</div>
@@ -319,50 +323,50 @@
 
 				<div class="modal-body">
 					<div class="mb-3">
-						<label for="fileInput"
+						<label for="uploadFileModal--fileInput"
 							   class="form-label">Choose file</label>
 						<input type="file"
 							   class="form-control"
-							   id="fileInput"
+							   id="uploadFileModal--fileInput"
 							   accept="
 								.docx,
 								.xlsx,
 								application/vnd.openxmlformats-officedocument.wordprocessingml.document,
 								application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
 						<div class="invalid-feedback"
-							 id="fileInputError">Please select a file to upload.</div>
+							 id="uploadFileModal--fileInputError">Please select a file to upload.</div>
 					</div>
 					<div class="mb-3"
-						 id="uploadedFileGroup"
+						 id="uploadFileModal--uploadedFileGroup"
 						 style="display:none;">
 						<label class="form-label">Uploaded file</label>
 						<input type="text"
 							   class="form-control"
-							   id="uploadedFileName"
+							   id="uploadFileModal--uploadedFileName"
 							   readonly />
 					</div>
 					<div class="mb-3"
-						 id="fileNameGroup"
+						 id="uploadFileModal--fileNameGroup"
 						 style="display:none;">
-						<label for="fileNameInput"
+						<label for="uploadFileModal--fileNameInput"
 							   class="form-label">File name</label>
 						<input type="text"
 							   class="form-control"
-							   id="fileNameInput"
+							   id="uploadFileModal--fileNameInput"
 							   placeholder="Enter file name"
 							   maxlength="40"
 							   autocomplete="off" />
 						<div class="invalid-feedback"
-							 id="fileNameError">Please enter a file name.</div>
+							 id="uploadFileModal--fileNameError">Please enter a file name.</div>
 					</div>
 				</div>
 
 				<div class="modal-footer">
 					<button class="btn-cancel"
 							data-bs-dismiss="modal"
-							id="cancelBtn">Cancel</button>
+							id="uploadFileModal--cancelBtn">Cancel</button>
 					<button class="btn-add"
-							id="uploadFileBtn">
+							id="uploadFileModal--uploadBtn">
 						Upload
 					</button>
 				</div>
@@ -374,7 +378,7 @@
 	<div class="modal fade"
 		 id="updateFolderModal"
 		 tabindex="-1"
-		 aria-labelledby="updateFolderModalLabel"
+		 aria-labelledby="updateFolderModal--label"
 		 aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered"
 			 style="max-width:420px;">
@@ -383,7 +387,7 @@
 					<div class="modal-title-group">
 						<div>
 							<div class="modal-title"
-								 id="updateFolderModalLabel">Update Folder</div>
+								 id="updateFolderModal--label">Update Folder</div>
 							<div class="modal-subtitle">Edit the details below</div>
 						</div>
 					</div>
@@ -394,25 +398,25 @@
 
 				<div class="modal-body">
 					<div class="mb-3">
-						<label for="updateFolderName"
+						<label for="updateFolderModal--folderName"
 							   class="form-label">Folder Name</label>
 						<input type="text"
 							   class="form-control"
-							   id="updateFolderName"
+							   id="updateFolderModal--folderName"
 							   placeholder="e.g. Project Assets"
 							   maxlength="40"
 							   autocomplete="off" />
 						<div class="invalid-feedback"
-							 id="updateFolderNameError">Please enter a folder name.</div>
+							 id="updateFolderModal--folderNameError">Please enter a folder name.</div>
 					</div>
 				</div>
 
 				<div class="modal-footer">
 					<button class="btn-cancel"
 							data-bs-dismiss="modal"
-							id="updateCancelBtn">Cancel</button>
+							id="updateFolderModal--cancelBtn">Cancel</button>
 					<button class="btn-add"
-							id="updateFolderBtn">
+							id="updateFolderModal--updateBtn">
 						Update
 					</button>
 				</div>
@@ -424,7 +428,7 @@
 	<div class="modal fade"
 		 id="updateFileModal"
 		 tabindex="-1"
-		 aria-labelledby="updateFileModalLabel"
+		 aria-labelledby="updateFileModal--label"
 		 aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered"
 			 style="max-width:420px;">
@@ -433,7 +437,7 @@
 					<div class="modal-title-group">
 						<div>
 							<div class="modal-title"
-								 id="updateFileModalLabel">Update File</div>
+								 id="updateFileModal--label">Update File</div>
 							<div class="modal-subtitle">Edit the details below</div>
 						</div>
 					</div>
@@ -444,25 +448,25 @@
 
 				<div class="modal-body">
 					<div class="mb-3">
-						<label for="updateFileName"
+						<label for="updateFileModal--fileName"
 							   class="form-label">File Name</label>
 						<input type="text"
 							   class="form-control"
-							   id="updateFileName"
+							   id="updateFileModal--fileName"
 							   placeholder="e.g. Project Report"
 							   maxlength="40"
 							   autocomplete="off" />
 						<div class="invalid-feedback"
-							 id="updateFileNameError">Please enter a file name.</div>
+							 id="updateFileModal--fileNameError">Please enter a file name.</div>
 					</div>
 				</div>
 
 				<div class="modal-footer">
 					<button class="btn-cancel"
 							data-bs-dismiss="modal"
-							id="updateCancelBtn">Cancel</button>
+							id="updateFileModal--cancelBtn">Cancel</button>
 					<button class="btn-add"
-							id="updateFileBtn">
+							id="updateFileModal--updateBtn">
 						Update
 					</button>
 				</div>
@@ -474,7 +478,7 @@
 	<div class="modal fade"
 		 id="deleteDocumentModal"
 		 tabindex="-1"
-		 aria-labelledby="deleteDocumentModalLabel"
+		 aria-labelledby="deleteDocumentModal--label"
 		 aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered"
 			 style="max-width:420px;">
@@ -483,9 +487,9 @@
 					<div class="modal-title-group">
 						<div>
 							<div class="modal-title"
-								 id="deleteDocumentModalLabel">Delete</div>
+								 id="deleteDocumentModal--label">Delete</div>
 							<div class="modal-subtitle"
-								 id="deleteDocumentSubtitle">Are you sure you want to delete this item?</div>
+								 id="deleteDocumentModal--subtitle">Are you sure you want to delete this item?</div>
 						</div>
 					</div>
 					<button class="btn-close-modal"
@@ -494,15 +498,15 @@
 				</div>
 
 				<div class="modal-body">
-					<p id="deleteDocumentMessage">This action cannot be undone.</p>
+					<p id="deleteDocumentModal--message">This action cannot be undone.</p>
 				</div>
 
 				<div class="modal-footer">
 					<button class="btn-cancel"
 							data-bs-dismiss="modal"
-							id="deleteCancelBtn">Cancel</button>
+							id="deleteDocumentModal--cancelBtn">Cancel</button>
 					<button class="btn-add"
-							id="deleteDocumentBtn">
+							id="deleteDocumentModal--deleteBtn">
 						Delete
 					</button>
 				</div>
@@ -514,19 +518,19 @@
 
 	<!--  <<< Breadcrumb components template -->
 
-	<template id="breadcrumb-container--template">
+	<template id="breadcrumbContainer--template">
 		<nav aria-label="breadcrumb">
 			<ol class="breadcrumb"></ol>
 		</nav>
 	</template>
 
-	<template id="breadcrumb-item--template">
+	<template id="breadcrumbItem--template">
 		<li class="breadcrumb-item">
 			<a href="#"></a>
 		</li>
 	</template>
 
-	<template id="breadcrumb-item-active--template">
+	<template id="breadcrumbItemActive--template">
 		<li class="breadcrumb-item active"
 			aria-current="page"></li>
 	</template>

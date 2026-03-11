@@ -10,9 +10,9 @@ export default function setupDeleteDocumentModal(
     onDelete: (documentId: string, documentType: "folder" | "file") => void
 ): { open: (documentId: string, documentName: string, documentType: "folder" | "file") => void } {
     const modalEl = document.getElementById("deleteDocumentModal")!;
-    const subtitleEl = document.getElementById("deleteDocumentSubtitle")!;
-    const messageEl = document.getElementById("deleteDocumentMessage")!;
-    const deleteBtn = document.getElementById("deleteDocumentBtn") as HTMLButtonElement;
+    const subtitleEl = document.getElementById("deleteDocumentModal--subtitle")!;
+    const messageEl = document.getElementById("deleteDocumentModal--message")!;
+    const deleteBtn = document.getElementById("deleteDocumentModal--deleteBtn") as HTMLButtonElement;
 
     let currentDocumentId = "";
     let currentDocumentType: "folder" | "file" = "folder";

@@ -10,9 +10,9 @@ export default function setupUpdateFolderModal(
     onUpdateFolder: (folderId: string, folderName: string) => void
 ): { open: (folderId: string, currentName: string) => void } {
     const modalEl = document.getElementById("updateFolderModal")!;
-    const input = document.getElementById("updateFolderName") as HTMLInputElement;
-    const errorDiv = document.getElementById("updateFolderNameError")!
-    const updateBtn = document.getElementById("updateFolderBtn") as HTMLButtonElement;
+    const input = document.getElementById("updateFolderModal--folderName") as HTMLInputElement;
+    const errorDiv = document.getElementById("updateFolderModal--folderNameError")!
+    const updateBtn = document.getElementById("updateFolderModal--updateBtn") as HTMLButtonElement;
 
     let currentFolderId = "";
 

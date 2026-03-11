@@ -1,11 +1,11 @@
 import { FolderModel } from "../model/_folder.model";
 
 export default function renderBreadcrumb(folderStack: FolderModel[], onClick: (selectedFolder: FolderModel) => void): void {
-    const placeholders = document.querySelectorAll<HTMLDivElement>('#home-page-body--desktop .breadcrumb--placeholder');
+    const placeholders = document.querySelectorAll<HTMLDivElement>('#homePageBody--desktop .breadcrumb--placeholder');
 
-    const breadcrumbContainerTemplate = document.getElementById('breadcrumb-container--template') as HTMLTemplateElement;
-    const breadcrumbItemTemplate = document.getElementById('breadcrumb-item--template') as HTMLTemplateElement;
-    const breadcrumbItemActiveTemplate = document.getElementById('breadcrumb-item-active--template') as HTMLTemplateElement;
+    const breadcrumbContainerTemplate = document.getElementById('breadcrumbContainer--template') as HTMLTemplateElement;
+    const breadcrumbItemTemplate = document.getElementById('breadcrumbItem--template') as HTMLTemplateElement;
+    const breadcrumbItemActiveTemplate = document.getElementById('breadcrumbItemActive--template') as HTMLTemplateElement;
 
     const breadcrumbContainer = breadcrumbContainerTemplate.content.cloneNode(true) as HTMLElement;
     const breadcrumbList = breadcrumbContainer.querySelector('.breadcrumb') as HTMLElement;
