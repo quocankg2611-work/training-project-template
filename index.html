@@ -19,125 +19,127 @@
 		  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 
-<body id="homePage">
+<body id="homePage"
+	  class="d-flex flex-column vh-100 overflow-hidden pb-5">
 
-	<div class="d-flex flex-column">
+	<!-- Navbar -->
 
-		<!-- Navbar -->
+	<nav class="navbar navbar-expand-lg py-0">
+		<div class="container-fluid px-0 w-100">
 
-		<nav class="navbar navbar-expand-lg py-0">
-			<div class="container-fluid px-0 w-100">
+			<!-- Toggle button (appear when collapsed) -->
 
-				<!-- Toggle button (appear when collapsed) -->
-
-				<div class="d-lg-none d-flex border-bottom border-1 border-terretri container-fluid px-3 py-2">
-					<button class="navbar-toggler ms-auto"
-							type="button"
-							data-bs-toggle="collapse"
-							data-bs-target="#navbarSupportedContent"
-							aria-controls="navbarSupportedContent"
-							aria-expanded="false"
-							aria-label="Toggle navigation">
-						<span class="navbar-toggler-icon"></span>
-					</button>
-				</div>
-
-				<!-- Nav Collpase -->
-
-				<div class="collapse navbar-collapse"
-					 id="navbarSupportedContent">
-					<ul class="navbar-nav me-auto mb-lg-0">
-						<li class="nav-item dropdown">
-							<button class="nav-button dropdown-button"
-									type="button"
-									data-bs-toggle="dropdown"
-									aria-expanded="false">
-								<span class="nav-button__icon--add"></span>
-								<span>New</span>
-								<span class="nav-button__dropdown-indicator "></span>
-							</button>
-							<div class="dropdown-menu"
-								 aria-labelledby="dropdownMenuButton">
-								<a class="dropdown-item"
-								   href="#"
-								   data-bs-toggle="modal"
-								   data-bs-target="#addFolderModal">Folder</a>
-							</div>
-						</li>
-						<li class="nav-item dropdown">
-							<button class="nav-button"
-									type="button"
-									data-bs-toggle="dropdown"
-									aria-expanded="false">
-								<span class="nav-button__icon--upload"></span>
-								<span>Upload</span>
-								<span class="nav-button__dropdown-indicator "></span>
-							</button>
-							<div class="dropdown-menu"
-								 aria-labelledby="dropdownMenuButton">
-								<a class="dropdown-item"
-								   href="#"
-								   data-bs-toggle="modal"
-								   data-bs-target="#uploadFileModal">Files</a>
-							</div>
-						</li>
-						<li class="nav-item">
-							<button class="nav-button">
-								<span class="nav-button__icon--sync"></span>
-								<span>Sync</span>
-							</button>
-						</li>
-						<li class="nav-item">
-							<button class="nav-button">
-								<span class="nav-button__icon--export-to-excel"></span>
-								<span>Export to Excel</span>
-							</button>
-						</li>
-						<li class="nav-item">
-							<button class="nav-button">
-								<span class="nav-button__icon--flow"></span>
-								<span>Flow</span>
-								<span class="nav-button__dropdown-indicator "></span>
-							</button>
-						</li>
-						<li class="nav-item">
-							<button class="nav-button">
-								<span class="nav-button__more-option">...</span>
-							</button>
-						</li>
-					</ul>
-				</div>
+			<div class="d-lg-none d-flex border-bottom border-1 border-terretri container-fluid px-3 py-2">
+				<button class="navbar-toggler ms-auto"
+						type="button"
+						data-bs-toggle="collapse"
+						data-bs-target="#navbarSupportedContent"
+						aria-controls="navbarSupportedContent"
+						aria-expanded="false"
+						aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
 			</div>
-		</nav>
+
+			<!-- Nav Collpase -->
+
+			<div class="collapse navbar-collapse"
+				 id="navbarSupportedContent">
+				<ul class="navbar-nav me-auto mb-lg-0">
+					<li class="nav-item dropdown">
+						<button class="nav-button dropdown-button"
+								type="button"
+								data-bs-toggle="dropdown"
+								aria-expanded="false">
+							<span class="nav-button__icon--add"></span>
+							<span>New</span>
+							<span class="nav-button__dropdown-indicator "></span>
+						</button>
+						<div class="dropdown-menu"
+							 aria-labelledby="dropdownMenuButton">
+							<a class="dropdown-item"
+							   href="#"
+							   data-bs-toggle="modal"
+							   data-bs-target="#addFolderModal">Folder</a>
+						</div>
+					</li>
+					<li class="nav-item dropdown">
+						<button class="nav-button"
+								type="button"
+								data-bs-toggle="dropdown"
+								aria-expanded="false">
+							<span class="nav-button__icon--upload"></span>
+							<span>Upload</span>
+							<span class="nav-button__dropdown-indicator "></span>
+						</button>
+						<div class="dropdown-menu"
+							 aria-labelledby="dropdownMenuButton">
+							<a class="dropdown-item"
+							   href="#"
+							   data-bs-toggle="modal"
+							   data-bs-target="#uploadFileModal">Files</a>
+						</div>
+					</li>
+					<li class="nav-item">
+						<button class="nav-button">
+							<span class="nav-button__icon--sync"></span>
+							<span>Sync</span>
+						</button>
+					</li>
+					<li class="nav-item">
+						<button class="nav-button">
+							<span class="nav-button__icon--export-to-excel"></span>
+							<span>Export to Excel</span>
+						</button>
+					</li>
+					<li class="nav-item">
+						<button class="nav-button">
+							<span class="nav-button__icon--flow"></span>
+							<span>Flow</span>
+							<span class="nav-button__dropdown-indicator "></span>
+						</button>
+					</li>
+					<li class="nav-item">
+						<button class="nav-button">
+							<span class="nav-button__more-option">...</span>
+						</button>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<div class="flex-grow-1 d-flex flex-column px-2 px-lg-4 overflow-hidden">
+
+		<!-- Title / Actions -->
+		<div class="d-flex flex-row justify-content-between align-items-center">
+			<h1 class="mt-lg-5 mb-lg-3 mt-4 mb-2 fw-light">Documents</h1>
+
+			<div class="home-page-actions hidden d-flex gap-2">
+				<button class="act-button"
+						id="editBtnHomePage">
+					<span class="act-button__icon--edit"></span>
+					Edit
+				</button>
+				<button class="act-button"
+						id="deleteBtnHomePage">
+					<span class="act-button__icon--delete"></span>
+					Delete
+				</button>
+				<button class="act-button act-button--cancel"
+						id="cancelBtnHomePage">
+					Cancel
+				</button>
+			</div>
+		</div>
+
+		<!-- Breadcrumb -->
+		<div id="breadcrumb--placeholder"></div>
 
 		<!-- Body section (table - desktop) -->
 
 		<div id="homePageBody--desktop"
-			 class="home-page__desktop d-none d-lg-block px-4">
-
-			<!-- Title -->
-			<div class="d-flex justify-content-between align-items-center">
-				<h1 class="mt-5 mb-4 fw-light">Documents</h1>
-
-				<div class="home-page-actions hidden d-flex gap-2">
-					<button class="act-button"
-							id="editBtn">
-						<span class="act-button__icon--edit"></span>
-						Edit
-					</button>
-					<button class="act-button"
-							id="deleteBtn">
-						<span class="act-button__icon--delete"></span>
-						Delete
-					</button>
-					<button class="act-button act-button--cancel"
-							id="cancelBtn">
-						Cancel
-					</button>
-				</div>
-			</div>
-			<!-- Breadcrumb -->
-			<div class="breadcrumb--placeholder"></div>
+			 class="home-page__desktop d-none d-lg-block flex-grow-1">
 
 			<!-- Documents table -->
 			<div class="home-page__table">
@@ -192,60 +194,57 @@
 		<!-- Body section (item list - mobile) -->
 
 		<div id="homePageBody--mobile"
-			 class="flex-grow-1 d-flex flex-column d-lg-none px-2 pb-5">
+			 class="d-lg-none d-flex flex-column flex-grow-1 overflow-y-auto">
 
-			<!-- Title -->
-			<h1 class="mb-3 mt-4 fw-light">Documents</h1>
-
-			<!-- Breadcrumb -->
-			<div class="breadcrumb--placeholder"></div>
-
-			<div class="home-page__list flex-grow-1">
+			<div class="home-page__list d-flex flex-column flex-grow-1">
 				<div class="home-page__list-loading-container">
-					<div class=" loader loader--spinner"></div>
+					<div class="loader loader--spinner"></div>
 				</div>
 
 				<!-- Card list -->
 				<div id="cardList--placeholder-list"
-					 class="d-flex flex-column gap-4 overflow-y-auto">
-					<template id="cardList--template-item">
-						<table class="file-card">
-							<thead>
-								<tr>
-									<th>File Type</th>
-									<th>
-										<!-- {{icon}} -->
-									</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>Name</td>
-									<td>
-										<!-- {{name}} -->
-									</td>
-								</tr>
-								<tr>
-									<td>Modified</td>
-									<td>
-										<!-- {{modified}} -->
-									</td>
-								</tr>
-								<tr>
-									<td>Modified By</td>
-									<td>
-										<!-- {{modifiedBy}} -->
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</template>
+					 class="d-flex flex-column gap-4 pb-5">
 				</div>
+				<template id="cardList--template-item">
+					<table class="file-card">
+						<thead>
+							<tr>
+								<th class="file-card__action-select-area">
+									<input class="form-check-input"
+										   type="radio"
+										   name="file-card-select" />
+									<span>File Type</span>
+								</th>
+								<th>
+									<!-- {{icon}} -->
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>Name</td>
+								<td>
+									<!-- {{name}} -->
+								</td>
+							</tr>
+							<tr>
+								<td>Modified</td>
+								<td>
+									<!-- {{modified}} -->
+								</td>
+							</tr>
+							<tr>
+								<td>Modified By</td>
+								<td>
+									<!-- {{modifiedBy}} -->
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</template>
 			</div>
 		</div>
-
 	</div>
-
 
 	<!-- === Modals === -->
 
@@ -288,8 +287,7 @@
 
 				<div class="modal-footer">
 					<button class="btn-cancel"
-							data-bs-dismiss="modal"
-							id="addFolderModal--cancelBtn">Cancel</button>
+							data-bs-dismiss="modal">Cancel</button>
 					<button class="btn-add"
 							id="addFolderModal--addBtn">
 						Add
@@ -363,8 +361,7 @@
 
 				<div class="modal-footer">
 					<button class="btn-cancel"
-							data-bs-dismiss="modal"
-							id="uploadFileModal--cancelBtn">Cancel</button>
+							data-bs-dismiss="modal">Cancel</button>
 					<button class="btn-add"
 							id="uploadFileModal--uploadBtn">
 						Upload
@@ -413,8 +410,7 @@
 
 				<div class="modal-footer">
 					<button class="btn-cancel"
-							data-bs-dismiss="modal"
-							id="updateFolderModal--cancelBtn">Cancel</button>
+							data-bs-dismiss="modal">Cancel</button>
 					<button class="btn-add"
 							id="updateFolderModal--updateBtn">
 						Update
@@ -463,8 +459,7 @@
 
 				<div class="modal-footer">
 					<button class="btn-cancel"
-							data-bs-dismiss="modal"
-							id="updateFileModal--cancelBtn">Cancel</button>
+							data-bs-dismiss="modal">Cancel</button>
 					<button class="btn-add"
 							id="updateFileModal--updateBtn">
 						Update
@@ -503,8 +498,7 @@
 
 				<div class="modal-footer">
 					<button class="btn-cancel"
-							data-bs-dismiss="modal"
-							id="deleteDocumentModal--cancelBtn">Cancel</button>
+							data-bs-dismiss="modal">Cancel</button>
 					<button class="btn-add"
 							id="deleteDocumentModal--deleteBtn">
 						Delete
@@ -516,7 +510,7 @@
 
 	<!-- === Reusable templates === -->
 
-	<!--  <<< Breadcrumb components template -->
+	<!-- Breadcrumb components template -->
 
 	<template id="breadcrumbContainer--template">
 		<nav aria-label="breadcrumb">
@@ -534,8 +528,6 @@
 		<li class="breadcrumb-item active"
 			aria-current="page"></li>
 	</template>
-
-	<!-- >>> Breadcrumb components template -->
 
 
 	<!-- === Scripts import === -->

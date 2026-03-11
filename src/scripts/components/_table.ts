@@ -35,6 +35,7 @@ function createTableRow(
 ): HTMLElement {
     const templateItem = document.getElementById("documentsTable--template-item") as HTMLTemplateElement;
     const cloned = templateItem.content.cloneNode(true) as HTMLElement;
+
     if (documentView.onDocumentClicked != null) {
         cloned.querySelector("tr")?.addEventListener("click", documentView.onDocumentClicked);
     }
@@ -44,11 +45,13 @@ function createTableRow(
         ? document.createTextNode(documentView.name)
         : createTableRowName(documentView.name);
 
-    cloned.querySelector("tr>td:nth-child(1)")?.addEventListener("click", (e) => {
+    const actionSelectArea = cloned.querySelector("tr>td:nth-child(1)");
+    actionSelectArea?.addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
         onItemSelected(documentView);
     });
+
     const radioInput = cloned.querySelector<HTMLInputElement>("tr>td:nth-child(1)>input[type='radio'][name='file-table-select']");
     if (radioInput) {
         radioInput.checked = documentView.id === selectedItem?.id;

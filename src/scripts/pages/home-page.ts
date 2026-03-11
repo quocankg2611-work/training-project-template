@@ -29,12 +29,18 @@ onAppReady(async () => {
 
 	render();
 
-	document.getElementById("editBtn")!.addEventListener("click", () => {
+	document.getElementById("editBtnHomePage")!.addEventListener("click", () => {
 		onEditSelectedItem();
 	});
 
-	document.getElementById("deleteBtn")!.addEventListener("click", () => {
+	document.getElementById("deleteBtnHomePage")!.addEventListener("click", () => {
 		onDeleteSelectedItem();
+	});
+
+	document.getElementById("cancelBtnHomePage")!.addEventListener("click", () => {
+		selectedItem = null;
+		renderHomePageIsEditing(selectedItem);
+		render();
 	});
 
 	setupAddFolderModal((folderName: string) => {
@@ -120,12 +126,6 @@ onAppReady(async () => {
 		renderHomePageIsEditing(selectedItem);
 	}
 
-	document.getElementById("cancelBtn")!.addEventListener("click", () => {
-		selectedItem = null;
-		renderHomePageIsEditing(selectedItem);
-		render();
-	});
-
 	// ===============================
 	// Model
 	// ===============================
@@ -134,6 +134,8 @@ onAppReady(async () => {
 		const index = folderStack.findIndex(f => f.id === targetFolderId);
 		if (index !== -1) {
 			folderStack.splice(index + 1);
+			selectedItem = null;
+			renderHomePageIsEditing(selectedItem);
 			return true;
 		}
 		return false;
@@ -144,6 +146,8 @@ onAppReady(async () => {
 		const targetFolder = currentFolder.subFolders.find(f => f.id === targetFolderId);
 		if (targetFolder) {
 			folderStack.push(targetFolder);
+			selectedItem = null;
+			renderHomePageIsEditing(selectedItem);
 			return true;
 		}
 		return false;

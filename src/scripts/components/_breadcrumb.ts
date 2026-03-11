@@ -1,7 +1,7 @@
 import { FolderModel } from "../model/_folder.model";
 
 export default function renderBreadcrumb(folderStack: FolderModel[], onClick: (selectedFolder: FolderModel) => void): void {
-    const placeholders = document.querySelectorAll<HTMLDivElement>('#homePageBody--desktop .breadcrumb--placeholder');
+    const placeholders = document.getElementById("breadcrumb--placeholder");
 
     const breadcrumbContainerTemplate = document.getElementById('breadcrumbContainer--template') as HTMLTemplateElement;
     const breadcrumbItemTemplate = document.getElementById('breadcrumbItem--template') as HTMLTemplateElement;
@@ -28,9 +28,5 @@ export default function renderBreadcrumb(folderStack: FolderModel[], onClick: (s
         breadcrumbList.appendChild(item);
     });
 
-    placeholders.forEach((placeholder) => {
-        placeholder.replaceChildren();
-        placeholder.appendChild(breadcrumbContainer);
-    });
+    placeholders?.replaceChildren(breadcrumbContainer);
 }
-

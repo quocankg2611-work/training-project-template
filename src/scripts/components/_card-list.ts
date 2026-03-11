@@ -7,6 +7,11 @@ export default function renderCardList(
     seletedItem: DocumentView | null,
     onItemSelected: (item: DocumentView) => void,
 ): void {
+    const placeholderList = document.getElementById("cardList--placeholder-list");
+    if (!placeholderList) return;
+
+    placeholderList.replaceChildren(); // Clear existing content before re-rendering
+
     const documentItemViews: DocumentView[] = [];
     currentFolder.files.forEach(file => {
         documentItemViews.push(documentViewFromFileModel(file));
@@ -18,13 +23,17 @@ export default function renderCardList(
         return a.modified.getTime() - b.modified.getTime();
     });
     for (const documentItemView of documentItemViews) {
-        renderCardItem(documentItemView);
+        const cardItem = createCardItem(documentItemView, seletedItem, onItemSelected);
+        placeholderList.appendChild(cardItem);
     }
 }
 
-function renderCardItem(documentView: DocumentView) {
+function createCardItem(
+    documentView: DocumentView,
+    selectedItem: DocumentView | null,
+    onItemSelected: (item: DocumentView) => void
+): HTMLElement {
     const templateItem = document.getElementById("cardList--template-item") as HTMLTemplateElement;
-    const placeholderList = document.getElementById("cardList--placeholder-list");
     const cloned = templateItem.content.cloneNode(true) as HTMLElement;
 
     if (documentView.onDocumentClicked != null) {
@@ -32,13 +41,28 @@ function renderCardItem(documentView: DocumentView) {
     }
 
     const rowIcon = createCardItemIcon(documentView.documentType);
-    const rowName = createCardItemName(documentView.name);
+    const rowName = documentView.documentType === "folder"
+        ? document.createTextNode(documentView.name)
+        : createCardItemName(documentView.name);
+
+    const actionSelectArea = cloned.querySelector(".file-card__action-select-area");
+    actionSelectArea?.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        onItemSelected(documentView);
+    });
+
+    const radioInput = cloned.querySelector<HTMLInputElement>(".file-card__action-select-area>input[type='radio'][name='file-card-select']");
+    if (radioInput) {
+        radioInput.checked = documentView.id === selectedItem?.id;
+    }
 
     cloned.querySelector("table>thead>tr:nth-child(1)>th:nth-child(2)").appendChild(rowIcon);
     cloned.querySelector("table>tbody>tr:nth-child(1)>td:nth-child(2)").appendChild(rowName);
     cloned.querySelector("table>tbody>tr:nth-child(2)>td:nth-child(2)").appendChild(document.createTextNode(documentView.modifiedStr));
     cloned.querySelector("table>tbody>tr:nth-child(3)>td:nth-child(2)").appendChild(document.createTextNode(documentView.modifiedBy));
-    placeholderList.appendChild(cloned);
+
+    return cloned;
 }
 
 function createCardItemIcon(iconName: string): HTMLSpanElement {
