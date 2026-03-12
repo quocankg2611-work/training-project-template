@@ -1,13 +1,43 @@
 import { HomePageDocumentView } from "../pages/home/view-models/_document.view";
+import { stringToHtmlElement } from "../utilities/_strings";
 
-export default function buildTable(
+
+export default function buildTableElement(
     items: HomePageDocumentView[],
     selectedItemId: string | null,
-    onItemSelected: (item: HomePageDocumentView | null) => void
+    onItemSelected: (item: HomePageDocumentView | null) => void,
+    onFolderNavigated: (item: HomePageDocumentView) => void,
+): HTMLElement {
+    const tableHtml = buildTableHtml(items, selectedItemId);
+    const tableElement = stringToHtmlElement(tableHtml);
+
+    // Attach selection event listeners
+    for (const item of items) {
+        const tableRowElement = tableElement.querySelector(`tr[data-id="${item.id}"]`);
+        if (item.documentType === "folder") {
+            tableRowElement?.addEventListener("click", () => {
+                onFolderNavigated(item);
+            });
+        }
+
+        const documentSelectionArea = tableRowElement.querySelector(`td[data-id="${item.id}"]`);
+        documentSelectionArea?.addEventListener("click", (e) => {
+            e.preventDefault();
+            e.stopPropagation(); // Prevent the click from bubbling up to the row's click event
+            onItemSelected(item);
+        });
+    }
+
+    return tableElement;
+}
+
+function buildTableHtml(
+    items: HomePageDocumentView[],
+    selectedItemId: string | null,
 ): string {
     const html = `
         <div class="home-page__table">
-            <div class="home-page__table-loading-container">
+            <div class="home-page__table-loading-container hidden">
                 <div class="loader loader--spinner"></div>
             </div>
 
@@ -23,7 +53,7 @@ export default function buildTable(
                 </thead>
 
                 <tbody>
-                   ${items.map(item => buildTableRow(item, selectedItemId, onItemSelected)).join("")}
+                   ${items.map(item => buildTableRowHtml(item, selectedItemId)).join("")}
                 </tbody>
             </table>
         </div>
@@ -32,25 +62,24 @@ export default function buildTable(
     return html;
 }
 
-function buildTableRow(
+function buildTableRowHtml(
     item: HomePageDocumentView,
     selectedItemId: string | null,
-    onItemSelected: (item: HomePageDocumentView) => void
 ): string {
     const html = `
-        <tr>
-            <td onclick="(${() => onItemSelected(item)})()">
+        <tr data-id="${item.id}" class="file-table__row ${item.id === selectedItemId ? "file-table__row--selected" : ""}">
+            <td data-id=${item.id}>
                 <input class="form-check-input"
                         type="radio"
                         name="file-table-select"
-                        checked="${item.id === selectedItemId}"
+                        ${item.id === selectedItemId ? "checked" : ""}
                         />
             </td>
             <td>
-                <span class="file-table__icon--${item.documentType}"></span>
+                <span class="file-table__icon--${item.iconName ?? "unknown"}"></span>
             </td>
             <td>
-                <span class="file-table__text-file">${item.name}</span>
+                <span class="${item.documentType === "file" ? "file-table__text-file" : ""}">${item.name}</span>
             </td>
             <td>
                 ${item.modifiedStr}

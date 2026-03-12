@@ -4,14 +4,18 @@ export abstract class ModalBase {
     private readonly modalId: string;
     private readonly modalSubmitBtnId: string;
 
+    private readonly title: string;
+    private readonly subtitle: string;
+    private readonly confirmText: string;
+
     /**
      * For accessing bootstrap javascript methods
      */
-    private readonly modalInstance: bootstrap.Modal;
+    private modalInstance: Modal | null;
     /**
      * For accessing the HTML element of the modal
      */
-    private readonly modalElement: HTMLElement;
+    private modalElement: HTMLElement | null;
 
     constructor(
         title: string,
@@ -20,11 +24,19 @@ export abstract class ModalBase {
     ) {
         this.modalId = `modal-${Math.random().toString(36).slice(2, 9)}`;
         this.modalSubmitBtnId = `${this.modalId}--submitBtn`;
-        this.modalElement = this.buildAndRender(title, subtitle, confirmText);
-        this.modalInstance = new Modal(this.modalElement);
-        this.onAfterRender();
+        this.modalElement = null;
+        this.modalInstance = null;
+        this.title = title;
+        this.subtitle = subtitle;
+        this.confirmText = confirmText;
     }
 
+    public init(): this {
+        this.modalElement = this.buildAndRender(this.title, this.subtitle, this.confirmText);
+        this.modalInstance = new Modal(this.modalElement);
+        this.onAfterRender();
+        return this;
+    }
 
     protected getModalSubmitBtn(): HTMLButtonElement {
         const submitBtn = document.getElementById(this.modalSubmitBtnId) as HTMLButtonElement;
@@ -95,10 +107,10 @@ export abstract class ModalBase {
     protected abstract onAfterRender(): void;
 
     public show(): void {
-        this.modalInstance.show();
+        this.modalInstance?.show();
     }
 
     public hide(): void {
-        this.modalInstance.hide();
+        this.modalInstance?.hide();
     }
 }

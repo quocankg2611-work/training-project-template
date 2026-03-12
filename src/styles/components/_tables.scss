@@ -42,11 +42,22 @@
             @include icon-image('vscode-icons--file-type-word');
             @include icon-sizer(1);
         }
+
+        &--unknown {
+            @include icon-mask('tdesign--file-unknown');
+            @include icon-sizer(1);
+        }
     }
 
     &__text-file {
         @include text-with-icon('self--synced');
         @include text-with-icon-offset(-8px, -16px, 16px, 16px);
+    }
+
+    &__row {
+        &--selected {
+            background-color: $color-table-row-selected;
+        }
     }
 
     tr>td,

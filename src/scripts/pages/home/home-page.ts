@@ -1,7 +1,7 @@
 import { createReactiveValue } from "../../abstracts/reactive";
 import buildBreadcrumbElement from "../../components_2/_breadcrumb";
-import buildCardList from "../../components_2/_card-list";
-import buildTable from "../../components_2/_table";
+import buildCardListElement from "../../components_2/_card-list";
+import buildTableElement from "../../components_2/_table";
 import { AddFileModal } from "../../components_2/modals/_add-file-modal";
 import { AddFolderModal } from "../../components_2/modals/_add-folder-modal";
 import { DeleteDocumentModal } from "../../components_2/modals/_delete-document-modal";
@@ -30,44 +30,64 @@ export default function homePageViewModel(documentService: DocumentService) {
 
     const currentFolderState = createReactiveValue<FolderModel | null>(null);
     const isLoadingState = createReactiveValue<boolean>(false);
-
+    const folderStackState = createReactiveValue<DocumentBreadcrumbView[]>([]);
     const selectedDocumentItemState = createReactiveValue<HomePageDocumentView | null>(null);
-    const subscribeToSelectedDocumentIdChange = (
-        triggerSelectedDocumentIdChanged: (selectedDocumentId: string | null) => void
-    ) => {
-        selectedDocumentItemState.subscribe((selectedDocument) => {
-            triggerSelectedDocumentIdChanged(selectedDocument ? selectedDocument.id : null);
-        });
-    };
+
+    isLoadingState.subscribe((_) => {
+        homePageBodyTriggers.onLoadingChange(isLoadingState.get());
+    });
+
+    currentFolderState.subscribe((_) => {
+        homePageBodyTriggers.onCurrentFolderChange(currentFolderState.get()!);
+    });
+
+    selectedDocumentItemState.subscribe((_) => {
+        homePageBodyTriggers.onSelectedItemChange(selectedDocumentItemState.get());
+    });
 
     // Children
 
     homePageActionViewModel(
-        subscribeToSelectedDocumentIdChange,
+        selectedDocumentItemState.subscribe,
         handleActionEditSelectedItem,
         handleActionDeleteSelectedItem,
         handleActionCancelSelectedItem
     );
     homePageBreadcrumbViewModel(
-        currentFolderState.subscribe,
+        folderStackState.subscribe,
         handleOnBreadcrumbFolderIdSelected
     );
-    homePageBodyViewModel(
-        subscribeToSelectedDocumentIdChange,
-        currentFolderState.subscribe,
-        isLoadingState.subscribe,
-        handleOnDocumentItemSelected
+    const homePageBodyTriggers = homePageBodyViewModel(
+        handleOnDocumentItemSelected,
+        handleOnFolderNavigated,
     );
 
-    const addFolderModal = new AddFolderModal(handleModalAddFolderConfirm);
-    const addFileModal = new AddFileModal(handleModalAddFileConfirm);
-    const uploadFileModal = new UploadFileModal(handleModalUploadFileConfirm);
-    const uploadFolderModal = new UploadFolderModal(handleModalUploadFolderConfirm);
-    const updateFileModal = new UpdateFileModal(handleModalUpdateFileConfirm);
-    const updateFolderModal = new UpdateFolderModal(handleModalUpdateFolderConfirm);
-    const deleteDocumentModal = new DeleteDocumentModal(handleModalDeleteDocumentConfirm);
+    const addFolderModal = new AddFolderModal(handleModalAddFolderConfirm).init();
+    const addFileModal = new AddFileModal(handleModalAddFileConfirm).init();
+    const uploadFileModal = new UploadFileModal(handleModalUploadFileConfirm).init();
+    const uploadFolderModal = new UploadFolderModal(handleModalUploadFolderConfirm).init();
+    const updateFileModal = new UpdateFileModal(handleModalUpdateFileConfirm).init();
+    const updateFolderModal = new UpdateFolderModal(handleModalUpdateFolderConfirm).init();
+    const deleteDocumentModal = new DeleteDocumentModal(handleModalDeleteDocumentConfirm).init();
 
     // Handlers
+
+    function handleOnFolderNavigated(folder: HomePageDocumentView) {
+        isLoadingState.set(true);
+        documentService.navigateToFolder(folder.id).then(() => {
+            documentService.getCurrentFolder().then((currentFolder) => {
+                documentService.getFolderStack().then((folderStack) => {
+                    const breadcrumbFolderStack = folderStack.map(folder => {
+                        return documentViewFromFolderModel(folder, (f) => currentFolderState.set(f));
+                    });
+                    folderStackState.set(breadcrumbFolderStack);
+                    currentFolderState.set(currentFolder);
+                    selectedDocumentItemState.set(null);
+                    isLoadingState.set(false);
+                });
+            });
+        });
+    }
 
     function handleModalAddFolderConfirm(folderName: string) {
         isLoadingState.set(true);
@@ -189,20 +209,21 @@ export default function homePageViewModel(documentService: DocumentService) {
         isLoadingState.set(true);
         documentService.navigateBackToFolder(selectedFolderId).then(() => {
             documentService.getCurrentFolder().then((currentFolder) => {
-                currentFolderState.set(currentFolder);
-                selectedDocumentItemState.set(null);
-                isLoadingState.set(false);
+                documentService.getFolderStack().then((folderStack) => {
+                    const breadcrumbFolderStack = folderStack.map(folder => {
+                        return documentViewFromFolderModel(folder, (f) => currentFolderState.set(f));
+                    });
+                    folderStackState.set(breadcrumbFolderStack);
+                    currentFolderState.set(currentFolder);
+                    selectedDocumentItemState.set(null);
+                    isLoadingState.set(false);
+                });
             });
         })
     }
 
     function handleOnDocumentItemSelected(documentItem: HomePageDocumentView | null) {
-        isLoadingState.set(true);
-        documentService.getCurrentFolder().then((currentFolder) => {
-            currentFolderState.set(currentFolder);
-            selectedDocumentItemState.set(null);
-            isLoadingState.set(false);
-        });
+        selectedDocumentItemState.set(documentItem);
     }
 
     // Init
@@ -241,27 +262,16 @@ export default function homePageViewModel(documentService: DocumentService) {
 }
 
 function homePageBreadcrumbViewModel(
-    listenOnFCurrentFolderChange: (onChange: (currentFolder: FolderModel | null) => void) => void,
+    listenOnCurrentFolderChange: (onChange: (currentFolder: DocumentBreadcrumbView[]) => void) => void,
     onBreadcrumbFolderIdSelected: (selectedFolderId: string) => void
 ) {
-
-    // State
-
     const folderStackState = createReactiveValue<DocumentBreadcrumbView[]>([]);
     folderStackState.subscribe((_) => {
         render();
     });
 
-    // Listen
-
-    listenOnFCurrentFolderChange((currentFolder) => {
-        if (!currentFolder) {
-            folderStackState.set([]);
-        } else {
-            const newFolderStack = [...folderStackState.get()];
-            newFolderStack.push(currentFolder);
-            folderStackState.set(newFolderStack);
-        }
+    listenOnCurrentFolderChange((currentFolderStack) => {
+        folderStackState.set(currentFolderStack);
     });
 
     // View
@@ -284,10 +294,8 @@ function homePageBreadcrumbViewModel(
 }
 
 function homePageBodyViewModel(
-    listenOnSelectedDocumentIdChange: (onChange: (selectedItemId: string | null) => void) => void,
-    listenOnCurrentFolderChange: (onChange: (currentFolder: FolderModel | null) => void) => void,
-    listenOnIsLoadingChange: (onChange: (isLoading: boolean) => void) => void,
-    onDocumentItemSelected: (item: HomePageDocumentView | null) => void
+    onDocumentItemSelected: (item: HomePageDocumentView | null) => void,
+    onFolderNavigated: (item: HomePageDocumentView) => void,
 ) {
     // State
 
@@ -301,8 +309,8 @@ function homePageBodyViewModel(
         renderList();
     });
 
-    const selectedDocumentIdState = createReactiveValue<string | null>(null);
-    selectedDocumentIdState.subscribe((_) => {
+    const selectedDocumentState = createReactiveValue<HomePageDocumentView | null>(null);
+    selectedDocumentState.subscribe((_) => {
         renderList();
     });
 
@@ -324,41 +332,29 @@ function homePageBodyViewModel(
         return documentItemViews;
     }
 
-    // Listen
-
-    listenOnSelectedDocumentIdChange((selectedItemId) => {
-        selectedDocumentIdState.set(selectedItemId);
-    });
-
-    listenOnCurrentFolderChange((currentFolder) => {
-        currentFolderState.set(currentFolder);
-    });
-
-    listenOnIsLoadingChange((isLoading) => {
-        isLoadingState.set(isLoading);
-    });
-
     // View
 
     function renderList(): void {
         const documentItemViews = computeDocumentItems();
-        const tableHtml = buildTable(
+        const tableElement = buildTableElement(
             documentItemViews,
-            selectedDocumentIdState.get(),
-            onDocumentItemSelected
+            selectedDocumentState.get()?.id || null,
+            onDocumentItemSelected,
+            onFolderNavigated,
         );
         const tablePlaceholder = document.getElementById("homePageBodyTable--placeholder");
         if (tablePlaceholder) {
-            tablePlaceholder.innerHTML = tableHtml;
+            tablePlaceholder.replaceChildren(tableElement);
         }
-        const cardListHtml = buildCardList(
+        const cardListHtml = buildCardListElement(
             documentItemViews,
-            selectedDocumentIdState.get(),
-            onDocumentItemSelected
+            selectedDocumentState.get()?.id || null,
+            onDocumentItemSelected,
+            onFolderNavigated,
         );
         const cardListPlaceholder = document.getElementById("homePageBodyCardList--placeholder");
         if (cardListPlaceholder) {
-            cardListPlaceholder.innerHTML = cardListHtml;
+            cardListPlaceholder.replaceChildren(cardListHtml);
         }
     }
 
@@ -378,15 +374,27 @@ function homePageBodyViewModel(
     // Init 
 
     renderList();
+
+    return {
+        onSelectedItemChange: (documentItem: HomePageDocumentView | null) => {
+            selectedDocumentState.set(documentItem);
+        },
+        onCurrentFolderChange: (currentFolder: FolderModel) => {
+            currentFolderState.set(currentFolder);
+        },
+        onLoadingChange: (isLoading: boolean) => {
+            isLoadingState.set(isLoading);
+        },
+    }
 }
 
 function homePageActionViewModel(
-    listenOnSelectedItemChange: (onChange: (selectedDocumentId: string | null) => void) => void,
+    listenOnSelectedItemChange: (onChange: (selectedDocument: HomePageDocumentView | null) => void) => void,
     onEditSelectedItem: () => void,
     onDeleteSelectedItem: () => void,
     onCancelSelectedItem: () => void
 ) {
-    const selectedDocumentIdState = createReactiveValue<string | null>(null);
+    const selectedDocumentIdState = createReactiveValue<HomePageDocumentView | null>(null);
     selectedDocumentIdState.subscribe((selectedItem) => {
         render(!!selectedItem);
     });
