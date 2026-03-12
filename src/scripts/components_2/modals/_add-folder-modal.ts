@@ -1,3 +1,23 @@
+import { ModalBase } from "./_modal.base";
+
+export class AddFolderModal extends ModalBase {
+    protected getModalIdPrefix(): string {
+        return "addFolder";
+    }
+
+    protected buildBodyHtml(): string {
+        return `
+        `
+    }
+
+    protected onAfterRender(): void {
+        const addBtn = document.getElementById(this.getModalSubmitBtnId());
+        addBtn
+    }
+}
+
+
+
 /**
  * Sets up the "Add Folder" modal interaction.
  * 
