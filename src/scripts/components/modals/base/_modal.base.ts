@@ -83,10 +83,6 @@ export abstract class ModalBase {
         `;
         document.body.insertAdjacentHTML('beforeend', html);
         const element = document.getElementById(this.modalId);
-        element.addEventListener('hidden.bs.modal', () => {
-            this.modalInstance?.dispose();
-            this.modalElement?.remove();
-        });
         return element;
     }
 

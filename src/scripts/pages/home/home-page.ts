@@ -26,6 +26,12 @@ function bootstrap() {
 
 export default function homePageViewModel(documentService: DocumentService) {
 
+    /**
+     * - path 
+     * - isLoading
+     * - curerntFolders
+     * - selectedDocumentItem
+     */
     // States
 
     const currentFolderState = createReactiveValue<FolderModel | null>(null);
@@ -96,6 +102,7 @@ export default function homePageViewModel(documentService: DocumentService) {
         isLoadingState.set(true);
         documentService.addFolder(folderName).then(() => {
             documentService.getCurrentFolder().then((currentFolder) => {
+                selectedDocumentItemState.set(null);
                 currentFolderState.set(currentFolder);
                 isLoadingState.set(false);
             });
@@ -106,6 +113,7 @@ export default function homePageViewModel(documentService: DocumentService) {
         isLoadingState.set(true);
         documentService.addFile(fileName, extension, content).then(() => {
             documentService.getCurrentFolder().then((currentFolder) => {
+                selectedDocumentItemState.set(null);
                 currentFolderState.set(currentFolder);
                 isLoadingState.set(false);
             });
@@ -116,6 +124,7 @@ export default function homePageViewModel(documentService: DocumentService) {
         isLoadingState.set(true);
         documentService.addFile(fileName, extension, content).then(() => {
             documentService.getCurrentFolder().then((currentFolder) => {
+                selectedDocumentItemState.set(null);
                 currentFolderState.set(currentFolder);
                 isLoadingState.set(false);
             });
@@ -127,6 +136,7 @@ export default function homePageViewModel(documentService: DocumentService) {
         isLoadingState.set(true);
         documentService.addFolder(folderName).then(() => {
             documentService.getCurrentFolder().then((currentFolder) => {
+                selectedDocumentItemState.set(null);
                 currentFolderState.set(currentFolder);
                 isLoadingState.set(false);
             });
@@ -137,6 +147,7 @@ export default function homePageViewModel(documentService: DocumentService) {
         isLoadingState.set(true);
         documentService.updateFile(fileId, fileName).then(() => {
             documentService.getCurrentFolder().then((currentFolder) => {
+                selectedDocumentItemState.set(null);
                 currentFolderState.set(currentFolder);
                 isLoadingState.set(false);
             });
@@ -147,6 +158,7 @@ export default function homePageViewModel(documentService: DocumentService) {
         isLoadingState.set(true);
         documentService.updateFolder(folderId, folderName).then(() => {
             documentService.getCurrentFolder().then((currentFolder) => {
+                selectedDocumentItemState.set(null);
                 currentFolderState.set(currentFolder);
                 isLoadingState.set(false);
             });
@@ -158,6 +170,7 @@ export default function homePageViewModel(documentService: DocumentService) {
         if (documentType === "folder") {
             documentService.deleteFolder(documentId).then(() => {
                 documentService.getCurrentFolder().then((currentFolder) => {
+                    selectedDocumentItemState.set(null);
                     currentFolderState.set(currentFolder);
                     isLoadingState.set(false);
                 });
@@ -165,6 +178,7 @@ export default function homePageViewModel(documentService: DocumentService) {
         } else {
             documentService.deleteFile(documentId).then(() => {
                 documentService.getCurrentFolder().then((currentFolder) => {
+                    selectedDocumentItemState.set(null);
                     currentFolderState.set(currentFolder);
                     isLoadingState.set(false);
                 });
