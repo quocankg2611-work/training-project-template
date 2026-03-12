@@ -1,4 +1,4 @@
-import bootstrap from "bootstrap";
+import { Modal } from "bootstrap";
 
 export abstract class ModalBase {
     private readonly modalId: string;
@@ -21,7 +21,7 @@ export abstract class ModalBase {
         this.modalId = `modal-${Math.random().toString(36).slice(2, 9)}`;
         this.modalSubmitBtnId = `${this.modalId}--submitBtn`;
         this.modalElement = this.buildAndRender(title, subtitle, confirmText);
-        this.modalInstance = new bootstrap.Modal(this.modalElement);
+        this.modalInstance = new Modal(this.modalElement);
         this.onAfterRender();
     }
 

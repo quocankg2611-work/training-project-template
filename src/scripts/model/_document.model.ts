@@ -1,6 +1,6 @@
 export type DocumentModel = {
     id: string;
     name: string;
-    modified: Date;
+    modified: string;
     modifiedBy: string;
 }

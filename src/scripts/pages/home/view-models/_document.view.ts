@@ -10,7 +10,7 @@ const FileExtensionToIconName = new Map<string, string>([
 export type HomePageDocumentView = {
     id: string;
     name: string;
-    modified: Date;
+    modifiedMs: number; // For sorting
     modifiedStr: string;
     modifiedBy: string;
     documentType: "folder" | "file";
@@ -22,6 +22,7 @@ export function documentViewFromFileModel(file: FileModel): HomePageDocumentView
     const iconName = FileExtensionToIconName.get(file.extension) ?? null;
     return {
         ...file,
+        modifiedMs: new Date(file.modified).getTime(),
         modifiedStr: formatTimeAgo(file.modified),
         documentType: "file",
         iconName: iconName
@@ -31,6 +32,7 @@ export function documentViewFromFileModel(file: FileModel): HomePageDocumentView
 export function documentViewFromFolderModel(folder: FolderModel, onFolderClicked: (folder: FolderModel) => void): HomePageDocumentView {
     return {
         ...folder,
+        modifiedMs: new Date(folder.modified).getTime(),
         modifiedStr: formatTimeAgo(folder.modified),
         documentType: "folder",
         iconName: "folder",

@@ -11,12 +11,20 @@ import { UploadFileModal } from "../../components_2/modals/_upload-file-modal";
 import { UploadFolderModal } from "../../components_2/modals/_upload-folder-modal";
 import { FolderModel } from "../../model/_folder.model";
 import DocumentService from "../../services/_document.service";
+import { onAppReady } from "../../utilities/_events";
 import { DocumentBreadcrumbView } from "./view-models/_document-breadcrumb.view";
 import { documentViewFromFileModel, documentViewFromFolderModel, HomePageDocumentView } from "./view-models/_document.view";
 
-// TODO: Refactor code from home-page.ts to home-page2.ts
+onAppReady(() => bootstrap());
 
-export function homePageViewModel(documentService: DocumentService) {
+function bootstrap() {
+    const documentService = new DocumentService();
+
+    homePageViewModel(documentService);
+}
+
+
+export default function homePageViewModel(documentService: DocumentService) {
 
     // States
 
@@ -149,6 +157,14 @@ export function homePageViewModel(documentService: DocumentService) {
         addFileModal.show();
     }
 
+    function handleNavbarUploadFileClick() {
+        uploadFileModal.show();
+    }
+
+    function handleNavbarUploadFolderClick() {
+        uploadFolderModal.show();
+    }
+
     function handleActionEditSelectedItem() {
         const selectedDocument = selectedDocumentItemState.get();
         if (!selectedDocument) return;
@@ -214,13 +230,13 @@ export function homePageViewModel(documentService: DocumentService) {
     document.getElementById("homePageNavbarUploadFile")?.addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
-        handleNavbarAddFileClick();
+        handleNavbarUploadFileClick();
     });
 
     document.getElementById("homePageNavbarUploadFolder")?.addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
-        handleNavbarAddFileClick();
+        handleNavbarUploadFolderClick();
     });
 }
 
@@ -303,7 +319,7 @@ function homePageBodyViewModel(
             documentItemViews.push(documentViewFromFolderModel(folder, (f) => currentFolderState.set(f)));
         });
         documentItemViews.sort((a, b) => {
-            return b.modified.getTime() - a.modified.getTime();
+            return b.modifiedMs - a.modifiedMs;
         });
         return documentItemViews;
     }
@@ -358,6 +374,10 @@ function homePageBodyViewModel(
             listLoaderElement.classList.add("hidden");
         }
     }
+
+    // Init 
+
+    renderList();
 }
 
 function homePageActionViewModel(

@@ -100,7 +100,7 @@ export default class DocumentService {
                 const newFolder: FolderModel = {
                     id: crypto.randomUUID(),
                     name: folderName,
-                    modified: new Date(),
+                    modified: new Date().toISOString(),
                     modifiedBy: "Current User",
                     files: [],
                     subFolders: []
@@ -123,7 +123,7 @@ export default class DocumentService {
                 const newFile: FileModel = {
                     id: crypto.randomUUID(),
                     name: fileName,
-                    modified: new Date(),
+                    modified: new Date().toISOString(),
                     modifiedBy: "Current User",
                     extension,
                     content,
@@ -145,7 +145,7 @@ export default class DocumentService {
                 const file = currentFolder.files.find(f => f.id === fileId);
                 if (file) {
                     file.name = fileName;
-                    file.modified = new Date();
+                    file.modified = new Date().toISOString();
                     file.modifiedBy = "Current User";
                     resolve();
                 } else {
@@ -166,7 +166,7 @@ export default class DocumentService {
                 const folder = currentFolder.subFolders.find(f => f.id === folderId);
                 if (folder) {
                     folder.name = folderName;
-                    folder.modified = new Date();
+                    folder.modified = new Date().toISOString();
                     folder.modifiedBy = "Current User";
                     resolve();
                 } else {
@@ -271,13 +271,13 @@ class DocumentRepository {
 const seedFolderData: FolderModel = {
     id: crypto.randomUUID(),
     name: "Home",
-    modified: new Date("2026-01-01"),
+    modified: new Date("2026-01-01").toISOString(),
     modifiedBy: "Megan Bowen",
     files: [
         {
             id: crypto.randomUUID(),
             name: "CoasterAndBargelLoading",
-            modified: new Date(),
+            modified: new Date().toISOString(),
             modifiedBy: "Administrator MOD",
             extension: "docx",
             content: ""
@@ -285,7 +285,7 @@ const seedFolderData: FolderModel = {
         {
             id: crypto.randomUUID(),
             name: "RevenueByServices",
-            modified: new Date(),
+            modified: new Date().toISOString(),
             modifiedBy: "Administrator MOD",
             extension: "xlsx",
             content: ""
@@ -293,7 +293,7 @@ const seedFolderData: FolderModel = {
         {
             id: crypto.randomUUID(),
             name: "RevenueByServices2016",
-            modified: new Date(),
+            modified: new Date().toISOString(),
             modifiedBy: "Administrator MOD",
             extension: "xlsx",
             content: ""
@@ -301,7 +301,7 @@ const seedFolderData: FolderModel = {
         {
             id: crypto.randomUUID(),
             name: "RevenueByServices2017",
-            modified: new Date(),
+            modified: new Date().toISOString(),
             modifiedBy: "Administrator MOD",
             extension: "xlsx",
             content: ""
@@ -311,7 +311,7 @@ const seedFolderData: FolderModel = {
         {
             id: crypto.randomUUID(),
             name: "CAS",
-            modified: new Date("2025-04-30"),
+            modified: new Date("2025-04-30").toISOString(),
             modifiedBy: "Megan Bowen",
             files: [],
             subFolders: []
