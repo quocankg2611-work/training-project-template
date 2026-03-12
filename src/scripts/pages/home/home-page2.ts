@@ -21,11 +21,9 @@ export function homePageViewModel(documentService: DocumentService) {
     // States
 
     const currentFolderState = createReactiveValue<FolderModel | null>(null);
-
-    const documentsState = createReactiveValue<HomePageDocumentView[]>([]);
-    const selectedDocumentItemState = createReactiveValue<HomePageDocumentView | null>(null);
     const isLoadingState = createReactiveValue<boolean>(false);
 
+    const selectedDocumentItemState = createReactiveValue<HomePageDocumentView | null>(null);
     const subscribeToSelectedDocumentIdChange = (
         triggerSelectedDocumentIdChanged: (selectedDocumentId: string | null) => void
     ) => {
@@ -64,24 +62,83 @@ export function homePageViewModel(documentService: DocumentService) {
     // Handlers
 
     function handleModalAddFolderConfirm(folderName: string) {
+        isLoadingState.set(true);
+        documentService.addFolder(folderName).then(() => {
+            documentService.getCurrentFolder().then((currentFolder) => {
+                currentFolderState.set(currentFolder);
+                isLoadingState.set(false);
+            });
+        });
     }
 
-    function handleModalAddFileConfirm(fileName: string) {
+    function handleModalAddFileConfirm(fileName: string, extension: string, content: string) {
+        isLoadingState.set(true);
+        documentService.addFile(fileName, extension, content).then(() => {
+            documentService.getCurrentFolder().then((currentFolder) => {
+                currentFolderState.set(currentFolder);
+                isLoadingState.set(false);
+            });
+        });
     }
 
     function handleModalUploadFileConfirm(fileName: string, extension: string, content: string) {
+        isLoadingState.set(true);
+        documentService.addFile(fileName, extension, content).then(() => {
+            documentService.getCurrentFolder().then((currentFolder) => {
+                currentFolderState.set(currentFolder);
+                isLoadingState.set(false);
+            });
+        });
     }
 
+    // TODO: Handle the Files
     function handleModalUploadFolderConfirm(folderName: string, files: File[]) {
+        isLoadingState.set(true);
+        documentService.addFolder(folderName).then(() => {
+            documentService.getCurrentFolder().then((currentFolder) => {
+                currentFolderState.set(currentFolder);
+                isLoadingState.set(false);
+            });
+        });
     }
 
     function handleModalUpdateFileConfirm(fileId: string, fileName: string) {
+        isLoadingState.set(true);
+        documentService.updateFile(fileId, fileName).then(() => {
+            documentService.getCurrentFolder().then((currentFolder) => {
+                currentFolderState.set(currentFolder);
+                isLoadingState.set(false);
+            });
+        });
     }
 
     function handleModalUpdateFolderConfirm(folderId: string, folderName: string) {
+        isLoadingState.set(true);
+        documentService.updateFolder(folderId, folderName).then(() => {
+            documentService.getCurrentFolder().then((currentFolder) => {
+                currentFolderState.set(currentFolder);
+                isLoadingState.set(false);
+            });
+        });
     }
 
     function handleModalDeleteDocumentConfirm(documentId: string, documentType: "folder" | "file") {
+        isLoadingState.set(true);
+        if (documentType === "folder") {
+            documentService.deleteFolder(documentId).then(() => {
+                documentService.getCurrentFolder().then((currentFolder) => {
+                    currentFolderState.set(currentFolder);
+                    isLoadingState.set(false);
+                });
+            });
+        } else {
+            documentService.deleteFile(documentId).then(() => {
+                documentService.getCurrentFolder().then((currentFolder) => {
+                    currentFolderState.set(currentFolder);
+                    isLoadingState.set(false);
+                });
+            });
+        }
     }
 
     function handleNavbarAddFolderClick() {
@@ -96,22 +153,40 @@ export function homePageViewModel(documentService: DocumentService) {
         const selectedDocument = selectedDocumentItemState.get();
         if (!selectedDocument) return;
         if (selectedDocument.documentType === "folder") {
-            updateFolderModal
+            updateFolderModal.showWithData(selectedDocument.id, selectedDocument.name);
+        } else {
+            updateFileModal.showWithData(selectedDocument.id, selectedDocument.name);
         }
     }
 
     function handleActionDeleteSelectedItem() {
+        const selectedDocument = selectedDocumentItemState.get();
+        if (!selectedDocument) return;
+        deleteDocumentModal.showWithData(selectedDocument.id, selectedDocument.name, selectedDocument.documentType);
     }
 
     function handleActionCancelSelectedItem() {
+        selectedDocumentItemState.set(null);
     }
 
-    function handleOnBreadcrumbFolderIdSelected(selectedFolder: string) {
-        // Handle when user click on breadcrumb item to navigate back to specific folder
+    function handleOnBreadcrumbFolderIdSelected(selectedFolderId: string) {
+        isLoadingState.set(true);
+        documentService.navigateBackToFolder(selectedFolderId).then(() => {
+            documentService.getCurrentFolder().then((currentFolder) => {
+                currentFolderState.set(currentFolder);
+                selectedDocumentItemState.set(null);
+                isLoadingState.set(false);
+            });
+        })
     }
 
     function handleOnDocumentItemSelected(documentItem: HomePageDocumentView | null) {
-        // Handle when user click on document item in table or card list
+        isLoadingState.set(true);
+        documentService.getCurrentFolder().then((currentFolder) => {
+            currentFolderState.set(currentFolder);
+            selectedDocumentItemState.set(null);
+            isLoadingState.set(false);
+        });
     }
 
     // Init
@@ -131,6 +206,18 @@ export function homePageViewModel(documentService: DocumentService) {
     });
 
     document.getElementById("homePageNavbarNewFile")?.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        handleNavbarAddFileClick();
+    });
+
+    document.getElementById("homePageNavbarUploadFile")?.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        handleNavbarAddFileClick();
+    });
+
+    document.getElementById("homePageNavbarUploadFolder")?.addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
         handleNavbarAddFileClick();

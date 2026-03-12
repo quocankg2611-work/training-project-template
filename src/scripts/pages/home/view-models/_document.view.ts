@@ -1,11 +1,8 @@
 import { FileModel } from "../../../model/_file.model";
 import { FolderModel } from "../../../model/_folder.model";
-import { FileExtensionsType } from "../../../types/_file-extensions.types";
 import formatTimeAgo from "../../../utilities/_format-strings";
 
-type PossibleDocumentTypes = "folder" | "excel" | "word";
-
-const FileExtensionToIconName = new Map<FileExtensionsType, PossibleDocumentTypes>([
+const FileExtensionToIconName = new Map<string, string>([
     ["xlsx", "excel"],
     ["docx", "word"]
 ]);
@@ -16,16 +13,18 @@ export type HomePageDocumentView = {
     modified: Date;
     modifiedStr: string;
     modifiedBy: string;
-    documentType: PossibleDocumentTypes;
+    documentType: "folder" | "file";
+    iconName?: string; // Optional, can be derived from documentType and extension
     onDocumentClicked?: () => void;
 }
 
 export function documentViewFromFileModel(file: FileModel): HomePageDocumentView {
-    const iconName = FileExtensionToIconName.get(file.extension) ?? "excel" // Default icon display;
+    const iconName = FileExtensionToIconName.get(file.extension) ?? null;
     return {
         ...file,
         modifiedStr: formatTimeAgo(file.modified),
-        documentType: iconName,
+        documentType: "file",
+        iconName: iconName
     };
 }
 
@@ -34,6 +33,7 @@ export function documentViewFromFolderModel(folder: FolderModel, onFolderClicked
         ...folder,
         modifiedStr: formatTimeAgo(folder.modified),
         documentType: "folder",
+        iconName: "folder",
         onDocumentClicked: () => onFolderClicked(folder)
     };
 }

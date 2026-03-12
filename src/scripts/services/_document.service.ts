@@ -112,7 +112,7 @@ export default class DocumentService {
         });
     }
 
-    public addFile(fileName: string, extension: FileExtensionsType, content: string): Promise<void> {
+    public addFile(fileName: string, extension: string, content: string): Promise<void> {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
                 if (this._folderStack.length === 0) {
