@@ -1,25 +1,28 @@
 import { ModalBase } from "./base/_modal.base";
 
-export class AddFolderModal extends ModalBase {
+export class UpdateFolderModal extends ModalBase {
     private readonly folderNameInputId: string;
     private readonly folderNameErrorId: string;
-    private readonly onAddFolder: (folderName: string) => void;
+    private readonly onUpdateFolder: (folderId: string, folderName: string) => void;
+
+    private currentFolderId = "";
 
     constructor(
-        onAddFolder: (folderName: string) => void
+        onUpdateFolder: (folderId: string, folderName: string) => void
     ) {
         super(
-            "Add New Folder",
-            "Create a new folder to organize your documents.",
-            "Add Folder"
+            "Update Folder",
+            "Edit the name of the selected folder.",
+            "Update Folder"
         );
-        this.folderNameInputId = `${this.getModalId()}--folderName`;
-        this.folderNameErrorId = `${this.getModalId()}--folderNameError`;
-        this.onAddFolder = onAddFolder;
+        const id = this.getModalId();
+        this.folderNameInputId = `${id}--folderName`;
+        this.folderNameErrorId = `${id}--folderNameError`;
+        this.onUpdateFolder = onUpdateFolder;
     }
 
     protected getModalName(): string {
-        return "addFolder";
+        return "updateFolder";
     }
 
     protected buildBodyHtml(): string {
@@ -36,18 +39,17 @@ export class AddFolderModal extends ModalBase {
                 <div class="invalid-feedback"
                         id="${this.folderNameErrorId}">Please enter a folder name.</div>
             </div>
-        `
+        `;
     }
 
     protected onAfterRender(): void {
         const confirmBtn = this.getModalSubmitBtn();
-        const errorDiv = document.getElementById(this.folderNameErrorId) as HTMLDivElement;
         const input = document.getElementById(this.folderNameInputId) as HTMLInputElement;
+        const errorDiv = document.getElementById(this.folderNameErrorId) as HTMLDivElement;
 
-        // Reset form state when modal is opened
+        // Reset validation state when modal is opened
         const modalEl = this.getModalElement();
         modalEl.addEventListener("show.bs.modal", () => {
-            input.value = "";
             input.classList.remove("is-invalid");
             errorDiv.style.display = "none";
         });
@@ -59,10 +61,11 @@ export class AddFolderModal extends ModalBase {
             if (!folderName) {
                 input.classList.add("is-invalid");
                 errorDiv.style.display = "block";
-            } else {
-                this.onAddFolder(folderName);
-                this.hide();
+                return;
             }
+
+            this.onUpdateFolder(this.currentFolderId, folderName);
+            this.hide();
         });
 
         // Clear validation on input
@@ -72,5 +75,12 @@ export class AddFolderModal extends ModalBase {
                 errorDiv.style.display = "none";
             }
         });
+    }
+
+    public showWithData(folderId: string, currentName: string): void {
+        this.currentFolderId = folderId;
+        const input = document.getElementById(this.folderNameInputId) as HTMLInputElement;
+        input.value = currentName;
+        this.show();
     }
 }

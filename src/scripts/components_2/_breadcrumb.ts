@@ -1,5 +1,5 @@
 import { stringToHtmlElement } from "../utilities/_strings";
-import { DocumentBreadcrumbView } from "../view-model/_document-breadcrumb.view";
+import { DocumentBreadcrumbView } from "../pages/home/view-models/_document-breadcrumb.view";
 
 export default function buildBreadcrumbElement(
     folderStack: DocumentBreadcrumbView[],

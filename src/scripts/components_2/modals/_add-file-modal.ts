@@ -1,48 +1,48 @@
 import { ModalBase } from "./base/_modal.base";
 
-export class AddFolderModal extends ModalBase {
-    private readonly folderNameInputId: string;
-    private readonly folderNameErrorId: string;
-    private readonly onAddFolder: (folderName: string) => void;
+export class AddFileModal extends ModalBase {
+    private readonly fileNameInputId: string;
+    private readonly fileNameErrorId: string;
+    private readonly onAddFile: (fileName: string) => void;
 
     constructor(
-        onAddFolder: (folderName: string) => void
+        onAddFile: (fileName: string) => void
     ) {
         super(
-            "Add New Folder",
-            "Create a new folder to organize your documents.",
-            "Add Folder"
+            "Add New File",
+            "Create a new file to add to your document.",
+            "Add File"
         );
-        this.folderNameInputId = `${this.getModalId()}--folderName`;
-        this.folderNameErrorId = `${this.getModalId()}--folderNameError`;
-        this.onAddFolder = onAddFolder;
+        this.fileNameInputId = `${this.getModalId()}--fileName`;
+        this.fileNameErrorId = `${this.getModalId()}--fileNameError`;
+        this.onAddFile = onAddFile;
     }
 
     protected getModalName(): string {
-        return "addFolder";
+        return "addFile";
     }
 
     protected buildBodyHtml(): string {
         return `
             <div class="mb-3">
-                <label for="${this.folderNameInputId}"
-                        class="form-label">Folder Name</label>
+                <label for="${this.fileNameInputId}"
+                        class="form-label">File Name</label>
                 <input type="text"
                         class="form-control"
-                        id="${this.folderNameInputId}"
+                        id="${this.fileNameInputId}"
                         placeholder="e.g. Project Assets"
                         maxlength="40"
                         autocomplete="off" />
                 <div class="invalid-feedback"
-                        id="${this.folderNameErrorId}">Please enter a folder name.</div>
+                        id="${this.fileNameErrorId}">Please enter a file name.</div>
             </div>
         `
     }
 
     protected onAfterRender(): void {
         const confirmBtn = this.getModalSubmitBtn();
-        const errorDiv = document.getElementById(this.folderNameErrorId) as HTMLDivElement;
-        const input = document.getElementById(this.folderNameInputId) as HTMLInputElement;
+        const errorDiv = document.getElementById(this.fileNameErrorId) as HTMLDivElement;
+        const input = document.getElementById(this.fileNameInputId) as HTMLInputElement;
 
         // Reset form state when modal is opened
         const modalEl = this.getModalElement();
@@ -54,13 +54,13 @@ export class AddFolderModal extends ModalBase {
 
         // Validate and submit
         confirmBtn.addEventListener("click", () => {
-            const folderName = input.value.trim();
+            const fileName = input.value.trim();
 
-            if (!folderName) {
+            if (!fileName) {
                 input.classList.add("is-invalid");
                 errorDiv.style.display = "block";
             } else {
-                this.onAddFolder(folderName);
+                this.onAddFile(fileName);
                 this.hide();
             }
         });

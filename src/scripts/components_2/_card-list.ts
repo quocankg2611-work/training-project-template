@@ -1,9 +1,9 @@
-import { DocumentViewModel } from "../view-model/_document.view";
+import { HomePageDocumentView } from "../pages/home/view-models/_document.view";
 
 export default function buildCardList(
-    documentItemViews: DocumentViewModel[],
+    documentItemViews: HomePageDocumentView[],
     selectedItemId: string | null,
-    onItemSelected: (item: DocumentViewModel) => void,
+    onItemSelected: (item: HomePageDocumentView) => void,
 ): string {
     const html = `
     	<div class="home-page__list d-flex flex-column flex-grow-1">
@@ -20,9 +20,9 @@ export default function buildCardList(
 }
 
 function buildCardItem(
-    documentView: DocumentViewModel,
+    documentView: HomePageDocumentView,
     selectedItemId: string | null,
-    onItemSelected: (item: DocumentViewModel) => void
+    onItemSelected: (item: HomePageDocumentView) => void
 ): string {
 
     const handleOnSelectionAreaClick = (e: MouseEvent) => {

@@ -1,13 +1,18 @@
-import { createReactiveValue } from "../abstracts/reactive-obj";
-import buildBreadcrumbElement from "../components_2/_breadcrumb";
-// import renderBreadcrumb from "../components_2/_breadcrumb";
-import buildCardList from "../components_2/_card-list";
-import buildTable from "../components_2/_table";
-// import renderTable from "../components/_table";
-import { FolderModel } from "../model/_folder.model";
-import DocumentService from "../services/_document.service";
-import { DocumentBreadcrumbView } from "../view-model/_document-breadcrumb.view";
-import { documentViewFromFileModel, documentViewFromFolderModel, DocumentViewModel } from "../view-model/_document.view";
+import { createReactiveValue } from "../../abstracts/reactive";
+import buildBreadcrumbElement from "../../components_2/_breadcrumb";
+import buildCardList from "../../components_2/_card-list";
+import buildTable from "../../components_2/_table";
+import { AddFileModal } from "../../components_2/modals/_add-file-modal";
+import { AddFolderModal } from "../../components_2/modals/_add-folder-modal";
+import { DeleteDocumentModal } from "../../components_2/modals/_delete-document-modal";
+import { UpdateFileModal } from "../../components_2/modals/_update-file-modal";
+import { UpdateFolderModal } from "../../components_2/modals/_update-folder-modal";
+import { UploadFileModal } from "../../components_2/modals/_upload-file-modal";
+import { UploadFolderModal } from "../../components_2/modals/_upload-folder-modal";
+import { FolderModel } from "../../model/_folder.model";
+import DocumentService from "../../services/_document.service";
+import { DocumentBreadcrumbView } from "./view-models/_document-breadcrumb.view";
+import { documentViewFromFileModel, documentViewFromFolderModel, HomePageDocumentView } from "./view-models/_document.view";
 
 // TODO: Refactor code from home-page.ts to home-page2.ts
 
@@ -16,13 +21,23 @@ export function homePageViewModel(documentService: DocumentService) {
     // States
 
     const currentFolderState = createReactiveValue<FolderModel | null>(null);
-    const selectedDocumentIdState = createReactiveValue<string | null>(null);
+
+    const documentsState = createReactiveValue<HomePageDocumentView[]>([]);
+    const selectedDocumentItemState = createReactiveValue<HomePageDocumentView | null>(null);
     const isLoadingState = createReactiveValue<boolean>(false);
+
+    const subscribeToSelectedDocumentIdChange = (
+        triggerSelectedDocumentIdChanged: (selectedDocumentId: string | null) => void
+    ) => {
+        selectedDocumentItemState.subscribe((selectedDocument) => {
+            triggerSelectedDocumentIdChanged(selectedDocument ? selectedDocument.id : null);
+        });
+    };
 
     // Children
 
     homePageActionViewModel(
-        selectedDocumentIdState.subscribe,
+        subscribeToSelectedDocumentIdChange,
         handleActionEditSelectedItem,
         handleActionDeleteSelectedItem,
         handleActionCancelSelectedItem
@@ -32,15 +47,57 @@ export function homePageViewModel(documentService: DocumentService) {
         handleOnBreadcrumbFolderIdSelected
     );
     homePageBodyViewModel(
-        selectedDocumentIdState.subscribe,
+        subscribeToSelectedDocumentIdChange,
         currentFolderState.subscribe,
         isLoadingState.subscribe,
         handleOnDocumentItemSelected
     );
 
+    const addFolderModal = new AddFolderModal(handleModalAddFolderConfirm);
+    const addFileModal = new AddFileModal(handleModalAddFileConfirm);
+    const uploadFileModal = new UploadFileModal(handleModalUploadFileConfirm);
+    const uploadFolderModal = new UploadFolderModal(handleModalUploadFolderConfirm);
+    const updateFileModal = new UpdateFileModal(handleModalUpdateFileConfirm);
+    const updateFolderModal = new UpdateFolderModal(handleModalUpdateFolderConfirm);
+    const deleteDocumentModal = new DeleteDocumentModal(handleModalDeleteDocumentConfirm);
+
     // Handlers
 
+    function handleModalAddFolderConfirm(folderName: string) {
+    }
+
+    function handleModalAddFileConfirm(fileName: string) {
+    }
+
+    function handleModalUploadFileConfirm(fileName: string, extension: string, content: string) {
+    }
+
+    function handleModalUploadFolderConfirm(folderName: string, files: File[]) {
+    }
+
+    function handleModalUpdateFileConfirm(fileId: string, fileName: string) {
+    }
+
+    function handleModalUpdateFolderConfirm(folderId: string, folderName: string) {
+    }
+
+    function handleModalDeleteDocumentConfirm(documentId: string, documentType: "folder" | "file") {
+    }
+
+    function handleNavbarAddFolderClick() {
+        addFolderModal.show();
+    }
+
+    function handleNavbarAddFileClick() {
+        addFileModal.show();
+    }
+
     function handleActionEditSelectedItem() {
+        const selectedDocument = selectedDocumentItemState.get();
+        if (!selectedDocument) return;
+        if (selectedDocument.documentType === "folder") {
+            updateFolderModal
+        }
     }
 
     function handleActionDeleteSelectedItem() {
@@ -53,16 +110,30 @@ export function homePageViewModel(documentService: DocumentService) {
         // Handle when user click on breadcrumb item to navigate back to specific folder
     }
 
-    function handleOnDocumentItemSelected(documentItem: DocumentViewModel | null) {
+    function handleOnDocumentItemSelected(documentItem: HomePageDocumentView | null) {
         // Handle when user click on document item in table or card list
     }
 
     // Init
 
+    isLoadingState.set(true);
     documentService.loadRootFolder().then(() => {
         documentService.getCurrentFolder().then((currentFolder) => {
             currentFolderState.set(currentFolder);
+            isLoadingState.set(false);
         });
+    });
+
+    document.getElementById("homePageNavbarNewFolder")?.addEventListener("click", (e) => {
+        e.preventDefault(); // anchor element
+        e.stopPropagation();
+        handleNavbarAddFolderClick();
+    });
+
+    document.getElementById("homePageNavbarNewFile")?.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        handleNavbarAddFileClick();
     });
 }
 
@@ -113,7 +184,7 @@ function homePageBodyViewModel(
     listenOnSelectedDocumentIdChange: (onChange: (selectedItemId: string | null) => void) => void,
     listenOnCurrentFolderChange: (onChange: (currentFolder: FolderModel | null) => void) => void,
     listenOnIsLoadingChange: (onChange: (isLoading: boolean) => void) => void,
-    onDocumentItemSelected: (item: DocumentViewModel | null) => void
+    onDocumentItemSelected: (item: HomePageDocumentView | null) => void
 ) {
     // State
 
@@ -134,10 +205,10 @@ function homePageBodyViewModel(
 
     // Compute
 
-    function computeDocumentItems(): DocumentViewModel[] {
+    function computeDocumentItems(): HomePageDocumentView[] {
         const currentFolder = currentFolderState.get();
         if (!currentFolder) return [];
-        const documentItemViews: DocumentViewModel[] = [];
+        const documentItemViews: HomePageDocumentView[] = [];
         currentFolder.files.forEach(file => {
             documentItemViews.push(documentViewFromFileModel(file));
         });

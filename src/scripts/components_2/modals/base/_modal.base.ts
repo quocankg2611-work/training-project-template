@@ -1,7 +1,8 @@
 import bootstrap from "bootstrap";
 
 export abstract class ModalBase {
-    protected readonly modalId: string;
+    private readonly modalId: string;
+    private readonly modalSubmitBtnId: string;
 
     /**
      * For accessing bootstrap javascript methods
@@ -17,23 +18,37 @@ export abstract class ModalBase {
         subtitle: string,
         confirmText: string,
     ) {
-        this.modalId = `modal-${this.getModalIdPrefix()}-${Math.random().toString(36).slice(2, 9)}`;
-        this.modalElement = this.buildElement(title, subtitle, confirmText);
+        this.modalId = `modal-${Math.random().toString(36).slice(2, 9)}`;
+        this.modalSubmitBtnId = `${this.modalId}--submitBtn`;
+        this.modalElement = this.buildAndRender(title, subtitle, confirmText);
         this.modalInstance = new bootstrap.Modal(this.modalElement);
         this.onAfterRender();
     }
 
-    protected getModalSubmitBtnId(): string {
-        return `${this.modalId}--submitBtn`;
+
+    protected getModalSubmitBtn(): HTMLButtonElement {
+        const submitBtn = document.getElementById(this.modalSubmitBtnId) as HTMLButtonElement;
+        if (!submitBtn) {
+            throw new Error(`Submit button with ID ${this.modalSubmitBtnId} not found.`);
+        }
+        return submitBtn;
     }
 
-    private buildElement(
+    protected getModalId(): string {
+        return this.modalId;
+    }
+
+    protected getModalElement(): HTMLElement {
+        return this.modalElement;
+    }
+
+    private buildAndRender(
         title: string,
         subtitle: string,
         confirmText: string,
     ): HTMLElement {
         const html = `
-            <div class="modal fade" id="${this.modalId}" tabindex="-1" aria-hidden="true">
+            <div class="modal fade" id="${this.modalId}" data-name="${this.getModalName()}" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" style="max-width:420px;">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -48,7 +63,7 @@ export abstract class ModalBase {
                         <div class="modal-body">${this.buildBodyHtml()}</div>
                         <div class="modal-footer">
                             <button class="btn-cancel" data-bs-dismiss="modal">Cancel</button>
-                            <button class="btn-add" id="${this.getModalSubmitBtnId()}--">${confirmText}</button>
+                            <button class="btn-add" id="${this.modalSubmitBtnId}">${confirmText}</button>
                         </div>
                     </div>
                 </div>
@@ -63,20 +78,27 @@ export abstract class ModalBase {
         return element;
     }
 
-    protected abstract getModalIdPrefix(): string;
+    /**
+     * Used for classifying the modal type in the HTML
+     */
+    protected abstract getModalName(): string;
 
     protected abstract buildBodyHtml(): string;
+
+    // ======================================
+    // Life cycle
+    // ======================================
 
     /**
      * For assigning events
      */
     protected abstract onAfterRender(): void;
 
-    show(): void {
+    public show(): void {
         this.modalInstance.show();
     }
 
-    hide(): void {
+    public hide(): void {
         this.modalInstance.hide();
     }
 }

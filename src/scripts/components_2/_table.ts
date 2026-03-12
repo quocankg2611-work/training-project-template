@@ -1,9 +1,9 @@
-import { DocumentViewModel } from "../view-model/_document.view";
+import { HomePageDocumentView } from "../pages/home/view-models/_document.view";
 
 export default function buildTable(
-    items: DocumentViewModel[],
+    items: HomePageDocumentView[],
     selectedItemId: string | null,
-    onItemSelected: (item: DocumentViewModel | null) => void
+    onItemSelected: (item: HomePageDocumentView | null) => void
 ): string {
     const html = `
         <div class="home-page__table">
@@ -33,9 +33,9 @@ export default function buildTable(
 }
 
 function buildTableRow(
-    item: DocumentViewModel,
+    item: HomePageDocumentView,
     selectedItemId: string | null,
-    onItemSelected: (item: DocumentViewModel) => void
+    onItemSelected: (item: HomePageDocumentView) => void
 ): string {
     const html = `
         <tr>
