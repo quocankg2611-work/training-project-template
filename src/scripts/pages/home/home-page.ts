@@ -34,27 +34,30 @@ export default function homePageViewModel(documentService: DocumentService) {
     const selectedDocumentItemState = createReactiveValue<HomePageDocumentView | null>(null);
 
     isLoadingState.subscribe((_) => {
-        homePageBodyTriggers.onLoadingChange(isLoadingState.get());
+        homePageBodyTriggers.triggerLoadingChange(isLoadingState.get());
     });
 
     currentFolderState.subscribe((_) => {
-        homePageBodyTriggers.onCurrentFolderChange(currentFolderState.get()!);
+        homePageBodyTriggers.triggerCurrentFolderChange(currentFolderState.get()!);
     });
 
     selectedDocumentItemState.subscribe((_) => {
-        homePageBodyTriggers.onSelectedItemChange(selectedDocumentItemState.get());
+        homePageBodyTriggers.triggerSelectedItemChange(selectedDocumentItemState.get());
+        homePageActionTriggers.triggerSelectedItemChange(selectedDocumentItemState.get());
+    });
+
+    folderStackState.subscribe((_) => {
+        homePageBreadcrumbTriggers.triggerFolderStackChange(folderStackState.get());
     });
 
     // Children
 
-    homePageActionViewModel(
-        selectedDocumentItemState.subscribe,
+    const homePageActionTriggers = homePageActionViewModel(
         handleActionEditSelectedItem,
         handleActionDeleteSelectedItem,
         handleActionCancelSelectedItem
     );
-    homePageBreadcrumbViewModel(
-        folderStackState.subscribe,
+    const homePageBreadcrumbTriggers = homePageBreadcrumbViewModel(
         handleOnBreadcrumbFolderIdSelected
     );
     const homePageBodyTriggers = homePageBodyViewModel(
@@ -262,16 +265,11 @@ export default function homePageViewModel(documentService: DocumentService) {
 }
 
 function homePageBreadcrumbViewModel(
-    listenOnCurrentFolderChange: (onChange: (currentFolder: DocumentBreadcrumbView[]) => void) => void,
     onBreadcrumbFolderIdSelected: (selectedFolderId: string) => void
 ) {
     const folderStackState = createReactiveValue<DocumentBreadcrumbView[]>([]);
     folderStackState.subscribe((_) => {
         render();
-    });
-
-    listenOnCurrentFolderChange((currentFolderStack) => {
-        folderStackState.set(currentFolderStack);
     });
 
     // View
@@ -291,6 +289,12 @@ function homePageBreadcrumbViewModel(
     // Init
 
     render();
+
+    return {
+        triggerFolderStackChange: (DocumentBreadcrumbViews: DocumentBreadcrumbView[]) => {
+            folderStackState.set(DocumentBreadcrumbViews);
+        }
+    }
 }
 
 function homePageBodyViewModel(
@@ -376,20 +380,19 @@ function homePageBodyViewModel(
     renderList();
 
     return {
-        onSelectedItemChange: (documentItem: HomePageDocumentView | null) => {
+        triggerSelectedItemChange: (documentItem: HomePageDocumentView | null) => {
             selectedDocumentState.set(documentItem);
         },
-        onCurrentFolderChange: (currentFolder: FolderModel) => {
+        triggerCurrentFolderChange: (currentFolder: FolderModel) => {
             currentFolderState.set(currentFolder);
         },
-        onLoadingChange: (isLoading: boolean) => {
+        triggerLoadingChange: (isLoading: boolean) => {
             isLoadingState.set(isLoading);
         },
     }
 }
 
 function homePageActionViewModel(
-    listenOnSelectedItemChange: (onChange: (selectedDocument: HomePageDocumentView | null) => void) => void,
     onEditSelectedItem: () => void,
     onDeleteSelectedItem: () => void,
     onCancelSelectedItem: () => void
@@ -397,10 +400,6 @@ function homePageActionViewModel(
     const selectedDocumentIdState = createReactiveValue<HomePageDocumentView | null>(null);
     selectedDocumentIdState.subscribe((selectedItem) => {
         render(!!selectedItem);
-    });
-
-    listenOnSelectedItemChange((documentViewModel) => {
-        selectedDocumentIdState.set(documentViewModel);
     });
 
     function render(isEnabled: boolean) {
@@ -421,4 +420,10 @@ function homePageActionViewModel(
     document.getElementById("cancelBtnHomePage")?.addEventListener("click", () => {
         onCancelSelectedItem();
     });
+
+    return {
+        triggerSelectedItemChange: (documentViewModel: HomePageDocumentView | null) => {
+            selectedDocumentIdState.set(documentViewModel);
+        }
+    }
 }
