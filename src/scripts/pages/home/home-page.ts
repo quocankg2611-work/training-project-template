@@ -1,18 +1,18 @@
 import { createReactiveValue } from "../../abstracts/reactive";
-import buildBreadcrumbElement from "../../components_2/_breadcrumb";
-import buildCardListElement from "../../components_2/_card-list";
-import buildTableElement from "../../components_2/_table";
-import { AddFileModal } from "../../components_2/modals/_add-file-modal";
-import { AddFolderModal } from "../../components_2/modals/_add-folder-modal";
-import { DeleteDocumentModal } from "../../components_2/modals/_delete-document-modal";
-import { UpdateFileModal } from "../../components_2/modals/_update-file-modal";
-import { UpdateFolderModal } from "../../components_2/modals/_update-folder-modal";
-import { UploadFileModal } from "../../components_2/modals/_upload-file-modal";
-import { UploadFolderModal } from "../../components_2/modals/_upload-folder-modal";
+import buildBreadcrumbElement from "../../components/_breadcrumb";
+import buildCardListElement from "../../components/_card-list";
+import buildTableElement from "../../components/_table";
+import { AddFileModal } from "../../components/modals/_add-file-modal";
+import { AddFolderModal } from "../../components/modals/_add-folder-modal";
+import { DeleteDocumentModal } from "../../components/modals/_delete-document-modal";
+import { UpdateFileModal } from "../../components/modals/_update-file-modal";
+import { UpdateFolderModal } from "../../components/modals/_update-folder-modal";
+import { UploadFileModal } from "../../components/modals/_upload-file-modal";
+import { UploadFolderModal } from "../../components/modals/_upload-folder-modal";
 import { FolderModel } from "../../model/_folder.model";
 import DocumentService from "../../services/_document.service";
 import { onAppReady } from "../../utilities/_events";
-import { DocumentBreadcrumbView } from "./view-models/_document-breadcrumb.view";
+import { HomePageDocumentBreadcrumbView } from "./view-models/_document-breadcrumb.view";
 import { documentViewFromFileModel, documentViewFromFolderModel, HomePageDocumentView } from "./view-models/_document.view";
 
 onAppReady(() => bootstrap());
@@ -30,7 +30,7 @@ export default function homePageViewModel(documentService: DocumentService) {
 
     const currentFolderState = createReactiveValue<FolderModel | null>(null);
     const isLoadingState = createReactiveValue<boolean>(false);
-    const folderStackState = createReactiveValue<DocumentBreadcrumbView[]>([]);
+    const folderStackState = createReactiveValue<HomePageDocumentBreadcrumbView[]>([]);
     const selectedDocumentItemState = createReactiveValue<HomePageDocumentView | null>(null);
 
     isLoadingState.subscribe((_) => {
@@ -267,7 +267,7 @@ export default function homePageViewModel(documentService: DocumentService) {
 function homePageBreadcrumbViewModel(
     onBreadcrumbFolderIdSelected: (selectedFolderId: string) => void
 ) {
-    const folderStackState = createReactiveValue<DocumentBreadcrumbView[]>([]);
+    const folderStackState = createReactiveValue<HomePageDocumentBreadcrumbView[]>([]);
     folderStackState.subscribe((_) => {
         render();
     });
@@ -291,7 +291,7 @@ function homePageBreadcrumbViewModel(
     render();
 
     return {
-        triggerFolderStackChange: (DocumentBreadcrumbViews: DocumentBreadcrumbView[]) => {
+        triggerFolderStackChange: (DocumentBreadcrumbViews: HomePageDocumentBreadcrumbView[]) => {
             folderStackState.set(DocumentBreadcrumbViews);
         }
     }

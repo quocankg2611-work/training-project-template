@@ -1,4 +1,4 @@
-export type DocumentBreadcrumbView = {
+export type HomePageDocumentBreadcrumbView = {
     id: string;
     name: string;
 }

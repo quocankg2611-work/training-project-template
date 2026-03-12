@@ -1,4 +1,3 @@
-import { FileExtensionsType, FileExtensionValidation } from "../../types/_file-extensions.types";
 import { ModalBase } from "./base/_modal.base";
 
 export class AddFileModal extends ModalBase {

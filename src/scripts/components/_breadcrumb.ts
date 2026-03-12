@@ -1,8 +1,8 @@
 import { stringToHtmlElement } from "../utilities/_strings";
-import { DocumentBreadcrumbView } from "../pages/home/view-models/_document-breadcrumb.view";
+import { HomePageDocumentBreadcrumbView } from "../pages/home/view-models/_document-breadcrumb.view";
 
 export default function buildBreadcrumbElement(
-    folderStack: DocumentBreadcrumbView[],
+    folderStack: HomePageDocumentBreadcrumbView[],
     onBreadcrumbFolderClick: (selectedFolderId: string) => void
 ): HTMLElement {
     const html = buildBreadcrumbHtml(folderStack);
@@ -23,7 +23,7 @@ export default function buildBreadcrumbElement(
 }
 
 function buildBreadcrumbHtml(
-    folderStack: DocumentBreadcrumbView[],
+    folderStack: HomePageDocumentBreadcrumbView[],
 ): string {
     const itemListHtml = folderStack.map((folder, index) => {
         if (index === folderStack.length - 1) {
@@ -43,7 +43,7 @@ function buildBreadcrumbHtml(
 }
 
 function buildBreadcrumbItemHtml(
-    documentBreadcrumb: DocumentBreadcrumbView,
+    documentBreadcrumb: HomePageDocumentBreadcrumbView,
 ): string {
 
     return `
@@ -60,7 +60,7 @@ function buildBreadcrumbItemHtml(
 }
 
 function buildBreadcrumbItemActiveHtml(
-    documentBreadcrumb: DocumentBreadcrumbView
+    documentBreadcrumb: HomePageDocumentBreadcrumbView
 ): string {
     return `
         <li class="breadcrumb-item active"
