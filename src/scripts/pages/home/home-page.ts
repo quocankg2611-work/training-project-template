@@ -34,214 +34,214 @@ export default function homePageViewModel(documentService: DocumentService) {
      */
     // States
 
-    const currentFolderState = createReactiveValue<FolderModel | null>(null);
-    const isLoadingState = createReactiveValue<boolean>(false);
-    const folderStackState = createReactiveValue<HomePageDocumentBreadcrumbView[]>([]);
-    const selectedDocumentItemState = createReactiveValue<HomePageDocumentView | null>(null);
+    // const currentFolderState = createReactiveValue<FolderModel | null>(null);
+    // const isLoadingState = createReactiveValue<boolean>(false);
+    // const folderStackState = createReactiveValue<HomePageDocumentBreadcrumbView[]>([]);
+    // const selectedDocumentItemState = createReactiveValue<HomePageDocumentView | null>(null);
 
-    isLoadingState.subscribe((_) => {
-        homePageBodyTriggers.triggerLoadingChange(isLoadingState.get());
-    });
+    // isLoadingState.subscribe((_) => {
+    //     homePageBodyTriggers.triggerLoadingChange(isLoadingState.get());
+    // });
 
-    currentFolderState.subscribe((_) => {
-        homePageBodyTriggers.triggerCurrentFolderChange(currentFolderState.get()!);
-    });
+    // currentFolderState.subscribe((_) => {
+    //     homePageBodyTriggers.triggerCurrentFolderChange(currentFolderState.get()!);
+    // });
 
-    selectedDocumentItemState.subscribe((_) => {
-        homePageBodyTriggers.triggerSelectedItemChange(selectedDocumentItemState.get());
-        homePageActionTriggers.triggerSelectedItemChange(selectedDocumentItemState.get());
-    });
+    // selectedDocumentItemState.subscribe((_) => {
+    //     homePageBodyTriggers.triggerSelectedItemChange(selectedDocumentItemState.get());
+    //     homePageActionTriggers.triggerSelectedItemChange(selectedDocumentItemState.get());
+    // });
 
-    folderStackState.subscribe((_) => {
-        homePageBreadcrumbTriggers.triggerFolderStackChange(folderStackState.get());
-    });
+    // folderStackState.subscribe((_) => {
+    //     homePageBreadcrumbTriggers.triggerFolderStackChange(folderStackState.get());
+    // });
 
     // Children
 
-    const homePageActionTriggers = homePageActionViewModel(
-        handleActionEditSelectedItem,
-        handleActionDeleteSelectedItem,
-        handleActionCancelSelectedItem
-    );
-    const homePageBreadcrumbTriggers = homePageBreadcrumbViewModel(
-        handleOnBreadcrumbFolderIdSelected
-    );
-    const homePageBodyTriggers = homePageBodyViewModel(
-        handleOnDocumentItemSelected,
-        handleOnFolderNavigated,
-    );
+    // const homePageActionTriggers = homePageActionViewModel(
+    //     handleActionEditSelectedItem,
+    //     handleActionDeleteSelectedItem,
+    //     handleActionCancelSelectedItem
+    // );
+    // const homePageBreadcrumbTriggers = homePageBreadcrumbViewModel(
+    //     handleOnBreadcrumbFolderIdSelected
+    // );
+    // const homePageBodyTriggers = homePageBodyViewModel(
+    //     handleOnDocumentItemSelected,
+    //     handleOnFolderNavigated,
+    // );
 
-    const addFolderModal = new AddFolderModal(handleModalAddFolderConfirm).init();
-    const addFileModal = new AddFileModal(handleModalAddFileConfirm).init();
-    const uploadFileModal = new UploadFileModal(handleModalUploadFileConfirm).init();
-    const uploadFolderModal = new UploadFolderModal(handleModalUploadFolderConfirm).init();
-    const updateFileModal = new UpdateFileModal(handleModalUpdateFileConfirm).init();
-    const updateFolderModal = new UpdateFolderModal(handleModalUpdateFolderConfirm).init();
-    const deleteDocumentModal = new DeleteDocumentModal(handleModalDeleteDocumentConfirm).init();
+    // const addFolderModal = new AddFolderModal(handleModalAddFolderConfirm).init();
+    // const addFileModal = new AddFileModal(handleModalAddFileConfirm).init();
+    // const uploadFileModal = new UploadFileModal(handleModalUploadFileConfirm).init();
+    // const uploadFolderModal = new UploadFolderModal(handleModalUploadFolderConfirm).init();
+    // const updateFileModal = new UpdateFileModal(handleModalUpdateFileConfirm).init();
+    // const updateFolderModal = new UpdateFolderModal(handleModalUpdateFolderConfirm).init();
+    // const deleteDocumentModal = new DeleteDocumentModal(handleModalDeleteDocumentConfirm).init();
 
     // Handlers
 
-    function handleOnFolderNavigated(folder: HomePageDocumentView) {
-        isLoadingState.set(true);
-        documentService.navigateToFolder(folder.id).then(() => {
-            documentService.getCurrentFolder().then((currentFolder) => {
-                documentService.getFolderStack().then((folderStack) => {
-                    const breadcrumbFolderStack = folderStack.map(folder => {
-                        return documentViewFromFolderModel(folder, (f) => currentFolderState.set(f));
-                    });
-                    folderStackState.set(breadcrumbFolderStack);
-                    currentFolderState.set(currentFolder);
-                    selectedDocumentItemState.set(null);
-                    isLoadingState.set(false);
-                });
-            });
-        });
-    }
+    // function handleOnFolderNavigated(folder: HomePageDocumentView) {
+    //     isLoadingState.set(true);
+    //     documentService.navigateToFolder(folder.id).then(() => {
+    //         documentService.getCurrentFolder().then((currentFolder) => {
+    //             documentService.getFolderStack().then((folderStack) => {
+    //                 const breadcrumbFolderStack = folderStack.map(folder => {
+    //                     return documentViewFromFolderModel(folder, (f) => currentFolderState.set(f));
+    //                 });
+    //                 folderStackState.set(breadcrumbFolderStack);
+    //                 currentFolderState.set(currentFolder);
+    //                 selectedDocumentItemState.set(null);
+    //                 isLoadingState.set(false);
+    //             });
+    //         });
+    //     });
+    // }
 
-    function handleModalAddFolderConfirm(folderName: string) {
-        isLoadingState.set(true);
-        documentService.addFolder(folderName).then(() => {
-            documentService.getCurrentFolder().then((currentFolder) => {
-                selectedDocumentItemState.set(null);
-                currentFolderState.set(currentFolder);
-                isLoadingState.set(false);
-            });
-        });
-    }
+    // function handleModalAddFolderConfirm(folderName: string) {
+    //     isLoadingState.set(true);
+    //     documentService.addFolder(folderName).then(() => {
+    //         documentService.getCurrentFolder().then((currentFolder) => {
+    //             selectedDocumentItemState.set(null);
+    //             currentFolderState.set(currentFolder);
+    //             isLoadingState.set(false);
+    //         });
+    //     });
+    // }
 
-    function handleModalAddFileConfirm(fileName: string, extension: string, content: string) {
-        isLoadingState.set(true);
-        documentService.addFile(fileName, extension, content).then(() => {
-            documentService.getCurrentFolder().then((currentFolder) => {
-                selectedDocumentItemState.set(null);
-                currentFolderState.set(currentFolder);
-                isLoadingState.set(false);
-            });
-        });
-    }
+    // function handleModalAddFileConfirm(fileName: string, extension: string, content: string) {
+    //     isLoadingState.set(true);
+    //     documentService.addFile(fileName, extension, content).then(() => {
+    //         documentService.getCurrentFolder().then((currentFolder) => {
+    //             selectedDocumentItemState.set(null);
+    //             currentFolderState.set(currentFolder);
+    //             isLoadingState.set(false);
+    //         });
+    //     });
+    // }
 
-    function handleModalUploadFileConfirm(fileName: string, extension: string, content: string) {
-        isLoadingState.set(true);
-        documentService.addFile(fileName, extension, content).then(() => {
-            documentService.getCurrentFolder().then((currentFolder) => {
-                selectedDocumentItemState.set(null);
-                currentFolderState.set(currentFolder);
-                isLoadingState.set(false);
-            });
-        });
-    }
+    // function handleModalUploadFileConfirm(fileName: string, extension: string, content: string) {
+    //     isLoadingState.set(true);
+    //     documentService.addFile(fileName, extension, content).then(() => {
+    //         documentService.getCurrentFolder().then((currentFolder) => {
+    //             selectedDocumentItemState.set(null);
+    //             currentFolderState.set(currentFolder);
+    //             isLoadingState.set(false);
+    //         });
+    //     });
+    // }
 
-    // TODO: Handle the Files
-    function handleModalUploadFolderConfirm(folderName: string, files: File[]) {
-        isLoadingState.set(true);
-        documentService.addFolder(folderName).then(() => {
-            documentService.getCurrentFolder().then((currentFolder) => {
-                selectedDocumentItemState.set(null);
-                currentFolderState.set(currentFolder);
-                isLoadingState.set(false);
-            });
-        });
-    }
+    // // TODO: Handle the Files
+    // function handleModalUploadFolderConfirm(folderName: string, files: File[]) {
+    //     isLoadingState.set(true);
+    //     documentService.addFolder(folderName).then(() => {
+    //         documentService.getCurrentFolder().then((currentFolder) => {
+    //             selectedDocumentItemState.set(null);
+    //             currentFolderState.set(currentFolder);
+    //             isLoadingState.set(false);
+    //         });
+    //     });
+    // }
 
-    function handleModalUpdateFileConfirm(fileId: string, fileName: string) {
-        isLoadingState.set(true);
-        documentService.updateFile(fileId, fileName).then(() => {
-            documentService.getCurrentFolder().then((currentFolder) => {
-                selectedDocumentItemState.set(null);
-                currentFolderState.set(currentFolder);
-                isLoadingState.set(false);
-            });
-        });
-    }
+    // function handleModalUpdateFileConfirm(fileId: string, fileName: string) {
+    //     isLoadingState.set(true);
+    //     documentService.updateFile(fileId, fileName).then(() => {
+    //         documentService.getCurrentFolder().then((currentFolder) => {
+    //             selectedDocumentItemState.set(null);
+    //             currentFolderState.set(currentFolder);
+    //             isLoadingState.set(false);
+    //         });
+    //     });
+    // }
 
-    function handleModalUpdateFolderConfirm(folderId: string, folderName: string) {
-        isLoadingState.set(true);
-        documentService.updateFolder(folderId, folderName).then(() => {
-            documentService.getCurrentFolder().then((currentFolder) => {
-                selectedDocumentItemState.set(null);
-                currentFolderState.set(currentFolder);
-                isLoadingState.set(false);
-            });
-        });
-    }
+    // function handleModalUpdateFolderConfirm(folderId: string, folderName: string) {
+    //     isLoadingState.set(true);
+    //     documentService.updateFolder(folderId, folderName).then(() => {
+    //         documentService.getCurrentFolder().then((currentFolder) => {
+    //             selectedDocumentItemState.set(null);
+    //             currentFolderState.set(currentFolder);
+    //             isLoadingState.set(false);
+    //         });
+    //     });
+    // }
 
-    function handleModalDeleteDocumentConfirm(documentId: string, documentType: "folder" | "file") {
-        isLoadingState.set(true);
-        if (documentType === "folder") {
-            documentService.deleteFolder(documentId).then(() => {
-                documentService.getCurrentFolder().then((currentFolder) => {
-                    selectedDocumentItemState.set(null);
-                    currentFolderState.set(currentFolder);
-                    isLoadingState.set(false);
-                });
-            });
-        } else {
-            documentService.deleteFile(documentId).then(() => {
-                documentService.getCurrentFolder().then((currentFolder) => {
-                    selectedDocumentItemState.set(null);
-                    currentFolderState.set(currentFolder);
-                    isLoadingState.set(false);
-                });
-            });
-        }
-    }
+    // function handleModalDeleteDocumentConfirm(documentId: string, documentType: "folder" | "file") {
+    //     isLoadingState.set(true);
+    //     if (documentType === "folder") {
+    //         documentService.deleteFolder(documentId).then(() => {
+    //             documentService.getCurrentFolder().then((currentFolder) => {
+    //                 selectedDocumentItemState.set(null);
+    //                 currentFolderState.set(currentFolder);
+    //                 isLoadingState.set(false);
+    //             });
+    //         });
+    //     } else {
+    //         documentService.deleteFile(documentId).then(() => {
+    //             documentService.getCurrentFolder().then((currentFolder) => {
+    //                 selectedDocumentItemState.set(null);
+    //                 currentFolderState.set(currentFolder);
+    //                 isLoadingState.set(false);
+    //             });
+    //         });
+    //     }
+    // }
 
-    function handleNavbarAddFolderClick() {
-        addFolderModal.show();
-    }
+    // function handleNavbarAddFolderClick() {
+    //     addFolderModal.show();
+    // }
 
-    function handleNavbarAddFileClick() {
-        addFileModal.show();
-    }
+    // function handleNavbarAddFileClick() {
+    //     addFileModal.show();
+    // }
 
-    function handleNavbarUploadFileClick() {
-        uploadFileModal.show();
-    }
+    // function handleNavbarUploadFileClick() {
+    //     uploadFileModal.show();
+    // }
 
-    function handleNavbarUploadFolderClick() {
-        uploadFolderModal.show();
-    }
+    // function handleNavbarUploadFolderClick() {
+    //     uploadFolderModal.show();
+    // }
 
-    function handleActionEditSelectedItem() {
-        const selectedDocument = selectedDocumentItemState.get();
-        if (!selectedDocument) return;
-        if (selectedDocument.documentType === "folder") {
-            updateFolderModal.showWithData(selectedDocument.id, selectedDocument.name);
-        } else {
-            updateFileModal.showWithData(selectedDocument.id, selectedDocument.name);
-        }
-    }
+    // function handleActionEditSelectedItem() {
+    //     const selectedDocument = selectedDocumentItemState.get();
+    //     if (!selectedDocument) return;
+    //     if (selectedDocument.documentType === "folder") {
+    //         updateFolderModal.showWithData(selectedDocument.id, selectedDocument.name);
+    //     } else {
+    //         updateFileModal.showWithData(selectedDocument.id, selectedDocument.name);
+    //     }
+    // }
 
-    function handleActionDeleteSelectedItem() {
-        const selectedDocument = selectedDocumentItemState.get();
-        if (!selectedDocument) return;
-        deleteDocumentModal.showWithData(selectedDocument.id, selectedDocument.name, selectedDocument.documentType);
-    }
+    // function handleActionDeleteSelectedItem() {
+    //     const selectedDocument = selectedDocumentItemState.get();
+    //     if (!selectedDocument) return;
+    //     deleteDocumentModal.showWithData(selectedDocument.id, selectedDocument.name, selectedDocument.documentType);
+    // }
 
-    function handleActionCancelSelectedItem() {
-        selectedDocumentItemState.set(null);
-    }
+    // function handleActionCancelSelectedItem() {
+    //     selectedDocumentItemState.set(null);
+    // }
 
-    function handleOnBreadcrumbFolderIdSelected(selectedFolderId: string) {
-        isLoadingState.set(true);
-        documentService.navigateBackToFolder(selectedFolderId).then(() => {
-            documentService.getCurrentFolder().then((currentFolder) => {
-                documentService.getFolderStack().then((folderStack) => {
-                    const breadcrumbFolderStack = folderStack.map(folder => {
-                        return documentViewFromFolderModel(folder, (f) => currentFolderState.set(f));
-                    });
-                    folderStackState.set(breadcrumbFolderStack);
-                    currentFolderState.set(currentFolder);
-                    selectedDocumentItemState.set(null);
-                    isLoadingState.set(false);
-                });
-            });
-        })
-    }
+    // function handleOnBreadcrumbFolderIdSelected(selectedFolderId: string) {
+    //     isLoadingState.set(true);
+    //     documentService.navigateBackToFolder(selectedFolderId).then(() => {
+    //         documentService.getCurrentFolder().then((currentFolder) => {
+    //             documentService.getFolderStack().then((folderStack) => {
+    //                 const breadcrumbFolderStack = folderStack.map(folder => {
+    //                     return documentViewFromFolderModel(folder, (f) => currentFolderState.set(f));
+    //                 });
+    //                 folderStackState.set(breadcrumbFolderStack);
+    //                 currentFolderState.set(currentFolder);
+    //                 selectedDocumentItemState.set(null);
+    //                 isLoadingState.set(false);
+    //             });
+    //         });
+    //     })
+    // }
 
-    function handleOnDocumentItemSelected(documentItem: HomePageDocumentView | null) {
-        selectedDocumentItemState.set(documentItem);
-    }
+    // function handleOnDocumentItemSelected(documentItem: HomePageDocumentView | null) {
+    //     selectedDocumentItemState.set(documentItem);
+    // }
 
     // Init
 
@@ -253,29 +253,29 @@ export default function homePageViewModel(documentService: DocumentService) {
         });
     });
 
-    document.getElementById("homePageNavbarNewFolder")?.addEventListener("click", (e) => {
-        e.preventDefault(); // anchor element
-        e.stopPropagation();
-        handleNavbarAddFolderClick();
-    });
+    // document.getElementById("homePageNavbarNewFolder")?.addEventListener("click", (e) => {
+    //     e.preventDefault(); // anchor element
+    //     e.stopPropagation();
+    //     handleNavbarAddFolderClick();
+    // });
 
-    document.getElementById("homePageNavbarNewFile")?.addEventListener("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        handleNavbarAddFileClick();
-    });
+    // document.getElementById("homePageNavbarNewFile")?.addEventListener("click", (e) => {
+    //     e.preventDefault();
+    //     e.stopPropagation();
+    //     handleNavbarAddFileClick();
+    // });
 
-    document.getElementById("homePageNavbarUploadFile")?.addEventListener("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        handleNavbarUploadFileClick();
-    });
+    // document.getElementById("homePageNavbarUploadFile")?.addEventListener("click", (e) => {
+    //     e.preventDefault();
+    //     e.stopPropagation();
+    //     handleNavbarUploadFileClick();
+    // });
 
-    document.getElementById("homePageNavbarUploadFolder")?.addEventListener("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        handleNavbarUploadFolderClick();
-    });
+    // document.getElementById("homePageNavbarUploadFolder")?.addEventListener("click", (e) => {
+    //     e.preventDefault();
+    //     e.stopPropagation();
+    //     handleNavbarUploadFolderClick();
+    // });
 }
 
 function homePageBreadcrumbViewModel(
@@ -425,15 +425,15 @@ function homePageActionViewModel(
 
     // Init
 
-    document.getElementById("editBtnHomePage")?.addEventListener("click", () => {
-        onEditSelectedItem();
-    });
-    document.getElementById("deleteBtnHomePage")?.addEventListener("click", () => {
-        onDeleteSelectedItem();
-    });
-    document.getElementById("cancelBtnHomePage")?.addEventListener("click", () => {
-        onCancelSelectedItem();
-    });
+    // document.getElementById("editBtnHomePage")?.addEventListener("click", () => {
+    //     onEditSelectedItem();
+    // });
+    // document.getElementById("deleteBtnHomePage")?.addEventListener("click", () => {
+    //     onDeleteSelectedItem();
+    // });
+    // document.getElementById("cancelBtnHomePage")?.addEventListener("click", () => {
+    //     onCancelSelectedItem();
+    // });
 
     return {
         triggerSelectedItemChange: (documentViewModel: HomePageDocumentView | null) => {

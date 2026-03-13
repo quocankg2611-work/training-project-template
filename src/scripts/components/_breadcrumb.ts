@@ -1,6 +1,7 @@
 import { stringToHtmlElement } from "../utilities/_strings";
 import { HomePageDocumentBreadcrumbView } from "../pages/home/view-models/_document-breadcrumb.view";
 
+
 export default function buildBreadcrumbElement(
     folderStack: HomePageDocumentBreadcrumbView[],
     onBreadcrumbFolderClick: (selectedFolderId: string) => void

@@ -1,41 +1,43 @@
 import { HomePageDocumentView } from "../pages/home/view-models/_document.view";
 import { stringToHtmlElement } from "../utilities/_strings";
 
+export class TableComponent {
+    constructor(
+        private readonly onDocumentItemSelected: (selectedDocumentId: string | null) => void,
+        private readonly onFolderNavigated: (folderId: string) => void,
+    ) { }
 
-export default function buildTableElement(
-    items: HomePageDocumentView[],
-    selectedItemId: string | null,
-    onItemSelected: (item: HomePageDocumentView | null) => void,
-    onFolderNavigated: (item: HomePageDocumentView) => void,
-): HTMLElement {
-    const tableHtml = buildTableHtml(items, selectedItemId);
-    const tableElement = stringToHtmlElement(tableHtml);
+    public build(
+        items: HomePageDocumentView[],
+        selectedItemId: string | null,
+    ): HTMLElement {
+        const tableHtml = this.buildHtml(items, selectedItemId);
+        const tableElement = stringToHtmlElement(tableHtml);
 
-    // Attach selection event listeners
-    for (const item of items) {
-        const tableRowElement = tableElement.querySelector(`tr[data-id="${item.id}"]`);
-        if (item.documentType === "folder") {
-            tableRowElement?.addEventListener("click", () => {
-                onFolderNavigated(item);
+        // Attach selection event listeners
+        for (const item of items) {
+            const tableRowElement = tableElement.querySelector(`tr[data-id="${item.id}"]`);
+            if (item.documentType === "folder") {
+                tableRowElement?.addEventListener("click", () => {
+                    this.onFolderNavigated(item.id);
+                });
+            }
+
+            const documentSelectionArea = tableRowElement.querySelector(`td[data-id="${item.id}"]`);
+            documentSelectionArea?.addEventListener("click", (e) => {
+                e.stopPropagation(); // Prevent the click from bubbling up to the row's click event
+                this.onDocumentItemSelected(item.id);
             });
         }
 
-        const documentSelectionArea = tableRowElement.querySelector(`td[data-id="${item.id}"]`);
-        documentSelectionArea?.addEventListener("click", (e) => {
-            e.preventDefault();
-            e.stopPropagation(); // Prevent the click from bubbling up to the row's click event
-            onItemSelected(item);
-        });
+        return tableElement;
     }
 
-    return tableElement;
-}
-
-function buildTableHtml(
-    items: HomePageDocumentView[],
-    selectedItemId: string | null,
-): string {
-    const html = `
+    private buildHtml(
+        items: HomePageDocumentView[],
+        selectedItemId: string | null,
+    ): string {
+        const html = `
         <div class="home-page__table">
             <div class="home-page__table-loading-container hidden">
                 <div class="loader loader--spinner"></div>
@@ -53,20 +55,20 @@ function buildTableHtml(
                 </thead>
 
                 <tbody>
-                   ${items.map(item => buildTableRowHtml(item, selectedItemId)).join("")}
+                   ${items.map(item => this.buildRowHtml(item, selectedItemId)).join("")}
                 </tbody>
             </table>
         </div>
     `;
 
-    return html;
-}
+        return html;
+    }
 
-function buildTableRowHtml(
-    item: HomePageDocumentView,
-    selectedItemId: string | null,
-): string {
-    const html = `
+    private buildRowHtml(
+        item: HomePageDocumentView,
+        selectedItemId: string | null,
+    ): string {
+        const html = `
         <tr data-id="${item.id}" class="file-table__row ${item.id === selectedItemId ? "file-table__row--selected" : ""}">
             <td data-id=${item.id}>
                 <input class="form-check-input"
@@ -91,5 +93,7 @@ function buildTableRowHtml(
         </tr>
             `;
 
-    return html;
+        return html;
+    }
+
 }
