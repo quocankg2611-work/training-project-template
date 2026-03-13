@@ -34,6 +34,12 @@ export abstract class ModalBase {
     public init(): this {
         this.modalElement = this.buildAndRender(this.title, this.subtitle, this.confirmText);
         this.modalInstance = new Modal(this.modalElement);
+        this.modalElement.addEventListener('hide.bs.modal', () => {
+            const active = document.activeElement;
+            if (active instanceof HTMLElement) {
+                active.blur();
+            }
+        });
         this.onAfterRender();
         return this;
     }

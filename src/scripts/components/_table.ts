@@ -78,7 +78,10 @@ export class TableComponent {
                         />
             </td>
             <td>
-                <span class="file-table__icon--${item.fileType ?? "unknown"}"></span>
+                <span class="file-table__icon--${item.documentType === "file" 
+                    ? item.fileType ?? "unknown"
+                    : "folder"
+                }"></span>
             </td>
             <td>
                 <span class="${item.documentType === "file" ? "file-table__text-file" : ""}">${item.name}</span>

@@ -2,7 +2,7 @@ import { stringToHtmlElement } from "../utilities/_strings";
 
 export class BreadcrumbComponent {
     constructor(
-        private readonly onBreadcrumbItemClick: (selectedPath: string) => void
+        private readonly onBreadcrumbItemClick: (goBackToLevel: number) => void,
     ) { }
 
     public build(pathArr: string[]): HTMLElement {
@@ -14,22 +14,20 @@ export class BreadcrumbComponent {
             if (linkElement && breadcrumbElement.contains(linkElement)) {
                 e.preventDefault(); // Because it's an anchor tag, prevent default navigation, URL change
                 e.stopPropagation();
-                const path = linkElement.getAttribute('data-breadcrumb-path');
-                if (path) {
-                    this.onBreadcrumbItemClick(path);
-                }
+                const goBackToLevel = parseInt(linkElement.getAttribute('data-go-back-to-level') || '0', 10);
+                this.onBreadcrumbItemClick(goBackToLevel);
             }
         }
         return breadcrumbElement;
     }
 
     private buildBreadcrumbHtml(pathArr: string[]): string {
-        const itemListHtml = pathArr.map((path, index) => {
-            if (index === pathArr.length - 1) {
+        const pathArrWithHome = ["Home", ...pathArr];
+        const itemListHtml = pathArrWithHome.map((path, index) => {
+            if (index === pathArrWithHome.length - 1) {
                 return this.buildBreadcrumbItemActiveHtml(path);
-            } else {
-                return this.buildBreadcrumbItemHtml(path);
             }
+            return this.buildBreadcrumbItemHtml(path, index);
         }).join('');
 
         return `
@@ -41,14 +39,15 @@ export class BreadcrumbComponent {
     `;
     }
 
-    private buildBreadcrumbItemHtml(path: string): string {
+
+    private buildBreadcrumbItemHtml(path: string, levelToGoBack: number): string {
 
         return `
         <li class="breadcrumb-item">
             <a
                 href="#"
-                data-breadcrumb-path="${path}"
                 class="breadcrumb-link"
+                data-go-back-to-level="${levelToGoBack}"
             >
                 ${path}
             </a>

@@ -3,7 +3,6 @@ import { FileService } from "../../services/_file.service";
 import { FolderService } from "../../services/_folder.service";
 
 export class HomePageModel {
-
     private _pathArr: string[];
     private _documents: DocumentResponse[];
     private _selectedDocument: DocumentResponse | null
@@ -111,12 +110,16 @@ export class HomePageModel {
 
     // Services:
 
-    public handleFolderNavigationByName(folderName: string): void {
+    private handleFolderNavigationByName(folderName: string): void {
         const newPathArr = [...this._pathArr, folderName];
-        this.setPathArr(newPathArr);
+        this.handleFolderNavigation(newPathArr);
+    }
+
+    public handleFolderNavigation(pathArr: string[]) {
+        this.setPathArr(pathArr);
         this.setIsLoading(true);
         this.setError(null);
-        DocumentService.getDocumentsByPath(newPathArr)
+        DocumentService.getDocumentsByPath(pathArr)
             .then((newDocuments) => {
                 this.setSelectedDocument(null);
                 this.setDocuments(newDocuments);
@@ -128,6 +131,14 @@ export class HomePageModel {
                 this.setIsLoading(false);
             });
         ;
+    }
+
+    public handleFolderNavigationGoBackToLevel(goBackToLevel: number): void {
+        if (goBackToLevel < 0 || goBackToLevel >= this._pathArr.length) {
+            return;
+        }
+        const newPathArr = this._pathArr.slice(0, goBackToLevel);
+        this.handleFolderNavigation(newPathArr);
     }
 
     public handleFolderNavigationById(folderId: string): void {

@@ -25,7 +25,7 @@ export class HomePageController {
         this.bootstrapModel();
         this.bootstrapView();
         this.bootstrapModals();
-        
+
         this.view.renderBody(this.model.getDocuments(), this.model.getSelectedDocument()?.id ?? null);
         this.view.renderBreadcrumb(this.model.getPathArr());
 
@@ -83,7 +83,7 @@ export class HomePageController {
 
         const handleSelectedDocumentChange = (selectedDocument: DocumentResponse | null): void => {
             this.view.renderBody(this.model.getDocuments(), selectedDocument?.id ?? null);
-            this.view.toggleActionButtons(selectedDocument?.id !== null);
+            this.view.toggleActionButtons(selectedDocument !== null);
         };
 
         // TODO
@@ -104,8 +104,8 @@ export class HomePageController {
     }
 
     private bootstrapView(): void {
-        const handleBreadcrumbItemClick = (selectedFolderPath: string): void => {
-            this.model.handleFolderNavigationByName(selectedFolderPath);
+        const handleBreadcrumbItemClick = (goBackToLevel: number): void => {
+            this.model.handleFolderNavigationGoBackToLevel(goBackToLevel);
         };
 
         const handleDocumentItemSelected = (selectedDocumentId: string | null): void => {

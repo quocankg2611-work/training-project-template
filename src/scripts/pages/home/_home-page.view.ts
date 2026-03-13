@@ -9,7 +9,7 @@ export class HomePageView {
     private readonly cardListComponent: CardListComponent;
 
     constructor(
-        onBreadcrumbItemClick: (selectedFolderPath: string) => void,
+        onBreadcrumbItemClick: (goBackToLevel: number) => void,
         onDocumentItemSelected: (selectedDocumentId: string | null) => void,
         onFolderNavigated: (folderId: string) => void,
         private readonly onNavbarNewFolderClick: () => void,

@@ -35,7 +35,7 @@ export class FolderService {
         const rootFolderIdKey = localStorageKey.buildFolderIdKey("root");
         localStorage.setItem(rootFolderIdKey, JSON.stringify({
             id: "root",
-            name: "Root",
+            name: "Home",
             containingPath: "",
             modifiedBy: "System",
             modified: new Date().toISOString(),
