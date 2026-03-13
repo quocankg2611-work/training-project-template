@@ -108,29 +108,37 @@ export class HomePageModel {
         }
     }
 
+    // ==============================
     // Services:
+    // ==============================
 
-    private handleFolderNavigationByName(folderName: string): void {
+    // Common methods:
+
+    private async _handleFolderNavigationByName(folderName: string): Promise<void> {
         const newPathArr = [...this._pathArr, folderName];
-        this.handleFolderNavigation(newPathArr);
+        return this.handleFolderNavigation(newPathArr);
     }
 
-    public handleFolderNavigation(pathArr: string[]) {
-        this.setPathArr(pathArr);
-        this.setIsLoading(true);
-        this.setError(null);
-        DocumentService.getDocumentsByPath(pathArr)
+    private async _handleRefreshCurrentFolder(): Promise<void> {
+        return DocumentService.getDocumentsByPath(this.getPathArr())
             .then((newDocuments) => {
                 this.setSelectedDocument(null);
                 this.setDocuments(newDocuments);
             })
             .catch((error) => {
                 this.setError("Failed to load folder contents");
-            })
-            .finally(() => {
-                this.setIsLoading(false);
             });
-        ;
+    }
+
+    // Usecase specific methods:
+
+    public handleFolderNavigation(pathArr: string[]) {
+        this.setPathArr(pathArr);
+        this.setIsLoading(true);
+        this.setError(null);
+        this._handleRefreshCurrentFolder().finally(() => {
+            this.setIsLoading(false);
+        });
     }
 
     public handleFolderNavigationGoBackToLevel(goBackToLevel: number): void {
@@ -144,19 +152,11 @@ export class HomePageModel {
     public handleFolderNavigationById(folderId: string): void {
         const folderDocument = this.getDocumentById(folderId);
         if (folderDocument && folderDocument.documentType === "folder") {
-            this.handleFolderNavigationByName(folderDocument.name);
+            this._handleFolderNavigationByName(folderDocument.name);
         }
     }
 
     public handleAddFolder(folderName: string): void {
-        if (folderName.trim() === "") {
-            this.setError("Folder name cannot be empty");
-            return;
-        }
-        if (folderName.includes("/")) {
-            this.setError("Folder name cannot contain slashes");
-            return;
-        }
         if (this._documents.some(doc => doc.name === folderName)) {
             this.setError("A document with the same name already exists in the current folder");
             return;
@@ -169,7 +169,7 @@ export class HomePageModel {
             containingPath: path,
             modifiedBy: "Current User", // TODO: Get current user
         }).then(() => {
-            this.handleFolderNavigationByName(folderName);
+            this._handleFolderNavigationByName(folderName);
         }).catch((error) => {
             this.setError("Failed to create folder");
         }).finally(() => {
@@ -178,14 +178,6 @@ export class HomePageModel {
     }
 
     public handleAddFile(fileName: string, extension: string, content: string): void {
-        if (fileName.trim() === "") {
-            this.setError("File name cannot be empty");
-            return;
-        }
-        if (fileName.includes("/")) {
-            this.setError("File name cannot contain slashes");
-            return;
-        }
         if (this._documents.some(doc => doc.name === fileName && doc.documentType === "file")) {
             this.setError("A file with the same name already exists in the current folder");
             return;
@@ -202,7 +194,9 @@ export class HomePageModel {
         }).catch((error) => {
             this.setError("Failed to create file");
         }).finally(() => {
-            this.setIsLoading(false);
+            this._handleRefreshCurrentFolder().finally(() => {
+                this.setIsLoading(false);
+            });
         });
     }
 
@@ -210,10 +204,6 @@ export class HomePageModel {
         const fileDocument = this.getDocumentById(fileId);
         if (!fileDocument || fileDocument.documentType !== "file") {
             this.setError("File not found");
-            return;
-        }
-        if (fileName.trim() === "") {
-            this.setError("File name cannot be empty");
             return;
         }
         if (this._documents.some(doc => doc.name === fileName && doc.documentType === "file" && doc.id !== fileId)) {
@@ -229,7 +219,9 @@ export class HomePageModel {
         }).catch((error) => {
             this.setError("Failed to update file");
         }).finally(() => {
-            this.setIsLoading(false);
+            this._handleRefreshCurrentFolder().finally(() => {
+                this.setIsLoading(false);
+            });
         });
     }
 
@@ -255,7 +247,9 @@ export class HomePageModel {
         }).catch((error) => {
             this.setError("Failed to update folder");
         }).finally(() => {
-            this.setIsLoading(false);
+            this._handleRefreshCurrentFolder().finally(() => {
+                this.setIsLoading(false);
+            });
         });
     }
 
@@ -271,13 +265,17 @@ export class HomePageModel {
             FileService.deleteFile(documentId).catch((error) => {
                 this.setError("Failed to delete file");
             }).finally(() => {
-                this.setIsLoading(false);
+                this._handleRefreshCurrentFolder().finally(() => {
+                    this.setIsLoading(false);
+                });
             });
         } else if (document.documentType === "folder") {
             FolderService.deleteFolder(documentId).catch((error) => {
                 this.setError("Failed to delete folder");
             }).finally(() => {
-                this.setIsLoading(false);
+                this._handleRefreshCurrentFolder().finally(() => {
+                    this.setIsLoading(false);
+                });
             });
 
         }

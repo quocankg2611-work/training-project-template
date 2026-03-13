@@ -1,3 +1,4 @@
+import { FileModelValidator } from "../../models/_file.model";
 import { ModalBase } from "./base/_modal.base";
 
 export class AddFileModal extends ModalBase {
@@ -37,37 +38,41 @@ export class AddFileModal extends ModalBase {
                         maxlength="40"
                         autocomplete="off" />
                 <div class="invalid-feedback"
-                        id="${this.fileNameErrorId}">Please enter a file name.</div>
+                        id="${this.fileNameErrorId}"></div>
                 
                 <label for="${this.fileTypeSelectId}"
                         class="form-label mt-3">File Type</label>
                 <select class="form-select"
                         id="${this.fileTypeSelectId}">
-                    <option value="docx">Word Document (.docx)</option>
-                    <option value="xlsx">Excel Spreadsheet (.xlsx)</option>
-                    <option value="pptx">PowerPoint Presentation (.pptx)</option>
+                    <option value="word">Word Document (.docx)</option>
+                    <option value="excel">Excel Spreadsheet (.xlsx)</option>
+                    <option value="powerpoint">PowerPoint Presentation (.pptx)</option>
                     <option value="pdf">PDF Document (.pdf)</option>
-                    <option value="txt">Text File (.txt)</option>
+                    <option value="text">Text File (.txt)</option>
                     <option value="csv">CSV File (.csv)</option>
                 </select>
                 <div class="invalid-feedback"
-                        id="${this.fileTypeErrorId}">Please select a file type.</div>
+                        id="${this.fileTypeErrorId}"></div>
             </div>
         `
     }
 
     protected onAfterRender(): void {
         const confirmBtn = this.getModalSubmitBtn();
-        const errorDiv = document.getElementById(this.fileNameErrorId) as HTMLDivElement;
         const fileNameInput = document.getElementById(this.fileNameInputId) as HTMLInputElement;
+        const fileNameErrorDiv = document.getElementById(this.fileNameErrorId) as HTMLDivElement;
         const fileTypeSelect = document.getElementById(this.fileTypeSelectId) as HTMLSelectElement;
+        const fileTypeErrorDiv = document.getElementById(this.fileTypeErrorId) as HTMLDivElement;
 
         // Reset form state when modal is opened
         const modalEl = this.getModalElement();
         modalEl.addEventListener("show.bs.modal", () => {
             fileNameInput.value = "";
             fileNameInput.classList.remove("is-invalid");
-            errorDiv.style.display = "none";
+            fileNameErrorDiv.style.display = "none";
+            fileTypeSelect.value = "";
+            fileTypeSelect.classList.remove("is-invalid");
+            fileTypeErrorDiv.style.display = "none";
         });
 
         // Validate and submit
@@ -75,26 +80,36 @@ export class AddFileModal extends ModalBase {
             const fileName = fileNameInput.value.trim();
             const fileType = fileTypeSelect.value;
 
-            if (!fileName) {
+            const fileNameError = FileModelValidator.validateFileName(fileName);
+            const fileTypeError = FileModelValidator.validateFileType(fileType);
+
+            if (fileNameError) {
                 fileNameInput.classList.add("is-invalid");
-                errorDiv.style.display = "block";
-                return;
+                fileNameErrorDiv.style.display = "block";
+                fileNameErrorDiv.textContent = fileNameError;
             }
-            if (!fileType) {
-                const fileTypeErrorDiv = document.getElementById(this.fileTypeErrorId) as HTMLDivElement;
+            if (fileTypeError) {
                 fileTypeSelect.classList.add("is-invalid");
                 fileTypeErrorDiv.style.display = "block";
-                return;
+                fileTypeErrorDiv.textContent = fileTypeError;
             }
-            this.onAddFile(fileName, fileType, ""); // Pass an empty content for now
-            this.hide();
+            if (!fileNameError && !fileTypeError) {
+                this.onAddFile(fileName, fileType, ""); // Pass an empty content for now (since we are adding file)
+                this.hide();
+            }
         });
 
         // Clear validation on input
         fileNameInput.addEventListener("input", () => {
             if (fileNameInput.value.trim()) {
                 fileNameInput.classList.remove("is-invalid");
-                errorDiv.style.display = "none";
+                fileNameErrorDiv.style.display = "none";
+            }
+        });
+        fileTypeSelect.addEventListener("change", () => {
+            if (fileTypeSelect.value) {
+                fileTypeSelect.classList.remove("is-invalid");
+                fileTypeErrorDiv.style.display = "none";
             }
         });
     }
