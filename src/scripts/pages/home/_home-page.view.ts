@@ -1,7 +1,7 @@
-import { BreadcrumbComponent } from "../../components/_breadcrumb2";
-import { CardListComponent } from "../../components/_card-list2";
-import { TableComponent } from "../../components/_table2";
-import { HomePageDocumentView } from "./view-models/_document.view";
+import { BreadcrumbComponent } from "../../components/_breadcrumb";
+import { CardListComponent } from "../../components/_card-list";
+import { TableComponent } from "../../components/_table";
+import { HomePageDocumentView } from "./_home-page.types";
 
 export class HomePageView {
     private readonly breadcrumbComponent: BreadcrumbComponent;

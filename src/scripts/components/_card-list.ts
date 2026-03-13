@@ -1,61 +1,64 @@
-import { HomePageDocumentView } from "../pages/home/view-models/_document.view";
+import { HomePageDocumentView } from "../pages/home/_home-page.types";
 import { stringToHtmlElement } from "../utilities/_strings";
 
-export default function buildCardListElement(
-    documentItemViews: HomePageDocumentView[],
-    selectedItemId: string | null,
-    onItemSelected: (item: HomePageDocumentView) => void,
-    onFolderNavigated: (item: HomePageDocumentView) => void,
-): HTMLElement {
-    const cardListHtml = buildCardListHtml(documentItemViews, selectedItemId);
-    const cardListElement = stringToHtmlElement(cardListHtml);
+export class CardListComponent {
+    constructor(
+        private readonly onDocumentItemSelected: (selectedDocumentId: string | null) => void,
+        private readonly onFolderNavigated: (folderId: string) => void,
+    ) { }
 
-    // Attach selection event listeners
-    for (const documentView of documentItemViews) {
-        const cardElement = cardListElement.querySelector(`table[data-id="${documentView.id}"]`);
-        if (documentView.documentType === "folder") {
-            cardElement?.addEventListener("click", () => {
-                onFolderNavigated(documentView);
+    public build(
+        documentItemViews: HomePageDocumentView[],
+        selectedItemId: string | null,
+    ): HTMLElement {
+        const cardListHtml = this.buildHtml(documentItemViews, selectedItemId);
+        const cardListElement = stringToHtmlElement(cardListHtml);
+
+        // Attach selection event listeners
+        for (const documentView of documentItemViews) {
+            const cardElement = cardListElement.querySelector(`table[data-id="${documentView.id}"]`);
+            if (documentView.documentType === "folder") {
+                cardElement?.addEventListener("click", () => {
+                    this.onFolderNavigated(documentView.id);
+                });
+            }
+
+            const selectionArea = cardElement?.querySelector(`thead>tr>th:first-child`);
+            selectionArea?.addEventListener("click", (event) => {
+                event.stopPropagation(); // Prevent the click from bubbling up to the card's click event
+                this.onDocumentItemSelected(documentView.id);
             });
         }
 
-        const selectionArea = cardElement?.querySelector(`thead>tr>th:first-child`);
-        selectionArea?.addEventListener("click", (event) => {
-            event.stopPropagation(); // Prevent the click from bubbling up to the card's click event
-            onItemSelected(documentView);
-        });
+        return cardListElement;
     }
 
-    return cardListElement;
-}
-
-function buildCardListHtml(
-    documentItemViews: HomePageDocumentView[],
-    selectedItemId: string | null,
-): string {
-    const html = `
+    private buildHtml(
+        documentItemViews: HomePageDocumentView[],
+        selectedItemId: string | null,
+    ): string {
+        const html = `
     	<div class="home-page__list d-flex flex-column flex-grow-1">
             <div class="home-page__list-loading-container hidden">
                 <div class="loader loader--spinner"></div>
             </div>
 
             <div class="d-flex flex-column gap-4 pb-5">
-                ${documentItemViews.map((view) => buildCardItem(view, selectedItemId)).join("")}
+                ${documentItemViews.map((view) => this.buildCardItem(view, selectedItemId)).join("")}
             </div>
         </div>
     `;
-    return html;
-}
+        return html;
+    }
 
-function buildCardItem(
-    documentView: HomePageDocumentView,
-    selectedItemId: string | null,
-): string {
-    return `
+    private buildCardItem(
+        documentView: HomePageDocumentView,
+        selectedItemId: string | null,
+    ): string {
+        return `
         <table 
             class="file-card" 
             data-id="${documentView.id}"
-            onclick="${documentView.onDocumentClicked ? `(${documentView.onDocumentClicked.toString()})()` : ""}"
         >
             <thead>
                 <tr>
@@ -96,4 +99,5 @@ function buildCardItem(
             </tbody>
         </table>
     `;
+    }
 }

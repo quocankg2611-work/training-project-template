@@ -1,112 +1,67 @@
 import { stringToHtmlElement } from "../utilities/_strings";
-import { HomePageDocumentBreadcrumbView } from "../pages/home/view-models/_document-breadcrumb.view";
 
+export class BreadcrumbComponent {
+    constructor(
+        private readonly onBreadcrumbItemClick: (selectedPath: string) => void
+    ) { }
 
-export default function buildBreadcrumbElement(
-    folderStack: HomePageDocumentBreadcrumbView[],
-    onBreadcrumbFolderClick: (selectedFolderId: string) => void
-): HTMLElement {
-    const html = buildBreadcrumbHtml(folderStack);
-    const breadcrumbElement = stringToHtmlElement(html);
-    breadcrumbElement.onclick = (e) => {
-        const target = e.target as HTMLElement;
-        const linkElement = target.closest('.breadcrumb-link');
-        if (linkElement && breadcrumbElement.contains(linkElement)) {
-            e.preventDefault(); // Because it's an anchor tag, prevent default navigation, URL change
-            e.stopPropagation();
-            const folderId = linkElement.getAttribute('data-id');
-            if (folderId) {
-                onBreadcrumbFolderClick(folderId);
+    public build(pathArr: string[]): HTMLElement {
+        const html = this.buildBreadcrumbHtml(pathArr);
+        const breadcrumbElement = stringToHtmlElement(html);
+        breadcrumbElement.onclick = (e) => {
+            const target = e.target as HTMLElement;
+            const linkElement = target.closest('.breadcrumb-link');
+            if (linkElement && breadcrumbElement.contains(linkElement)) {
+                e.preventDefault(); // Because it's an anchor tag, prevent default navigation, URL change
+                e.stopPropagation();
+                const path = linkElement.getAttribute('data-breadcrumb-path');
+                if (path) {
+                    this.onBreadcrumbItemClick(path);
+                }
             }
         }
+        return breadcrumbElement;
     }
-    return breadcrumbElement;
-}
 
-function buildBreadcrumbHtml(
-    folderStack: HomePageDocumentBreadcrumbView[],
-): string {
-    const itemListHtml = folderStack.map((folder, index) => {
-        if (index === folderStack.length - 1) {
-            return buildBreadcrumbItemActiveHtml(folder);
-        } else {
-            return buildBreadcrumbItemHtml(folder);
-        }
-    }).join('');
+    private buildBreadcrumbHtml(pathArr: string[]): string {
+        const itemListHtml = pathArr.map((path, index) => {
+            if (index === pathArr.length - 1) {
+                return this.buildBreadcrumbItemActiveHtml(path);
+            } else {
+                return this.buildBreadcrumbItemHtml(path);
+            }
+        }).join('');
 
-    return `
+        return `
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 ${itemListHtml}
             </ol>
         </nav>
     `;
-}
+    }
 
-function buildBreadcrumbItemHtml(
-    documentBreadcrumb: HomePageDocumentBreadcrumbView,
-): string {
+    private buildBreadcrumbItemHtml(path: string): string {
 
-    return `
+        return `
         <li class="breadcrumb-item">
             <a
-                data-id="${documentBreadcrumb.id}"
                 href="#"
+                data-breadcrumb-path="${path}"
                 class="breadcrumb-link"
             >
-                ${documentBreadcrumb.name}
+                ${path}
             </a>
         </li>
     `;
-}
+    }
 
-function buildBreadcrumbItemActiveHtml(
-    documentBreadcrumb: HomePageDocumentBreadcrumbView
-): string {
-    return `
+    private buildBreadcrumbItemActiveHtml(path: string): string {
+        return `
         <li class="breadcrumb-item active"
             aria-current="page">
-            ${documentBreadcrumb.name}
+            ${path}
         </li>
     `;
+    }
 }
-
-
-// export default function renderBreadcrumb(
-//     folderStack: DocumentBreadcrumbView[],
-//     onClick: (selectedFolderId: string) => void
-// ): void {
-
-
-
-
-//     const placeholders = document.getElementById("breadcrumb--placeholder");
-
-//     const breadcrumbContainerTemplate = document.getElementById('breadcrumbContainer--template') as HTMLTemplateElement;
-//     const breadcrumbItemTemplate = document.getElementById('breadcrumbItem--template') as HTMLTemplateElement;
-//     const breadcrumbItemActiveTemplate = document.getElementById('breadcrumbItemActive--template') as HTMLTemplateElement;
-
-//     const breadcrumbContainer = breadcrumbContainerTemplate.content.cloneNode(true) as HTMLElement;
-//     const breadcrumbList = breadcrumbContainer.querySelector('.breadcrumb') as HTMLElement;
-
-//     folderStack.forEach((folder, index) => {
-//         let item: HTMLElement;
-//         if (index === folderStack.length - 1) {
-//             item = breadcrumbItemActiveTemplate.content.cloneNode(true) as HTMLElement;
-//             const liElement = item.querySelector('li') as HTMLLIElement;
-//             liElement.textContent = folder.name;
-//         } else {
-//             item = breadcrumbItemTemplate.content.cloneNode(true) as HTMLElement;
-//             const linkElement = item.querySelector('a') as HTMLAnchorElement;
-//             linkElement.innerText = folder.name;
-//             linkElement.addEventListener('click', (e) => {
-//                 e.preventDefault(); // Because it's an anchor tag
-//                 e.stopPropagation();
-//                 onClick(folder.id);
-//             });
-//         }
-//         breadcrumbList.appendChild(item);
-//     });
-
-//     placeholders?.replaceChildren(breadcrumbContainer);
-// }

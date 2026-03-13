@@ -32,3 +32,54 @@ export type PathModel = {
      */
     subDocumentIdKeys: string[];
 }
+
+// const seedFolderData: FolderModel = {
+//     id: crypto.randomUUID(),
+//     name: "Home",
+//     modified: new Date("2026-01-01").toISOString(),
+//     modifiedBy: "Megan Bowen",
+//     files: [
+//         {
+//             id: crypto.randomUUID(),
+//             name: "CoasterAndBargelLoading",
+//             modified: new Date().toISOString(),
+//             modifiedBy: "Administrator MOD",
+//             extension: "docx",
+//             content: ""
+//         },
+//         {
+//             id: crypto.randomUUID(),
+//             name: "RevenueByServices",
+//             modified: new Date().toISOString(),
+//             modifiedBy: "Administrator MOD",
+//             extension: "xlsx",
+//             content: ""
+//         },
+//         {
+//             id: crypto.randomUUID(),
+//             name: "RevenueByServices2016",
+//             modified: new Date().toISOString(),
+//             modifiedBy: "Administrator MOD",
+//             extension: "xlsx",
+//             content: ""
+//         },
+//         {
+//             id: crypto.randomUUID(),
+//             name: "RevenueByServices2017",
+//             modified: new Date().toISOString(),
+//             modifiedBy: "Administrator MOD",
+//             extension: "xlsx",
+//             content: ""
+//         }
+//     ],
+//     subFolders: [
+//         {
+//             id: crypto.randomUUID(),
+//             name: "CAS",
+//             modified: new Date("2025-04-30").toISOString(),
+//             modifiedBy: "Megan Bowen",
+//             files: [],
+//             subFolders: []
+//         }
+//     ]
+// };

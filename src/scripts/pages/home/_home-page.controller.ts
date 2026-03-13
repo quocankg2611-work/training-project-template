@@ -6,8 +6,8 @@ import { UpdateFileModal } from "../../components/modals/_update-file-modal";
 import { UpdateFolderModal } from "../../components/modals/_update-folder-modal";
 import { UploadFileModal } from "../../components/modals/_upload-file-modal";
 import { UploadFolderModal } from "../../components/modals/_upload-folder-modal";
-import { HomePageModel } from "./home-page.model";
-import { HomePageView } from "./home-page.view";
+import { HomePageModel } from "./_home-page.model";
+import { HomePageView } from "./_home-page.view";
 
 export class HomePageController {
     private addFolderModal: AddFolderModal;
@@ -25,9 +25,41 @@ export class HomePageController {
         this.bootstrapModel();
         this.bootstrapView();
         this.bootstrapModals();
+
+        this.view.renderBody(this.model.getDocuments(), this.model.getSelectedDocument()?.id ?? null);
+        this.view.renderBreadcrumb(this.model.getPathArr());
     }
 
     private bootstrapModals(): void {
+        const handleModalAddFolderConfirm = (folderName: string) => {
+            this.model.handleAddFolder(folderName);
+        };
+
+        const handleModalAddFileConfirm = (fileName: string, extension: string, content: string) => {
+            this.model.handleAddFile(fileName, extension, content);
+        };
+
+        // TODO: Handle folder upload more detail
+        const handleModalUploadFolderConfirm = (folderName: string, files: File[]) => {
+            this.model.handleAddFolder(folderName);
+        };
+
+        const handleModalUploadFileConfirm = (fileName: string, extension: string, content: string) => {
+            this.model.handleAddFile(fileName, extension, content);
+        };
+
+        const handleModalUpdateFileConfirm = (fileId: string, fileName: string) => {
+            this.model.handleUpdateFile(fileId, fileName);
+        };
+
+        const handleModalUpdateFolderConfirm = (folderId: string, folderName: string) => {
+            this.model.handleUpdateFolder(folderId, folderName);
+        };
+
+        const handleModalDeleteDocumentConfirm = (documentId: string, documentType: "folder" | "file") => {
+            this.model.handleDeleteDocument(documentId);
+        };
+
         this.addFolderModal = new AddFolderModal(handleModalAddFolderConfirm).init();
         this.addFileModal = new AddFileModal(handleModalAddFileConfirm).init();
         this.uploadFileModal = new UploadFileModal(handleModalUploadFileConfirm).init();
@@ -35,101 +67,8 @@ export class HomePageController {
         this.updateFileModal = new UpdateFileModal(handleModalUpdateFileConfirm).init();
         this.updateFolderModal = new UpdateFolderModal(handleModalUpdateFolderConfirm).init();
         this.deleteDocumentModal = new DeleteDocumentModal(handleModalDeleteDocumentConfirm).init();
-
-        const handleModalAddFolderConfirm = (folderName: string) => {
-            this.model.handleAddFolder(folderName);
-            // isLoadingState.set(true);
-            // documentService.addFolder(folderName).then(() => {
-            //     documentService.getCurrentFolder().then((currentFolder) => {
-            //         selectedDocumentItemState.set(null);
-            //         currentFolderState.set(currentFolder);
-            //         isLoadingState.set(false);
-            //     });
-            // });
-        }
-
-        function handleModalAddFileConfirm(fileName: string, extension: string, content: string) {
-            // isLoadingState.set(true);
-            // documentService.addFile(fileName, extension, content).then(() => {
-            //     documentService.getCurrentFolder().then((currentFolder) => {
-            //         selectedDocumentItemState.set(null);
-            //         currentFolderState.set(currentFolder);
-            //         isLoadingState.set(false);
-            //     });
-            // });
-        }
-
-        function handleModalUploadFileConfirm(fileName: string, extension: string, content: string) {
-            // isLoadingState.set(true);
-            // documentService.addFile(fileName, extension, content).then(() => {
-            //     documentService.getCurrentFolder().then((currentFolder) => {
-            //         selectedDocumentItemState.set(null);
-            //         currentFolderState.set(currentFolder);
-            //         isLoadingState.set(false);
-            //     });
-            // });
-        }
-
-        // TODO: Handle folder upload more detail
-        function handleModalUploadFolderConfirm(folderName: string, files: File[]) {
-            // isLoadingState.set(true);
-            // documentService.addFolder(folderName).then(() => {
-            //     documentService.getCurrentFolder().then((currentFolder) => {
-            //         selectedDocumentItemState.set(null);
-            //         currentFolderState.set(currentFolder);
-            //         isLoadingState.set(false);
-            //     });
-            // });
-        }
-
-        function handleModalUpdateFileConfirm(fileId: string, fileName: string) {
-            // isLoadingState.set(true);
-            // documentService.updateFile(fileId, fileName).then(() => {
-            //     documentService.getCurrentFolder().then((currentFolder) => {
-            //         selectedDocumentItemState.set(null);
-            //         currentFolderState.set(currentFolder);
-            //         isLoadingState.set(false);
-            //     });
-            // });
-        }
-
-        function handleModalUpdateFolderConfirm(folderId: string, folderName: string) {
-            // isLoadingState.set(true);
-            // documentService.updateFolder(folderId, folderName).then(() => {
-            //     documentService.getCurrentFolder().then((currentFolder) => {
-            //         selectedDocumentItemState.set(null);
-            //         currentFolderState.set(currentFolder);
-            //         isLoadingState.set(false);
-            //     });
-            // });
-        }
-
-        function handleModalDeleteDocumentConfirm(documentId: string, documentType: "folder" | "file") {
-            // isLoadingState.set(true);
-            // if (documentType === "folder") {
-            //     documentService.deleteFolder(documentId).then(() => {
-            //         documentService.getCurrentFolder().then((currentFolder) => {
-            //             selectedDocumentItemState.set(null);
-            //             currentFolderState.set(currentFolder);
-            //             isLoadingState.set(false);
-            //         });
-            //     });
-            // } else {
-            //     documentService.deleteFile(documentId).then(() => {
-            //         documentService.getCurrentFolder().then((currentFolder) => {
-            //             selectedDocumentItemState.set(null);
-            //             currentFolderState.set(currentFolder);
-            //             isLoadingState.set(false);
-            //         });
-            //     });
-            // }
-        }
-
     }
 
-    /**
-     * Use arrow function to keep the "this" context of the controller instance when the model calls the change handlers. Otherwise, we need to bind "this" for each handler function, which is more verbose and error-prone.
-     */
     private bootstrapModel(): void {
         const handlePathArrChange = (pathArr: string[]): void => {
             this.view.renderBreadcrumb(pathArr);
@@ -226,3 +165,8 @@ export class HomePageController {
         );
     }
 }
+
+
+/**
+ * NOTE: Use arrow function to keep the "this" context of the controller instance when the model calls the change handlers. Otherwise, we need to bind "this" for each handler function, which is more verbose and error-prone.
+ */
