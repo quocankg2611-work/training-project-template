@@ -1,6 +1,6 @@
 
 import formatTimeAgo from "../utilities/_format-strings";
-import { localStorageKey, PathModel } from "./__common.api";
+import { localStorageKey, PathModel } from "./__common.service";
 
 export type DocumentResponse = {
     id: string,
@@ -18,7 +18,7 @@ export type DocumentResponse = {
  * Common operations between files and folders
  */
 
-export class DocumentApi {
+export class DocumentService {
     public static async getDocumentsByPath(pathArr: string[]): Promise<DocumentResponse[]> {
         const pathKey = localStorageKey.buildFolderPathKey(pathArr);
         const item = localStorage.getItem(pathKey);

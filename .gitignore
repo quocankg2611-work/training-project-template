@@ -2,3 +2,4 @@ node_modules
 __tasks__
 dist
 /dist/
+.vscode

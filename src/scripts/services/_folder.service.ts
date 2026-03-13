@@ -1,5 +1,5 @@
-import { localStorageKey, PathModel } from "./__common.api";
-import { FileApi } from "./_file.api";
+import { localStorageKey, PathModel } from "./__common.service";
+import { FileService } from "./_file.service";
 
 type FolderModel = {
     id: string,
@@ -7,13 +7,14 @@ type FolderModel = {
     modified: string,
     modifiedBy: string,
     documentType: "file" | "folder",
-    path: string,
+    containingPath: string,
 }
 
 export type CreateFolderRequest = {
     name: string;
-    path: string;
+    containingPath: string;
     modifiedBy: string;
+    modified?: string;
 }
 
 export type UpdateFolderRequest = {
@@ -21,46 +22,61 @@ export type UpdateFolderRequest = {
     name: string;
 }
 
-export class FolderApi {
+export class FolderService {
+    /**
+     * Mandatory seed for root folder for the system to run well and logically
+     */
+    public static async seedRootFolder() {
+        const rootPathKey = localStorageKey.buildFolderPathKey([]);
+        localStorage.setItem(rootPathKey, JSON.stringify({
+            id: crypto.randomUUID(),
+            subDocumentIdKeys: []
+        }));
+        const rootFolderIdKey = localStorageKey.buildFolderIdKey("root");
+        localStorage.setItem(rootFolderIdKey, JSON.stringify({
+            id: "root",
+            name: "Root",
+            containingPath: "",
+            modifiedBy: "System",
+            modified: new Date().toISOString(),
+            documentType: "folder",
+        } as FolderModel));
+    }
+
     public static async createFolder(model: CreateFolderRequest) {
-        const pathArr = model.path.split("/").filter(Boolean);
-        const parrentPathArr = pathArr.slice(0, -1);
-        // Change the path model of parrent folder to include the new folder
-        if (parrentPathArr.length > 0) {
-            const parrentPathKey = localStorageKey.buildFolderPathKey(parrentPathArr);
-            const parrentPathItem = localStorage.getItem(parrentPathKey);
-            if (!parrentPathItem) {
-                throw new Error("Parrent folder not found");
-            }
-            const { subDocumentIdKeys: subDocumentIds } = JSON.parse(parrentPathItem) as PathModel;
-            subDocumentIds.push(model.path);
-            localStorage.setItem(parrentPathKey, JSON.stringify({
-                id: crypto.randomUUID(),
-                subDocumentIds
-            }));
+        const folderId = crypto.randomUUID();
+        const folderIdKey = localStorageKey.buildFolderIdKey(folderId);
+
+        // Change the path model of parent folder to include the new folder (if any)
+        const parentPathArr = model.containingPath.split("/").filter(Boolean);
+        const parentPathKey = localStorageKey.buildFolderPathKey(parentPathArr);
+        const parentPathItem = localStorage.getItem(parentPathKey);
+        if (parentPathItem) {
+            const pathModel = JSON.parse(parentPathItem) as PathModel;
+            pathModel.subDocumentIdKeys.push(folderIdKey);
+            localStorage.setItem(parentPathKey, JSON.stringify(pathModel));
+        } else {
+            throw new Error("Parent folder not found");
         }
 
         // Create the path model for the new folder
-        const pathKey = localStorageKey.buildFolderPathKey(pathArr);
+        const pathArr = [...parentPathArr, model.name];
+        const folderPathKey = localStorageKey.buildFolderPathKey(pathArr);
         const newPathModel: PathModel = {
-            id: crypto.randomUUID(),
+            id: folderId,
             subDocumentIdKeys: []
         };
-        localStorage.setItem(pathKey, JSON.stringify(newPathModel));
+        localStorage.setItem(folderPathKey, JSON.stringify(newPathModel));
 
-        // Create the document model for the new folder
-        const id = crypto.randomUUID();
-
-        const idKey = localStorageKey.buildFolderIdKey(id);
         const newDocumentModel: FolderModel = {
-            id: id,
+            id: folderId,
             name: model.name,
-            path: model.path,
+            containingPath: model.containingPath,
             modifiedBy: model.modifiedBy,
-            modified: new Date().toISOString(),
+            modified: model.modified || new Date().toISOString(),
             documentType: "folder",
         };
-        localStorage.setItem(idKey, JSON.stringify(newDocumentModel));
+        localStorage.setItem(folderIdKey, JSON.stringify(newDocumentModel));
     }
 
     public static async updateFolder(request: UpdateFolderRequest) {
@@ -86,7 +102,7 @@ export class FolderApi {
         const model = JSON.parse(localStorage.getItem(idKey)) as FolderModel;
 
         // Get and Delete all sub document until root:
-        const pathKey = localStorageKey.buildFolderPathKey(model.path.split("/").filter(Boolean));
+        const pathKey = localStorageKey.buildFolderPathKey(model.containingPath.split("/").filter(Boolean));
         const pathModel = JSON.parse(localStorage.getItem(pathKey) || "") as PathModel;
         for (const id of pathModel.subDocumentIdKeys) {
             const subIdKey = localStorageKey.buildFolderIdKey(id);
@@ -94,7 +110,7 @@ export class FolderApi {
             if (subModel.documentType === "folder") {
                 await this.deleteFolder(subModel.id);
             } else {
-                FileApi.deleteFile(subModel.id);
+                FileService.deleteFile(subModel.id);
             }
         }
 
@@ -103,8 +119,7 @@ export class FolderApi {
         localStorage.removeItem(pathKey);
 
         // Update the parent folder's PathModel to remove the deleted folder from subDocumentIds
-        const pathArr = model.path.split("/").filter(Boolean);
-        const parentPathArr = pathArr.slice(0, -1);
+        const parentPathArr = model.containingPath.split("/").filter(Boolean);
         if (parentPathArr.length > 0) {
             const parentPathKey = localStorageKey.buildFolderPathKey(parentPathArr);
             const parentPathItem = localStorage.getItem(parentPathKey);

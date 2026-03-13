@@ -1,6 +1,6 @@
-import { DocumentApi, DocumentResponse } from "../../apis/_document.api";
-import { FileApi } from "../../apis/_file.api";
-import { FolderApi } from "../../apis/_folder.api";
+import { DocumentService, DocumentResponse } from "../../services/_document.service";
+import { FileService } from "../../services/_file.service";
+import { FolderService } from "../../services/_folder.service";
 
 export class HomePageModel {
 
@@ -32,6 +32,21 @@ export class HomePageModel {
             return this._documentByIdMap[id];
         }
         return null;
+    }
+
+    public bootstrap(): void {
+        this.setIsLoading(true);
+        this.setError(null);
+        DocumentService.getDocumentsByPath(this._pathArr)
+            .then((documents) => {
+                this.setDocuments(documents);
+            })
+            .catch((error) => {
+                this.setError("Failed to load folder contents");
+            })
+            .finally(() => {
+                this.setIsLoading(false);
+            });
     }
 
     // Getters and setters:
@@ -101,7 +116,7 @@ export class HomePageModel {
         this.setPathArr(newPathArr);
         this.setIsLoading(true);
         this.setError(null);
-        DocumentApi.getDocumentsByPath(newPathArr)
+        DocumentService.getDocumentsByPath(newPathArr)
             .then((newDocuments) => {
                 this.setSelectedDocument(null);
                 this.setDocuments(newDocuments);
@@ -138,9 +153,9 @@ export class HomePageModel {
         this.setError(null);
         this.setIsLoading(true);
         const path = this._pathArr.join("/");
-        FolderApi.createFolder({
+        FolderService.createFolder({
             name: folderName,
-            path: path,
+            containingPath: path,
             modifiedBy: "Current User", // TODO: Get current user
         }).then(() => {
             this.handleFolderNavigationByName(folderName);
@@ -167,11 +182,11 @@ export class HomePageModel {
         this.setError(null);
         this.setIsLoading(true);
         const path = this._pathArr.join("/");
-        FileApi.createFile({
+        FileService.createFile({
             name: fileName,
-            extension: extension,
+            fileType: extension,
             content: content,
-            path: path,
+            containingPath: path,
             modifiedBy: "Current User" // TODO: Get current user
         }).catch((error) => {
             this.setError("Failed to create file");
@@ -196,10 +211,10 @@ export class HomePageModel {
         }
         this.setError(null);
         this.setIsLoading(true);
-        FileApi.updateFile({
+        FileService.updateFile({
             id: fileId,
             name: fileName,
-            extension: fileDocument.fileType,
+            fileType: fileDocument.fileType,
         }).catch((error) => {
             this.setError("Failed to update file");
         }).finally(() => {
@@ -223,7 +238,7 @@ export class HomePageModel {
         }
         this.setError(null);
         this.setIsLoading(true);
-        FolderApi.updateFolder({
+        FolderService.updateFolder({
             id: folderId,
             name: folderName,
         }).catch((error) => {
@@ -242,13 +257,13 @@ export class HomePageModel {
         this.setError(null);
         this.setIsLoading(true);
         if (document.documentType === "file") {
-            FileApi.deleteFile(documentId).catch((error) => {
+            FileService.deleteFile(documentId).catch((error) => {
                 this.setError("Failed to delete file");
             }).finally(() => {
                 this.setIsLoading(false);
             });
         } else if (document.documentType === "folder") {
-            FolderApi.deleteFolder(documentId).catch((error) => {
+            FolderService.deleteFolder(documentId).catch((error) => {
                 this.setError("Failed to delete folder");
             }).finally(() => {
                 this.setIsLoading(false);

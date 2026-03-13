@@ -1,4 +1,4 @@
-import { DocumentResponse } from "../../apis/_document.api";
+import { DocumentResponse } from "../../services/_document.service";
 import { AddFileModal } from "../../components/modals/_add-file-modal";
 import { AddFolderModal } from "../../components/modals/_add-folder-modal";
 import { DeleteDocumentModal } from "../../components/modals/_delete-document-modal";
@@ -25,9 +25,12 @@ export class HomePageController {
         this.bootstrapModel();
         this.bootstrapView();
         this.bootstrapModals();
-
+        
         this.view.renderBody(this.model.getDocuments(), this.model.getSelectedDocument()?.id ?? null);
         this.view.renderBreadcrumb(this.model.getPathArr());
+
+        this.view.bootstrap();
+        this.model.bootstrap();
     }
 
     private bootstrapModals(): void {

@@ -23,7 +23,6 @@ export class HomePageView {
         this.breadcrumbComponent = new BreadcrumbComponent(onBreadcrumbItemClick);
         this.tableComponent = new TableComponent(onDocumentItemSelected, onFolderNavigated);
         this.cardListComponent = new CardListComponent(onDocumentItemSelected, onFolderNavigated);
-        this.bootstrapEvents();
     }
 
     public renderBreadcrumb(pathArr: string[]): void {
@@ -79,12 +78,12 @@ export class HomePageView {
     private render(placeholderId: string, element: HTMLElement): void {
         const placeholder = document.getElementById(placeholderId);
         if (placeholder) {
-            placeholder.replaceWith(element);
+            placeholder.replaceChildren(element);
         }
     }
 
 
-    private bootstrapEvents(): void {
+    public bootstrap(): void {
         document.getElementById("homePageNavbarNewFolder")?.addEventListener("click", (e) => {
             e.preventDefault();
             e.stopPropagation();

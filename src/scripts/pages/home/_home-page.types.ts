@@ -1,4 +1,4 @@
-import { DocumentResponse } from "../../apis/_document.api";
+import { DocumentResponse } from "../../services/_document.service";
 import formatTimeAgo from "../../utilities/_format-strings";
 
 export class HomePageDocumentView {
