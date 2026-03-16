@@ -1,4 +1,4 @@
-import { stringToHtmlElement } from "../utilities/_strings";
+import { HtmlUtils } from "../utilities/_html";
 
 export class BreadcrumbComponent {
     constructor(
@@ -7,7 +7,7 @@ export class BreadcrumbComponent {
 
     public build(pathArr: string[]): HTMLElement {
         const html = this.buildBreadcrumbHtml(pathArr);
-        const breadcrumbElement = stringToHtmlElement(html);
+        const breadcrumbElement = HtmlUtils.stringToSingleHtmlElement(html);
         breadcrumbElement.onclick = (e) => {
             const target = e.target as HTMLElement;
             const linkElement = target.closest('.breadcrumb-link');

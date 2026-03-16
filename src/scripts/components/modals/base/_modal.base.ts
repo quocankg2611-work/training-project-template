@@ -3,6 +3,7 @@ import { Modal } from "bootstrap";
 export abstract class ModalBase {
     private readonly modalId: string;
     private readonly modalSubmitBtnId: string;
+    private readonly modalGlobalErrorId: string;
 
     private readonly title: string;
     private readonly subtitle: string;
@@ -24,6 +25,8 @@ export abstract class ModalBase {
     ) {
         this.modalId = `modal-${Math.random().toString(36).slice(2, 9)}`;
         this.modalSubmitBtnId = `${this.modalId}--submitBtn`;
+        this.modalGlobalErrorId = `${this.modalId}--globalError`;
+
         this.modalElement = null;
         this.modalInstance = null;
         this.title = title;
@@ -31,7 +34,7 @@ export abstract class ModalBase {
         this.confirmText = confirmText;
     }
 
-    public init(): this {
+    public bootstrap(): this {
         this.modalElement = this.buildAndRender(this.title, this.subtitle, this.confirmText);
         this.modalInstance = new Modal(this.modalElement);
         this.modalElement.addEventListener('hide.bs.modal', () => {
@@ -39,9 +42,28 @@ export abstract class ModalBase {
             if (active instanceof HTMLElement) {
                 active.blur();
             }
+            this.raiseGlobalError(null);
         });
         this.onAfterRender();
         return this;
+    }
+
+    private resetGlobalError(): void {
+        const errorDiv = this.modalElement.querySelector(`#${this.modalGlobalErrorId}`) as HTMLDivElement;
+        if (errorDiv) {
+            errorDiv.textContent = "";
+            errorDiv.style.display = "none";
+        }
+    }
+
+    protected raiseGlobalError(message: string): void {
+        if (this.modalElement) {
+            const errorDiv = this.modalElement.querySelector(`#${this.modalGlobalErrorId}`) as HTMLDivElement;
+            if (errorDiv) {
+                errorDiv.textContent = message;
+                errorDiv.style.display = "block";
+            }
+        }
     }
 
     protected getModalSubmitBtn(): HTMLButtonElement {
@@ -80,6 +102,7 @@ export abstract class ModalBase {
                         </div>
                         <div class="modal-body">${this.buildBodyHtml()}</div>
                         <div class="modal-footer">
+                            <div id="${this.modalGlobalErrorId}" class="text-danger"></div>
                             <button class="btn-cancel" data-bs-dismiss="modal">Cancel</button>
                             <button class="btn-add" id="${this.modalSubmitBtnId}">${confirmText}</button>
                         </div>

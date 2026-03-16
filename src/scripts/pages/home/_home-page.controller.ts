@@ -34,12 +34,12 @@ export class HomePageController {
     }
 
     private bootstrapModals(): void {
-        const handleModalAddFolderConfirm = (folderName: string) => {
-            this.model.handleAddFolder(folderName);
+        const handleModalAddFolderConfirm = (folderName: string): string | null => {
+           return this.model.handleAddFolder(folderName);
         };
 
-        const handleModalAddFileConfirm = (fileName: string, extension: string, content: string) => {
-            this.model.handleAddFile(fileName, extension, content);
+        const handleModalAddFileConfirm = (fileName: string, extension: string, content: string): string | null => {
+            return this.model.handleAddFile(fileName, extension, content);
         };
 
         // TODO: Handle folder upload more detail
@@ -63,13 +63,13 @@ export class HomePageController {
             this.model.handleDeleteDocument(documentId);
         };
 
-        this.addFolderModal = new AddFolderModal(handleModalAddFolderConfirm).init();
-        this.addFileModal = new AddFileModal(handleModalAddFileConfirm).init();
-        this.uploadFileModal = new UploadFileModal(handleModalUploadFileConfirm).init();
-        this.uploadFolderModal = new UploadFolderModal(handleModalUploadFolderConfirm).init();
-        this.updateFileModal = new UpdateFileModal(handleModalUpdateFileConfirm).init();
-        this.updateFolderModal = new UpdateFolderModal(handleModalUpdateFolderConfirm).init();
-        this.deleteDocumentModal = new DeleteDocumentModal(handleModalDeleteDocumentConfirm).init();
+        this.addFolderModal = new AddFolderModal(handleModalAddFolderConfirm).bootstrap();
+        this.addFileModal = new AddFileModal(handleModalAddFileConfirm).bootstrap();
+        this.uploadFileModal = new UploadFileModal(handleModalUploadFileConfirm).bootstrap();
+        this.uploadFolderModal = new UploadFolderModal(handleModalUploadFolderConfirm).bootstrap();
+        this.updateFileModal = new UpdateFileModal(handleModalUpdateFileConfirm).bootstrap();
+        this.updateFolderModal = new UpdateFolderModal(handleModalUpdateFolderConfirm).bootstrap();
+        this.deleteDocumentModal = new DeleteDocumentModal(handleModalDeleteDocumentConfirm).bootstrap();
     }
 
     private bootstrapModel(): void {

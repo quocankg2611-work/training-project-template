@@ -1,0 +1,16 @@
+- Error display
+    - Refactor to reusable modal-inputs
+===============================================
+
+- "Folder is empty" when empty
+- Multi-file upload
+- File / Folder name unique validation
+- Add sort
+- Fix loading indicator
+- Add new 
+- Redesign the data saving:
+    - Use key-value (file_123456, folder_123456, ...) instead of tree
+- Beautify:
+    - Add background to loading
+    - Add different file icons
+- Add view details

@@ -1,5 +1,5 @@
 import { HomePageDocumentView } from "../pages/home/_home-page.types";
-import { stringToHtmlElement } from "../utilities/_strings";
+import { HtmlUtils } from "../utilities/_html";
 
 export class CardListComponent {
     constructor(
@@ -12,7 +12,7 @@ export class CardListComponent {
         selectedItemId: string | null,
     ): HTMLElement {
         const cardListHtml = this.buildHtml(documentItemViews, selectedItemId);
-        const cardListElement = stringToHtmlElement(cardListHtml);
+        const cardListElement = HtmlUtils.stringToSingleHtmlElement(cardListHtml);
 
         // Attach selection event listeners
         for (const documentView of documentItemViews) {

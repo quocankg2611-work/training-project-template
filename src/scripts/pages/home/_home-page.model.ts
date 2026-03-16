@@ -156,12 +156,11 @@ export class HomePageModel {
         }
     }
 
-    public handleAddFolder(folderName: string): void {
+    public handleAddFolder(folderName: string): string | null {
         if (this._documents.some(doc => doc.name === folderName)) {
-            this.setError("A document with the same name already exists in the current folder");
-            return;
+            return "A document with the same name already exists in the current folder";
         }
-        this.setError(null);
+        let error: string | null = null;
         this.setIsLoading(true);
         const path = this._pathArr.join("/");
         FolderService.createFolder({
@@ -171,18 +170,18 @@ export class HomePageModel {
         }).then(() => {
             this._handleFolderNavigationByName(folderName);
         }).catch((error) => {
-            this.setError("Failed to create folder");
+            error = "Failed to create folder";
         }).finally(() => {
             this.setIsLoading(false);
         });
+        return error;
     }
 
-    public handleAddFile(fileName: string, extension: string, content: string): void {
+    public handleAddFile(fileName: string, extension: string, content: string): string | null {
         if (this._documents.some(doc => doc.name === fileName && doc.documentType === "file")) {
-            this.setError("A file with the same name already exists in the current folder");
-            return;
+            return "A file with the same name already exists in the current folder";
         }
-        this.setError(null);
+        let error: string | null = null;
         this.setIsLoading(true);
         const path = this._pathArr.join("/");
         FileService.createFile({
@@ -192,12 +191,13 @@ export class HomePageModel {
             containingPath: path,
             modifiedBy: "Current User" // TODO: Get current user
         }).catch((error) => {
-            this.setError("Failed to create file");
+            error = "Failed to create file";
         }).finally(() => {
             this._handleRefreshCurrentFolder().finally(() => {
                 this.setIsLoading(false);
             });
         });
+        return error;
     }
 
     public handleUpdateFile(fileId: string, fileName: string): void {

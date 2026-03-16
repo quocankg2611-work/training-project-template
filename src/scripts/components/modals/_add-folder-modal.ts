@@ -1,12 +1,13 @@
+import { FolderModelValidator } from "../../models/_folder.model";
 import { ModalBase } from "./base/_modal.base";
 
 export class AddFolderModal extends ModalBase {
     private readonly folderNameInputId: string;
     private readonly folderNameErrorId: string;
-    private readonly onAddFolder: (folderName: string) => void;
+    private readonly onAddFolder: (folderName: string) => string | null;
 
     constructor(
-        onAddFolder: (folderName: string) => void
+        onAddFolder: (folderName: string) => string | null
     ) {
         super(
             "Add New Folder",
@@ -41,35 +42,43 @@ export class AddFolderModal extends ModalBase {
 
     protected onAfterRender(): void {
         const confirmBtn = this.getModalSubmitBtn();
-        const errorDiv = document.getElementById(this.folderNameErrorId) as HTMLDivElement;
-        const input = document.getElementById(this.folderNameInputId) as HTMLInputElement;
+        const folderNameErrorDiv = document.getElementById(this.folderNameErrorId) as HTMLDivElement;
+        const folderNameInput = document.getElementById(this.folderNameInputId) as HTMLInputElement;
 
         // Reset form state when modal is opened
         const modalEl = this.getModalElement();
         modalEl.addEventListener("show.bs.modal", () => {
-            input.value = "";
-            input.classList.remove("is-invalid");
-            errorDiv.style.display = "none";
+            folderNameInput.value = "";
+            folderNameInput.classList.remove("is-invalid");
+            folderNameErrorDiv.style.display = "none";
         });
 
         // Validate and submit
         confirmBtn.addEventListener("click", () => {
-            const folderName = input.value.trim();
+            const folderName = folderNameInput.value.trim();
+            const folderNameError = FolderModelValidator.validateName(folderName);
 
-            if (!folderName) {
-                input.classList.add("is-invalid");
-                errorDiv.style.display = "block";
-            } else {
-                this.onAddFolder(folderName);
-                this.hide();
+            if (folderNameError) {
+                folderNameInput.classList.add("is-invalid");
+                folderNameErrorDiv.style.display = "block";
+                folderNameErrorDiv.textContent = folderNameError;
+            }
+
+            if (!folderNameError) {
+                const errorMessage = this.onAddFolder(folderName);
+                if (errorMessage) {
+                    this.raiseGlobalError(errorMessage);
+                } else {
+                    this.hide();
+                }
             }
         });
 
         // Clear validation on input
-        input.addEventListener("input", () => {
-            if (input.value.trim()) {
-                input.classList.remove("is-invalid");
-                errorDiv.style.display = "none";
+        folderNameInput.addEventListener("input", () => {
+            if (folderNameInput.value.trim()) {
+                folderNameInput.classList.remove("is-invalid");
+                folderNameErrorDiv.style.display = "none";
             }
         });
     }

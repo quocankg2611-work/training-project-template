@@ -1,5 +1,5 @@
 import { HomePageDocumentView } from "../pages/home/_home-page.types";
-import { stringToHtmlElement } from "../utilities/_strings";
+import { HtmlUtils } from "../utilities/_html";
 
 export class TableComponent {
     constructor(
@@ -12,7 +12,7 @@ export class TableComponent {
         selectedItemId: string | null,
     ): HTMLElement {
         const tableHtml = this.buildHtml(items, selectedItemId);
-        const tableElement = stringToHtmlElement(tableHtml);
+        const tableElement = HtmlUtils.stringToSingleHtmlElement(tableHtml);
 
         // Attach selection event listeners
         for (const item of items) {
