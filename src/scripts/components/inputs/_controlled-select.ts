@@ -25,12 +25,12 @@ export class ControlledSelect {
         this.selectId = `${this.id}--input`;
     }
 
-    private getInputElement(): HTMLInputElement {
-        const inputElement = document.getElementById(this.selectId) as HTMLInputElement | null;
-        if (!inputElement) {
-            throw new Error(`Input element with ID '${this.selectId}' not found.`);
+    private getSelectElement(): HTMLSelectElement {
+        const selectElement = document.getElementById(this.selectId) as HTMLSelectElement | null;
+        if (!selectElement) {
+            throw new Error(`Select element with ID '${this.selectId}' not found.`);
         }
-        return inputElement;
+        return selectElement;
     }
 
     private getErrorDivElement(): HTMLElement {
@@ -51,8 +51,8 @@ export class ControlledSelect {
                 <label for="${this.selectId}"
                     class="form-label mt-3">${label}</label>
                 <select class="form-select"
-                    placeholder="${placeholder}"
                     id="${this.selectId}">
+                    <option value="" disabled selected>${placeholder}</option>
                     ${this.props.valueTextPairs.map(pair => `<option value="${pair.value}">${pair.text}</option>`).join("")}
                 </select>
                 <div class="invalid-feedback"
@@ -65,7 +65,7 @@ export class ControlledSelect {
 
     private attachSelectListener(onSelect?: (value: string) => void): void {
         if (!onSelect) return;
-        const selectElement = this.getInputElement();
+        const selectElement = this.getSelectElement();
         selectElement.addEventListener("change", () => {
             onSelect(selectElement.value);
         });
@@ -80,26 +80,26 @@ export class ControlledSelect {
         const errorElement = this.getErrorDivElement();
         errorElement.textContent = "";
         errorElement.style.display = "none";
-        const inputElement = this.getInputElement();
-        inputElement.classList.remove("is-invalid");
+        const selectElement = this.getSelectElement();
+        selectElement.classList.remove("is-invalid");
     }
 
     public clearInput(): void {
-        const inputElement = this.getInputElement();
-        inputElement.value = "";
+        const selectElement = this.getSelectElement();
+        selectElement.value = "";
     }
 
     public raiseError(errorMessage: string): void {
         const errorElement = this.getErrorDivElement();
         errorElement.textContent = errorMessage;
         errorElement.style.display = "block";
-        const inputElement = this.getInputElement();
-        inputElement.classList.add("is-invalid");
+        const selectElement = this.getSelectElement();
+        selectElement.classList.add("is-invalid");
     }
 
     public validate(): boolean {
-        const inputElement = this.getInputElement();
-        const value = inputElement.value;
+        const selectElement = this.getSelectElement();
+        const value = selectElement.value;
 
         if (this.validationFunction) {
             const error = this.validationFunction(value);
@@ -114,6 +114,6 @@ export class ControlledSelect {
     }
 
     public getValue(): string {
-        return this.getInputElement().value?.trim() || "";
+        return this.getSelectElement().value?.trim() || "";
     }
 }

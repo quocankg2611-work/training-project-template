@@ -35,7 +35,7 @@ export class HomePageController {
 
     private bootstrapModals(): void {
         const handleModalAddFolderConfirm = (folderName: string): string | null => {
-           return this.model.handleAddFolder(folderName);
+            return this.model.handleAddFolder(folderName);
         };
 
         const handleModalAddFileConfirm = (fileName: string, extension: string, content: string): string | null => {
@@ -64,7 +64,7 @@ export class HomePageController {
         };
 
         this.addFolderModal = new AddFolderModal(handleModalAddFolderConfirm).bootstrap();
-        this.addFileModal = new AddFileModal(handleModalAddFileConfirm).bootstrap();
+        this.addFileModal = new AddFileModal(handleModalAddFileConfirm);
         this.uploadFileModal = new UploadFileModal(handleModalUploadFileConfirm).bootstrap();
         this.uploadFolderModal = new UploadFolderModal(handleModalUploadFolderConfirm).bootstrap();
         this.updateFileModal = new UpdateFileModal(handleModalUpdateFileConfirm).bootstrap();

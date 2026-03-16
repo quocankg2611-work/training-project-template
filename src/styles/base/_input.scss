@@ -1,0 +1,4 @@
+select.form-select:has(option:checked[value=""]) {
+    opacity: 0.5;
+    color: rgba(0, 0, 0, 0.5);
+}
