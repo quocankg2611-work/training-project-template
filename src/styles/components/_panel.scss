@@ -1,0 +1,31 @@
+.upload-panel {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 420px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    padding: 12px;
+    z-index: 9999;
+
+    .upload-panel__body {
+        max-height: 300px;
+        overflow-y: auto;
+    }
+
+    .upload-panel__item {
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 8px;
+        background: #fff;
+    }
+
+    .upload-panel__item-remove {
+        font-size: 12px;
+    }
+
+    .upload-panel__close {
+        line-height: 1;
+    }
+}

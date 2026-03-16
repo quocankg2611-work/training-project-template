@@ -3,10 +3,10 @@ import { FileService } from "../../services/_file.service";
 import { FolderService } from "../../services/_folder.service";
 
 type UploadProgressHandlers = {
-    onFileUploadStart?: (file: File) => string;
-    onFileUploadProgress?: (uploadId: string, progress: number) => void;
-    onFileUploadComplete?: (uploadId: string) => void;
-    onFileUploadFailed?: (uploadId: string, errorMessage: string) => void;
+    onFileUploadStart: (file: File) => string;
+    onFileUploadProgress: (uploadId: string, progress: number) => void;
+    onFileUploadComplete: (uploadId: string) => void;
+    onFileUploadFailed: (uploadId: string, errorMessage: string) => void;
 };
 
 export class HomePageModel {
@@ -211,7 +211,7 @@ export class HomePageModel {
         return "Not implemented yet";
     }
 
-    public handleUploadFiles(files: File[], progressHandlers?: UploadProgressHandlers): string | null {
+    public handleUploadFiles(files: File[], progressHandlers: UploadProgressHandlers): string | null {
         if (files.length === 0) {
             return "Please select at least one file";
         }
@@ -234,34 +234,46 @@ export class HomePageModel {
         const containingPath = this._pathArr.join("/");
         this.setIsLoading(true);
 
-        Promise.all(files.map(async (file) => {
-            const uploadId = progressHandlers?.onFileUploadStart?.(file);
-            try {
-                await FileService.uploadFile(
-                    containingPath,
-                    file,
-                    (progress) => {
-                        if (uploadId) {
-                            progressHandlers?.onFileUploadProgress?.(uploadId, progress);
-                        }
-                    },
-                    () => {
-                        if (uploadId) {
-                            progressHandlers?.onFileUploadComplete?.(uploadId);
-                        }
-                    }
-                );
-            } catch {
-                if (uploadId) {
-                    progressHandlers?.onFileUploadFailed?.(uploadId, `Failed to upload '${file.name}'`);
-                }
+        const filesUploadStatus: {
+            [uploadId: string]: "success" | "failed" | "pending";
+        } = {};
+
+        function checkAllUploadsCompleted() {
+            const allCompleted = Object.values(filesUploadStatus).every(status => status === "success" || status === "failed");
+            if (allCompleted) {
+                this._handleRefreshCurrentFolder().finally(() => {
+                    this.setIsLoading(false);
+                });
             }
-        })).finally(() => {
-            this._handleRefreshCurrentFolder().finally(() => {
-                this.setIsLoading(false);
+        }
+
+        files.forEach(async (file) => {
+            const uploadId = progressHandlers.onFileUploadStart(file);
+            filesUploadStatus[uploadId] = "pending";
+            FileService.uploadFile(
+                containingPath,
+                file,
+                (progress) => {
+                    if (uploadId) {
+                        progressHandlers.onFileUploadProgress(uploadId, progress);
+                    }
+                },
+                () => {
+                    if (uploadId) {
+                        progressHandlers.onFileUploadComplete(uploadId);
+                        filesUploadStatus[uploadId] = "success";
+                        checkAllUploadsCompleted.call(this);
+                    }
+                }
+            ).catch(() => {
+                if (uploadId) {
+                    progressHandlers.onFileUploadFailed(uploadId, `Failed to upload '${file.name}'`);
+                    filesUploadStatus[uploadId] = "failed";
+                    checkAllUploadsCompleted.call(this);
+                }
             });
         });
-
+        
         return null;
     }
 

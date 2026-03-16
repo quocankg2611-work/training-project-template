@@ -30,8 +30,8 @@ function fileTypeToFileDocumentType(fileType: string) {
     const map: Record<string, string> = {
         "text/plain": "text",
         "application/json": "json",
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document": "docx",
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": "xlsx",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document": "word",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": "excel",
         "application/vnd.openxmlformats-officedocument.presentationml.presentation": "pptx",
     };
     return map[fileType] || "unknown";

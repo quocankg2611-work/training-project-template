@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Upload Panel Test Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="./dist/css/upload-panel-test.css">
+</head>
+
+<body class="upload-test-page">
+    <main class="container py-5 upload-test-page__container">
+        <section class="bg-white rounded-4 shadow-sm p-4 p-lg-5 d-flex flex-column gap-4">
+            <header class="upload-test-page__header d-flex flex-column gap-2">
+                <h1>Upload Panel Mock Scenarios</h1>
+                <p>Use these controls to simulate upload progress, success, and error states without calling backend services.</p>
+            </header>
+
+            <div class="upload-test-page__actions">
+                <button id="startSuccessUploadBtn" class="btn btn-success" type="button">Start Success Upload</button>
+                <button id="startFailureUploadBtn" class="btn btn-outline-danger" type="button">Start Failure Upload</button>
+                <button id="startBatchScenarioBtn" class="btn btn-primary" type="button">Run Batch Mixed Scenario</button>
+                <button id="clearUploadsBtn" class="btn btn-outline-secondary" type="button">Clear Upload Panel</button>
+            </div>
+
+            <p class="upload-test-page__hint">
+                Batch scenario triggers three uploads with staggered start times and one intentional failure.
+                The upload panel appears at the bottom-right and updates in real time.
+            </p>
+        </section>
+    </main>
+
+    <script src="./dist/js/upload-panel-test.js"></script>
+</body>
+
+</html>
