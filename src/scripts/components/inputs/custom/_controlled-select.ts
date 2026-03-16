@@ -1,4 +1,5 @@
-import { HtmlUtils } from "../../utilities/_html";
+import { HtmlUtils } from "../../../utilities/_html";
+import { ControlledInputBase } from "../_controlled-input.base";
 
 type ControlledSelectProps = {
     label: string;
@@ -11,35 +12,11 @@ type ControlledSelectProps = {
     onSelect?: (value: string) => void;
 }
 
-export class ControlledSelect {
-    private readonly id: string;
-    private readonly errorId: string;
-    private readonly selectId: string;
-
+export class ControlledSelect extends ControlledInputBase {
     constructor(
         private readonly props: ControlledSelectProps,
         private readonly validationFunction?: (value: string) => string | null,
-    ) {
-        this.id = crypto.randomUUID();
-        this.errorId = `${this.id}--error`;
-        this.selectId = `${this.id}--input`;
-    }
-
-    private getSelectElement(): HTMLSelectElement {
-        const selectElement = document.getElementById(this.selectId) as HTMLSelectElement | null;
-        if (!selectElement) {
-            throw new Error(`Select element with ID '${this.selectId}' not found.`);
-        }
-        return selectElement;
-    }
-
-    private getErrorDivElement(): HTMLElement {
-        const errorElement = document.getElementById(this.errorId);
-        if (!errorElement) {
-            throw new Error(`Error element with ID '${this.errorId}' not found.`);
-        }
-        return errorElement;
-    }
+    ) { super(); }
 
     private attachInputHtml(
         placeholderId: string,
@@ -48,10 +25,10 @@ export class ControlledSelect {
     ): void {
         const html = `
             <div id="${this.id}">
-                <label for="${this.selectId}"
+                <label for="${this.inputId}"
                     class="form-label mt-3">${label}</label>
                 <select class="form-select"
-                    id="${this.selectId}">
+                    id="${this.inputId}">
                     <option value="" disabled selected>${placeholder}</option>
                     ${this.props.valueTextPairs.map(pair => `<option value="${pair.value}">${pair.text}</option>`).join("")}
                 </select>
@@ -65,7 +42,7 @@ export class ControlledSelect {
 
     private attachSelectListener(onSelect?: (value: string) => void): void {
         if (!onSelect) return;
-        const selectElement = this.getSelectElement();
+        const selectElement = this.getInputElement();
         selectElement.addEventListener("change", () => {
             onSelect(selectElement.value);
         });
@@ -80,12 +57,12 @@ export class ControlledSelect {
         const errorElement = this.getErrorDivElement();
         errorElement.textContent = "";
         errorElement.style.display = "none";
-        const selectElement = this.getSelectElement();
+        const selectElement = this.getInputElement();
         selectElement.classList.remove("is-invalid");
     }
 
     public clearInput(): void {
-        const selectElement = this.getSelectElement();
+        const selectElement = this.getInputElement();
         selectElement.value = "";
     }
 
@@ -93,12 +70,12 @@ export class ControlledSelect {
         const errorElement = this.getErrorDivElement();
         errorElement.textContent = errorMessage;
         errorElement.style.display = "block";
-        const selectElement = this.getSelectElement();
+        const selectElement = this.getInputElement();
         selectElement.classList.add("is-invalid");
     }
 
     public validate(): boolean {
-        const selectElement = this.getSelectElement();
+        const selectElement = this.getInputElement();
         const value = selectElement.value;
 
         if (this.validationFunction) {
@@ -114,6 +91,6 @@ export class ControlledSelect {
     }
 
     public getValue(): string {
-        return this.getSelectElement().value?.trim() || "";
+        return this.getInputElement().value?.trim() || "";
     }
 }

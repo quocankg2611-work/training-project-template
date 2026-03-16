@@ -1,85 +1,58 @@
 import { FolderModelValidator } from "../../models/_folder.model";
-import { ModalBase } from "./base/_modal.base";
+import { ControlledInput } from "../inputs/texts/_controlled-input-text";
+import { ModalBase2 } from "./base/_modal.base2";
 
-export class AddFolderModal extends ModalBase {
-    private readonly folderNameInputId: string;
-    private readonly folderNameErrorId: string;
-    private readonly onAddFolder: (folderName: string) => string | null;
+export class AddFolderModal extends ModalBase2 {
+    private readonly folderNameInput: ControlledInput;
 
     constructor(
-        onAddFolder: (folderName: string) => string | null
+        private readonly onAddFolder: (folderName: string) => string | null
     ) {
         super(
+            {
+                modalType: "addFolder",
+                onModalConfirmed: () => {
+                    const isFolderNameValid = this.folderNameInput.validate();
+                    if (isFolderNameValid) {
+                        const folderName = this.folderNameInput.getValue();
+                        const errorMessage = this.onAddFolder(folderName);
+                        if (errorMessage) {
+                            this.raiseGlobalError(errorMessage);
+                        } else {
+                            this.hide();
+                        }
+                    }
+                },
+                onModalShow: () => {
+                    this.folderNameInput.clearInput();
+                    this.folderNameInput.clearError();
+                }
+            },
             "Add New Folder",
             "Create a new folder to organize your documents.",
             "Add Folder"
         );
-        this.folderNameInputId = `${this.getModalId()}--folderName`;
-        this.folderNameErrorId = `${this.getModalId()}--folderNameError`;
-        this.onAddFolder = onAddFolder;
-    }
-
-    protected getModalName(): string {
-        return "addFolder";
-    }
-
-    protected buildBodyHtml(): string {
-        return `
-            <div class="mb-3">
-                <label for="${this.folderNameInputId}"
-                        class="form-label">Folder Name</label>
-                <input type="text"
-                        class="form-control"
-                        id="${this.folderNameInputId}"
-                        placeholder="e.g. Project Assets"
-                        maxlength="40"
-                        autocomplete="off" />
-                <div class="invalid-feedback"
-                        id="${this.folderNameErrorId}">Please enter a folder name.</div>
-            </div>
-        `
-    }
-
-    protected onAfterRender(): void {
-        const confirmBtn = this.getModalSubmitBtn();
-        const folderNameErrorDiv = document.getElementById(this.folderNameErrorId) as HTMLDivElement;
-        const folderNameInput = document.getElementById(this.folderNameInputId) as HTMLInputElement;
-
-        // Reset form state when modal is opened
-        const modalEl = this.getModalElement();
-        modalEl.addEventListener("show.bs.modal", () => {
-            folderNameInput.value = "";
-            folderNameInput.classList.remove("is-invalid");
-            folderNameErrorDiv.style.display = "none";
-        });
-
-        // Validate and submit
-        confirmBtn.addEventListener("click", () => {
-            const folderName = folderNameInput.value.trim();
-            const folderNameError = FolderModelValidator.validateName(folderName);
-
-            if (folderNameError) {
-                folderNameInput.classList.add("is-invalid");
-                folderNameErrorDiv.style.display = "block";
-                folderNameErrorDiv.textContent = folderNameError;
-            }
-
-            if (!folderNameError) {
-                const errorMessage = this.onAddFolder(folderName);
-                if (errorMessage) {
-                    this.raiseGlobalError(errorMessage);
-                } else {
-                    this.hide();
+        const folderNameInputPlaceholderId = `${this.bodyId}--folderName`;
+        this.folderNameInput = new ControlledInput(
+            {
+                label: "Folder Name",
+                placeholder: "e.g. Project Assets",
+                maxLength: 40,
+                placeholderId: folderNameInputPlaceholderId,
+                onInput: (_) => {
+                    this.folderNameInput.clearError();
                 }
-            }
-        });
+            },
+            (value) => FolderModelValidator.validateName(value)
+        );
 
-        // Clear validation on input
-        folderNameInput.addEventListener("input", () => {
-            if (folderNameInput.value.trim()) {
-                folderNameInput.classList.remove("is-invalid");
-                folderNameErrorDiv.style.display = "none";
-            }
-        });
+        const bodyHtml = `
+            <div>
+                <div id="${folderNameInputPlaceholderId}"></div>
+            </div>
+        `;
+        const body = document.getElementById(this.bodyId);
+        body.innerHTML = bodyHtml;
+        this.folderNameInput.bootstrap();
     }
 }

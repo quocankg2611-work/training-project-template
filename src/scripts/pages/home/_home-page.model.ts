@@ -2,6 +2,13 @@ import { DocumentService, DocumentResponse } from "../../services/_document.serv
 import { FileService } from "../../services/_file.service";
 import { FolderService } from "../../services/_folder.service";
 
+type UploadProgressHandlers = {
+    onFileUploadStart?: (file: File) => string;
+    onFileUploadProgress?: (uploadId: string, progress: number) => void;
+    onFileUploadComplete?: (uploadId: string) => void;
+    onFileUploadFailed?: (uploadId: string, errorMessage: string) => void;
+};
+
 export class HomePageModel {
     private _pathArr: string[];
     private _documents: DocumentResponse[];
@@ -200,24 +207,80 @@ export class HomePageModel {
         return error;
     }
 
-    public handleUpdateFile(fileId: string, fileName: string): void {
+    public handleUploadFolder(folderName: string, files: File[]): string | null {
+        return "Not implemented yet";
+    }
+
+    public handleUploadFiles(files: File[], progressHandlers?: UploadProgressHandlers): string | null {
+        if (files.length === 0) {
+            return "Please select at least one file";
+        }
+
+        const existingFileNames = this._documents
+            .filter((doc) => doc.documentType === "file")
+            .map((doc) => doc.name);
+
+        const selectedFileNames = files.map((file) => file.name);
+        const duplicateNameInFolder = selectedFileNames.find((name) => existingFileNames.includes(name));
+        if (duplicateNameInFolder) {
+            return `A file named '${duplicateNameInFolder}' already exists in the current folder`;
+        }
+
+        const uniqueSelectedNames = new Set(selectedFileNames);
+        if (uniqueSelectedNames.size !== selectedFileNames.length) {
+            return "Selected files contain duplicate names";
+        }
+
+        const containingPath = this._pathArr.join("/");
+        this.setIsLoading(true);
+
+        Promise.all(files.map(async (file) => {
+            const uploadId = progressHandlers?.onFileUploadStart?.(file);
+            try {
+                await FileService.uploadFile(
+                    containingPath,
+                    file,
+                    (progress) => {
+                        if (uploadId) {
+                            progressHandlers?.onFileUploadProgress?.(uploadId, progress);
+                        }
+                    },
+                    () => {
+                        if (uploadId) {
+                            progressHandlers?.onFileUploadComplete?.(uploadId);
+                        }
+                    }
+                );
+            } catch {
+                if (uploadId) {
+                    progressHandlers?.onFileUploadFailed?.(uploadId, `Failed to upload '${file.name}'`);
+                }
+            }
+        })).finally(() => {
+            this._handleRefreshCurrentFolder().finally(() => {
+                this.setIsLoading(false);
+            });
+        });
+
+        return null;
+    }
+
+    public handleUpdateFile(fileId: string, fileName: string): string | null {
         const fileDocument = this.getDocumentById(fileId);
         if (!fileDocument || fileDocument.documentType !== "file") {
-            this.setError("File not found");
-            return;
+            return "File not found";
         }
         if (this._documents.some(doc => doc.name === fileName && doc.documentType === "file" && doc.id !== fileId)) {
-            this.setError("A file with the same name already exists in the current folder");
-            return;
+            return "A file with the same name already exists in the current folder";
         }
-        this.setError(null);
+        let error: string | null = null;
         this.setIsLoading(true);
         FileService.updateFile({
             id: fileId,
             name: fileName,
             fileType: fileDocument.fileType,
         }).catch((error) => {
-            this.setError("Failed to update file");
+            error = "Failed to update file";
         }).finally(() => {
             this._handleRefreshCurrentFolder().finally(() => {
                 this.setIsLoading(false);
@@ -225,45 +288,42 @@ export class HomePageModel {
         });
     }
 
-    public handleUpdateFolder(folderId: string, folderName: string): void {
+    public handleUpdateFolder(folderId: string, folderName: string): string | null {
         const folderDocument = this.getDocumentById(folderId);
         if (!folderDocument || folderDocument.documentType !== "folder") {
-            this.setError("Folder not found");
-            return;
+            return "Folder not found";
         }
         if (folderName.trim() === "") {
-            this.setError("Folder name cannot be empty");
-            return;
+            return "Folder name cannot be empty";
         }
         if (this._documents.some(doc => doc.name === folderName && doc.documentType === "folder" && doc.id !== folderId)) {
-            this.setError("A folder with the same name already exists in the current folder");
-            return;
+            return "A folder with the same name already exists in the current folder";
         }
-        this.setError(null);
+        let error: string | null = null;
         this.setIsLoading(true);
         FolderService.updateFolder({
             id: folderId,
             name: folderName,
         }).catch((error) => {
-            this.setError("Failed to update folder");
+            error = "Failed to update folder";
         }).finally(() => {
             this._handleRefreshCurrentFolder().finally(() => {
                 this.setIsLoading(false);
             });
         });
+        return error;
     }
 
-    public handleDeleteDocument(documentId: string): void {
+    public handleDeleteDocument(documentId: string): string | null {
         const document = this.getDocumentById(documentId);
         if (!document) {
-            this.setError("Document not found");
-            return;
+            return "Document not found";
         }
-        this.setError(null);
+        let error: string | null = null;
         this.setIsLoading(true);
         if (document.documentType === "file") {
             FileService.deleteFile(documentId).catch((error) => {
-                this.setError("Failed to delete file");
+                error = "Failed to delete file";
             }).finally(() => {
                 this._handleRefreshCurrentFolder().finally(() => {
                     this.setIsLoading(false);
@@ -271,7 +331,7 @@ export class HomePageModel {
             });
         } else if (document.documentType === "folder") {
             FolderService.deleteFolder(documentId).catch((error) => {
-                this.setError("Failed to delete folder");
+                error = "Failed to delete folder";
             }).finally(() => {
                 this._handleRefreshCurrentFolder().finally(() => {
                     this.setIsLoading(false);
@@ -279,6 +339,7 @@ export class HomePageModel {
             });
 
         }
+        return error;
     }
 }
 

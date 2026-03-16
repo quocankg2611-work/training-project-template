@@ -26,6 +26,17 @@ export type UpdateFileRequest = {
     fileType: string;
 }
 
+function fileTypeToFileDocumentType(fileType: string) {
+    const map: Record<string, string> = {
+        "text/plain": "text",
+        "application/json": "json",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document": "docx",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": "xlsx",
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation": "pptx",
+    };
+    return map[fileType] || "unknown";
+}
+
 export class FileService {
     public static async createFile(model: CreateFileRequest) {
         const fileId = crypto.randomUUID();
@@ -71,7 +82,10 @@ export class FileService {
         localStorage.setItem(idKey, JSON.stringify(fileModel));
     }
 
-    static async deleteFile(id: string) {
+    public static async deleteFile(id: string) {
+        // Simulate network delay
+        await new Promise(resolve => setTimeout(resolve, 500));
+
         const idKey = localStorageKey.buildFileIdKey(id);
         const item = localStorage.getItem(idKey);
         if (!item) {
@@ -92,5 +106,47 @@ export class FileService {
 
         // Remove the file document model
         localStorage.removeItem(idKey);
+    }
+
+    public static async uploadFile(
+        containingPath: string,
+        file: File,
+        onProgress?: (progress: number) => void,
+        onComplete?: () => void,
+    ): Promise<void> {
+        // Simulate file upload with a timeout
+        const totalTime = 2000; // Total time for the upload in milliseconds
+        const intervalTime = 100; // Time interval for progress updates in milliseconds
+        let elapsedTime = 0;
+        const reader = new FileReader();
+        reader.onload = async () => {
+            const fileContent = reader.result as string;
+            const fileType = fileTypeToFileDocumentType(file.type);
+            const fileName = file.name;
+            const modifiedBy = "Current User"; // Replace with actual user info in a real application
+
+            // Simulate upload progress
+            while (elapsedTime < totalTime) {
+                await new Promise(resolve => setTimeout(resolve, intervalTime));
+                elapsedTime += intervalTime;
+                if (onProgress) {
+                    onProgress(Math.min(100, Math.floor((elapsedTime / totalTime) * 100)));
+                }
+            }
+
+            // Create file in localStorage
+            const fileModel: CreateFileRequest = {
+                name: fileName,
+                containingPath,
+                modifiedBy,
+                fileType,
+                content: fileContent,
+            };
+            await FileService.createFile(fileModel);
+            if (onComplete) {
+                onComplete();
+            }
+        };
+        reader.readAsText(file);
     }
 }

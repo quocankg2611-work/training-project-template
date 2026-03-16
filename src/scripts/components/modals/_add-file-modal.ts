@@ -1,6 +1,6 @@
 import { FileModelValidator } from "../../models/_file.model";
-import { ControlledInput } from "../inputs/_controlled-input";
-import { ControlledSelect } from "../inputs/_controlled-select";
+import { ControlledInput } from "../inputs/texts/_controlled-input-text";
+import { ControlledSelect } from "../inputs/custom/_controlled-select";
 import { ModalBase2 } from "./base/_modal.base2";
 
 export class AddFileModal extends ModalBase2 {
@@ -14,13 +14,13 @@ export class AddFileModal extends ModalBase2 {
             {
                 modalType: "addFile",
                 onModalConfirmed: () => {
-                    const fileName = this.fileNameInput.getValue();
-                    const fileType = this.fileTypeSelect.getValue();
-
                     const isFileNameValid = this.fileNameInput.validate();
                     const isFileTypeValid = this.fileTypeSelect.validate();
 
                     if (isFileNameValid && isFileTypeValid) {
+                        const fileName = this.fileNameInput.getValue();
+                        const fileType = this.fileTypeSelect.getValue();
+
                         const errorMessage = this.onAddFile(fileName, fileType, ""); // Pass an empty content for now (since we are adding file)
                         if (errorMessage === null) {
                             this.hide();
@@ -78,7 +78,7 @@ export class AddFileModal extends ModalBase2 {
 
 
         const bodyHtml = `
-            <div class="d-flex flex-column gap-3">
+            <div>
                 <div id="${fileNameInputPlaceholderId}"></div>
                 <div id="${fileTypeSelectPlaceholderId}"></div>
             </div>

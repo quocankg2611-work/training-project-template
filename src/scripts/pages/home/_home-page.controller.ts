@@ -6,6 +6,7 @@ import { UpdateFileModal } from "../../components/modals/_update-file-modal";
 import { UpdateFolderModal } from "../../components/modals/_update-folder-modal";
 import { UploadFileModal } from "../../components/modals/_upload-file-modal";
 import { UploadFolderModal } from "../../components/modals/_upload-folder-modal";
+import { UploadPanelComponent } from "../../components/_upload-panel";
 import { HomePageModel } from "./_home-page.model";
 import { HomePageView } from "./_home-page.view";
 
@@ -17,6 +18,8 @@ export class HomePageController {
     private updateFileModal: UpdateFileModal;
     private updateFolderModal: UpdateFolderModal;
     private deleteDocumentModal: DeleteDocumentModal;
+
+    private uploadPanel: UploadPanelComponent;
 
     private view: HomePageView;
     private model: HomePageModel;
@@ -34,42 +37,28 @@ export class HomePageController {
     }
 
     private bootstrapModals(): void {
-        const handleModalAddFolderConfirm = (folderName: string): string | null => {
-            return this.model.handleAddFolder(folderName);
-        };
-
-        const handleModalAddFileConfirm = (fileName: string, extension: string, content: string): string | null => {
-            return this.model.handleAddFile(fileName, extension, content);
-        };
 
         // TODO: Handle folder upload more detail
         const handleModalUploadFolderConfirm = (folderName: string, files: File[]) => {
             this.model.handleAddFolder(folderName);
         };
 
-        const handleModalUploadFileConfirm = (fileName: string, extension: string, content: string) => {
-            this.model.handleAddFile(fileName, extension, content);
+        const handleModalUploadFileConfirm = (files: File[]): string | null => {
+            return this.model.handleUploadFiles(files, {
+                onFileUploadStart: (file) => this.uploadPanel.startUpload(file),
+                onFileUploadProgress: (uploadId, progress) => this.uploadPanel.updateProgress(uploadId, progress),
+                onFileUploadComplete: (uploadId) => this.uploadPanel.markCompleted(uploadId),
+                onFileUploadFailed: (uploadId, errorMessage) => this.uploadPanel.markFailed(uploadId, errorMessage),
+            });
         };
 
-        const handleModalUpdateFileConfirm = (fileId: string, fileName: string) => {
-            this.model.handleUpdateFile(fileId, fileName);
-        };
-
-        const handleModalUpdateFolderConfirm = (folderId: string, folderName: string) => {
-            this.model.handleUpdateFolder(folderId, folderName);
-        };
-
-        const handleModalDeleteDocumentConfirm = (documentId: string, documentType: "folder" | "file") => {
-            this.model.handleDeleteDocument(documentId);
-        };
-
-        this.addFolderModal = new AddFolderModal(handleModalAddFolderConfirm).bootstrap();
-        this.addFileModal = new AddFileModal(handleModalAddFileConfirm);
-        this.uploadFileModal = new UploadFileModal(handleModalUploadFileConfirm).bootstrap();
+        this.addFolderModal = new AddFolderModal(this.model.handleAddFolder.bind(this.model));
+        this.addFileModal = new AddFileModal(this.model.handleAddFile.bind(this.model));
+        this.uploadFileModal = new UploadFileModal(handleModalUploadFileConfirm);
         this.uploadFolderModal = new UploadFolderModal(handleModalUploadFolderConfirm).bootstrap();
-        this.updateFileModal = new UpdateFileModal(handleModalUpdateFileConfirm).bootstrap();
-        this.updateFolderModal = new UpdateFolderModal(handleModalUpdateFolderConfirm).bootstrap();
-        this.deleteDocumentModal = new DeleteDocumentModal(handleModalDeleteDocumentConfirm).bootstrap();
+        this.updateFileModal = new UpdateFileModal(this.model.handleUpdateFile.bind(this.model));
+        this.updateFolderModal = new UpdateFolderModal(this.model.handleUpdateFolder.bind(this.model));
+        this.deleteDocumentModal = new DeleteDocumentModal(this.model.handleDeleteDocument.bind(this.model));
     }
 
     private bootstrapModel(): void {
@@ -166,6 +155,9 @@ export class HomePageController {
             handleActionDeleteBtnClick,
             handleActionCancelBtnClick
         );
+
+        this.uploadPanel = new UploadPanelComponent();
+        this.uploadPanel.mount(document.body);
     }
 }
 
