@@ -31,6 +31,7 @@ export class HomePageController {
 
         this.view.renderBody(this.model.getDocuments(), this.model.getSelectedDocument()?.id ?? null);
         this.view.renderBreadcrumb(this.model.getPathArr());
+        this.view.renderNavbar(this.model.getIsLoggedIn());
 
         this.view.bootstrap();
         this.model.bootstrap();
@@ -62,6 +63,10 @@ export class HomePageController {
     }
 
     private bootstrapModel(): void {
+        const handleIsLoggedInChange = (isLoggedIn: boolean): void => {
+            this.view.renderNavbar(isLoggedIn);
+        };
+
         const handlePathArrChange = (pathArr: string[]): void => {
             this.view.renderBreadcrumb(pathArr);
         };
@@ -89,6 +94,7 @@ export class HomePageController {
             handleSelectedDocumentChange,
             handleErrorChange,
             handleIsLoadingChange,
+            handleIsLoggedInChange
         );
     }
 
@@ -143,10 +149,15 @@ export class HomePageController {
             this.model.setSelectedDocument(null);
         };
 
+        const handleLoginBtnClick = (): void => {
+            this.model.handleLogin();
+        };
+
         this.view = new HomePageView(
             handleBreadcrumbItemClick,
             handleDocumentItemSelected,
             handleFolderNavigated,
+            handleLoginBtnClick,
             handleNavbarNewFolderClick,
             handleNavbarNewFileClick,
             handleNavbarUploadFolderClick,

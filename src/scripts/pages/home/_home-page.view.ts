@@ -1,5 +1,6 @@
 import { BreadcrumbComponent } from "../../components/_breadcrumb";
 import { CardListComponent } from "../../components/_card-list";
+import { NavbarComponent } from "../../components/_navbar";
 import { TableComponent } from "../../components/_table";
 import { HomePageDocumentView } from "./_home-page.types";
 
@@ -7,11 +8,13 @@ export class HomePageView {
     private readonly breadcrumbComponent: BreadcrumbComponent;
     private readonly tableComponent: TableComponent;
     private readonly cardListComponent: CardListComponent;
+    private readonly navbarComponent: NavbarComponent;
 
     constructor(
         onBreadcrumbItemClick: (goBackToLevel: number) => void,
         onDocumentItemSelected: (selectedDocumentId: string | null) => void,
         onFolderNavigated: (folderId: string) => void,
+        onLoginBtnClick: () => void,
         private readonly onNavbarNewFolderClick: () => void,
         private readonly onNavbarNewFileClick: () => void,
         private readonly onNavbarUploadFolderClick: () => void,
@@ -23,13 +26,21 @@ export class HomePageView {
         this.breadcrumbComponent = new BreadcrumbComponent(onBreadcrumbItemClick);
         this.tableComponent = new TableComponent(onDocumentItemSelected, onFolderNavigated);
         this.cardListComponent = new CardListComponent(onDocumentItemSelected, onFolderNavigated);
+        this.navbarComponent = new NavbarComponent(onLoginBtnClick);
+    }
+
+    public renderNavbar(isLoggedIn: boolean): void {
+        this.render(
+            "homePageNavBar--placeholder",
+            this.navbarComponent.build(isLoggedIn)
+        );
     }
 
     public renderBreadcrumb(pathArr: string[]): void {
         this.render(
             "homePageBreadcrumb--placeholder",
             this.breadcrumbComponent.build(pathArr)
-        )
+        );
     }
 
     public renderBody(

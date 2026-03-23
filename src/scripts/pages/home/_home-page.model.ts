@@ -1,3 +1,4 @@
+import { AuthService } from "../../services/_auth.service";
 import { DocumentService, DocumentResponse } from "../../services/_document.service";
 import { FileService } from "../../services/_file.service";
 import { FolderService } from "../../services/_folder.service";
@@ -12,9 +13,12 @@ type UploadProgressHandlers = {
 export class HomePageModel {
     private _pathArr: string[];
     private _documents: DocumentResponse[];
+    private _isLoggedIn: boolean = false;
     private _selectedDocument: DocumentResponse | null
     private _error: string | null;
     private _isLoading: boolean;
+
+    private readonly _authService: AuthService;
 
     constructor(
         private readonly onPathArrChange: (pathArr: string[]) => void,
@@ -22,12 +26,16 @@ export class HomePageModel {
         private readonly onSelectedDocumentChange: (selectedDocument: DocumentResponse | null) => void,
         private readonly onErrorChange: (error: string | null) => void,
         private readonly onIsLoadingChange: (isLoading: boolean) => void,
+        private readonly onIsLoggedInChange: (isLoggedIn: boolean) => void,
     ) {
         this._pathArr = [];
         this._documents = [];
         this._selectedDocument = null;
         this._error = null;
         this._isLoading = false;
+        this._isLoggedIn = false;
+
+        this._authService = new AuthService();
     }
 
     // For quick document lookup by id
@@ -67,6 +75,10 @@ export class HomePageModel {
 
     public getSelectedDocument(): DocumentResponse | null {
         return this._selectedDocument;
+    }
+
+    public getIsLoggedIn(): boolean {
+        return this._isLoggedIn;
     }
 
     public setPathArr(pathArr: string[]): void {
@@ -112,6 +124,13 @@ export class HomePageModel {
         if (isLoading !== this._isLoading) {
             this._isLoading = isLoading;
             this.onIsLoadingChange(isLoading);
+        }
+    }
+
+    public setIsLoggedIn(isLoggedIn: boolean): void {
+        if (isLoggedIn !== this._isLoggedIn) {
+            this._isLoggedIn = isLoggedIn;
+            this.onIsLoggedInChange(isLoggedIn);
         }
     }
 
@@ -273,7 +292,7 @@ export class HomePageModel {
                 }
             });
         });
-        
+
         return null;
     }
 
@@ -352,6 +371,19 @@ export class HomePageModel {
 
         }
         return error;
+    }
+
+    public handleLogin(): void {
+        // this._authService.loginPopup();
+        AuthService.initializeAsync().then((msalInstance) => {
+            msalInstance.loginPopup({
+                scopes: ["User.Read"],
+                redirectUri: "/redirect.html",
+            }).then((loginResponse) => {
+                msalInstance.setActiveAccount(loginResponse.account);
+                this.setIsLoggedIn(true);
+            });
+        });
     }
 }
 
