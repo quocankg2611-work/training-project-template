@@ -1,41 +1,47 @@
 import { Modal } from "bootstrap";
 
-export abstract class ModalBase {
-    private readonly modalId: string;
-    private readonly modalSubmitBtnId: string;
-    private readonly modalGlobalErrorId: string;
+type ModalConfig = {
+    /**
+     * Type of modal, used for classifying the modal in the HTML (e.g. "addFile", "editFile", etc.). Should be unique across all modals.
+     */
+    modalType: string;
+    onModalShow?: () => void;
+    onModalConfirmed?: () => void;
+}
 
-    private readonly title: string;
-    private readonly subtitle: string;
-    private readonly confirmText: string;
+export abstract class ModalBase {
+    private readonly id: string;
+    private readonly submitBtnId: string;
+    private readonly globalErrorId: string;
+
+    protected readonly bodyId: string;
 
     /**
      * For accessing bootstrap javascript methods
      */
-    private modalInstance: Modal | null;
+    private modalInstance: Modal;
     /**
      * For accessing the HTML element of the modal
      */
-    private modalElement: HTMLElement | null;
+    private modalElement: HTMLElement;
 
-    constructor(
+    protected constructor(
+        private readonly modalConfig: ModalConfig,
         title: string,
         subtitle: string,
         confirmText: string,
     ) {
-        this.modalId = `modal-${Math.random().toString(36).slice(2, 9)}`;
-        this.modalSubmitBtnId = `${this.modalId}--submitBtn`;
-        this.modalGlobalErrorId = `${this.modalId}--globalError`;
+        this.id = `modal-${crypto.randomUUID()}`;
+        this.submitBtnId = `${this.id}--submitBtn`;
+        this.globalErrorId = `${this.id}--globalError`;
+        this.bodyId = `${this.id}--body`;
 
-        this.modalElement = null;
-        this.modalInstance = null;
-        this.title = title;
-        this.subtitle = subtitle;
-        this.confirmText = confirmText;
-    }
-
-    public bootstrap(): this {
-        this.modalElement = this.buildAndRender(this.title, this.subtitle, this.confirmText);
+        this.attachHtml(this.modalConfig.modalType, title, subtitle, confirmText);
+        const modalEl = document.getElementById(this.id);
+        if (!modalEl) {
+            throw new Error("Failed to find modal element after attaching HTML");
+        }
+        this.modalElement = modalEl;
         this.modalInstance = new Modal(this.modalElement);
         this.modalElement.addEventListener('hide.bs.modal', () => {
             const active = document.activeElement;
@@ -44,21 +50,19 @@ export abstract class ModalBase {
             }
             this.raiseGlobalError(null);
         });
-        this.onAfterRender();
-        return this;
-    }
+        this.modalElement.addEventListener('show.bs.modal', () => {
+            this.modalConfig.onModalShow?.();
+        });
+        const submitBtn = document.getElementById(this.submitBtnId);
+        submitBtn?.addEventListener("click", () => {
+            this.modalConfig.onModalConfirmed?.();
+        });
 
-    private resetGlobalError(): void {
-        const errorDiv = this.modalElement.querySelector(`#${this.modalGlobalErrorId}`) as HTMLDivElement;
-        if (errorDiv) {
-            errorDiv.textContent = "";
-            errorDiv.style.display = "none";
-        }
     }
 
     protected raiseGlobalError(message: string): void {
         if (this.modalElement) {
-            const errorDiv = this.modalElement.querySelector(`#${this.modalGlobalErrorId}`) as HTMLDivElement;
+            const errorDiv = this.modalElement.querySelector(`#${this.globalErrorId}`) as HTMLDivElement;
             if (errorDiv) {
                 errorDiv.textContent = message;
                 errorDiv.style.display = "block";
@@ -66,29 +70,14 @@ export abstract class ModalBase {
         }
     }
 
-    protected getModalSubmitBtn(): HTMLButtonElement {
-        const submitBtn = document.getElementById(this.modalSubmitBtnId) as HTMLButtonElement;
-        if (!submitBtn) {
-            throw new Error(`Submit button with ID ${this.modalSubmitBtnId} not found.`);
-        }
-        return submitBtn;
-    }
-
-    protected getModalId(): string {
-        return this.modalId;
-    }
-
-    protected getModalElement(): HTMLElement {
-        return this.modalElement;
-    }
-
-    private buildAndRender(
+    private attachHtml(
+        modalType: string,
         title: string,
         subtitle: string,
         confirmText: string,
-    ): HTMLElement {
+    ): void {
         const html = `
-            <div class="modal fade" id="${this.modalId}" data-name="${this.getModalName()}" tabindex="-1" aria-hidden="true">
+            <div class="modal fade" id="${this.id}" data-name="${modalType}" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" style="max-width:420px;">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -100,42 +89,24 @@ export abstract class ModalBase {
                             </div>
                             <button class="btn-close-modal" data-bs-dismiss="modal">✕</button>
                         </div>
-                        <div class="modal-body">${this.buildBodyHtml()}</div>
+                        <div id="${this.bodyId}" class="modal-body"></div>
                         <div class="modal-footer">
-                            <div id="${this.modalGlobalErrorId}" class="text-danger"></div>
+                            <div id="${this.globalErrorId}" class="text-danger"></div>
                             <button class="btn-cancel" data-bs-dismiss="modal">Cancel</button>
-                            <button class="btn-add" id="${this.modalSubmitBtnId}">${confirmText}</button>
+                            <button class="btn-add" id="${this.submitBtnId}">${confirmText}</button>
                         </div>
                     </div>
                 </div>
             </div>
         `;
         document.body.insertAdjacentHTML('beforeend', html);
-        const element = document.getElementById(this.modalId);
-        return element;
     }
 
-    /**
-     * Used for classifying the modal type in the HTML
-     */
-    protected abstract getModalName(): string;
-
-    protected abstract buildBodyHtml(): string;
-
-    // ======================================
-    // Life cycle
-    // ======================================
-
-    /**
-     * For assigning events
-     */
-    protected abstract onAfterRender(): void;
-
     public show(): void {
-        this.modalInstance?.show();
+        this.modalInstance.show();
     }
 
     public hide(): void {
-        this.modalInstance?.hide();
+        this.modalInstance.hide();
     }
 }

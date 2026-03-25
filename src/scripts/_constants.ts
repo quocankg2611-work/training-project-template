@@ -1,0 +1,3 @@
+export const CONSTANTS = {
+    API_BASE_URL: "https://localhost:7115",
+}

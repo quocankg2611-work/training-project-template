@@ -2,12 +2,12 @@ import { fileNameInvalidCharsRegex } from "../utilities/_regex";
 
 export class FileModelValidator {
     public static ALLOWED_EXTENSIONS = [
-    "docx",
-    "xlsx",
-    "pdf",
-    "txt",
-    "csv",
-];
+        "docx",
+        "xlsx",
+        "pdf",
+        "txt",
+        "csv",
+    ];
 
     public static validateName(fileName: string): string | null {
         if (!fileName || fileName.trim() === "") {
@@ -42,4 +42,13 @@ export class FileModelValidator {
         }
         return null;
     }
+}
+
+export class FileModel {
+    constructor(
+        public readonly id: string,
+        public readonly name: string,
+        public readonly type: string,
+        public readonly parentFolderId?: string,
+    ) { }
 }

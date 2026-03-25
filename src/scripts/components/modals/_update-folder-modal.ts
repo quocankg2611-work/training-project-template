@@ -1,8 +1,8 @@
 import { FileModelValidator } from "../../models/_file.model";
 import { ControlledInput } from "../inputs/texts/_controlled-input-text";
-import { ModalBase2 } from "./base/_modal.base2";
+import { ModalBase } from "./base/_modal.base";
 
-export class UpdateFolderModal extends ModalBase2 {
+export class UpdateFolderModal extends ModalBase {
     private currentFolderId = "";
     private readonly folderNameInput: ControlledInput;
 

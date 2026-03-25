@@ -1,20 +1,19 @@
 import { ModalBase } from "./base/_modal.base";
-import { ModalBase2 } from "./base/_modal.base2";
 
-export class DeleteDocumentModal extends ModalBase2 {
+export class DeleteDocumentModal extends ModalBase {
     private readonly subtitleElId: string;
     private readonly messageElId: string;
     private currentDocumentId = "";
     private currentDocumentType: "folder" | "file" = "folder";
 
     constructor(
-        private readonly onDelete: (documentId: string, documentType: "folder" | "file") => void
+        onDelete: (documentId: string, documentType: "folder" | "file") => void
     ) {
         super(
             {
                 modalType: "deleteDocument",
                 onModalConfirmed: () => {
-                    this.onDelete(this.currentDocumentId, this.currentDocumentType);
+                    onDelete(this.currentDocumentId, this.currentDocumentType);
                     this.hide();
                 },
                 onModalShow: () => {

@@ -1,7 +1,7 @@
 import { BreadcrumbComponent } from "../../components/_breadcrumb";
 import { CardListComponent } from "../../components/_card-list";
-import { NavbarComponent } from "../../components/_navbar";
 import { TableComponent } from "../../components/_table";
+import { NavbarComponent } from "../../components/_navbar";
 import { HomePageDocumentView } from "./_home-page.types";
 
 export class HomePageView {
@@ -16,7 +16,6 @@ export class HomePageView {
         onFolderNavigated: (folderId: string) => void,
         onLoginBtnClick: () => void,
         private readonly onNavbarNewFolderClick: () => void,
-        private readonly onNavbarNewFileClick: () => void,
         private readonly onNavbarUploadFolderClick: () => void,
         private readonly onNavbarUploadFileClick: () => void,
         private readonly onActionEditBtnClick: () => void,
@@ -99,12 +98,6 @@ export class HomePageView {
             e.preventDefault();
             e.stopPropagation();
             this.onNavbarNewFolderClick();
-        });
-
-        document.getElementById("homePageNavbarNewFile")?.addEventListener("click", (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            this.onNavbarNewFileClick();
         });
 
         document.getElementById("homePageNavbarUploadFile")?.addEventListener("click", (e) => {

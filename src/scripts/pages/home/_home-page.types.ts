@@ -1,4 +1,4 @@
-import { DocumentResponse } from "../../services/_document.service";
+import { DocumentModel } from "../../models/_document.model";
 import formatTimeAgo from "../../utilities/_format-strings";
 
 export class HomePageDocumentView {
@@ -12,7 +12,7 @@ export class HomePageDocumentView {
         public readonly fileType: string | null,
     ) { }
 
-    public static fromDocumentResponse(response: DocumentResponse): HomePageDocumentView {
+    public static fromDocumentResponse(response: DocumentModel): HomePageDocumentView {
         if (response.documentType === "file") {
             return new HomePageDocumentView(
                 response.id,

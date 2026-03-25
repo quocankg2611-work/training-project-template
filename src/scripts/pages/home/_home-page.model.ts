@@ -1,5 +1,8 @@
+import { DocumentsApi } from "../../apis/_documents.api";
+import { FolderApi } from "../../apis/_folder.api";
+import { DocumentModel } from "../../models/_document.model";
+import { FolderModel } from "../../models/_folder.model";
 import { AuthService } from "../../services/_auth.service";
-import { DocumentService, DocumentResponse } from "../../services/_document.service";
 import { FileService } from "../../services/_file.service";
 import { FolderService } from "../../services/_folder.service";
 
@@ -11,22 +14,24 @@ type UploadProgressHandlers = {
 };
 
 export class HomePageModel {
+    private _currentFolder: FolderModel | null;
+
+
     private _pathArr: string[];
-    private _documents: DocumentResponse[];
+    private _documents: DocumentModel[];
     private _isLoggedIn: boolean = false;
-    private _selectedDocument: DocumentResponse | null
+    private _selectedDocument: DocumentModel | null
     private _error: string | null;
     private _isLoading: boolean;
 
-    private readonly _authService: AuthService;
-
     constructor(
         private readonly onPathArrChange: (pathArr: string[]) => void,
-        private readonly onDocumentsChange: (documents: DocumentResponse[]) => void,
-        private readonly onSelectedDocumentChange: (selectedDocument: DocumentResponse | null) => void,
+        private readonly onDocumentsChange: (documents: DocumentModel[]) => void,
+        private readonly onSelectedDocumentChange: (selectedDocument: DocumentModel | null) => void,
         private readonly onErrorChange: (error: string | null) => void,
         private readonly onIsLoadingChange: (isLoading: boolean) => void,
         private readonly onIsLoggedInChange: (isLoggedIn: boolean) => void,
+        private readonly onCurrentFolderChange?: (currentFolder: FolderModel | null) => void,
     ) {
         this._pathArr = [];
         this._documents = [];
@@ -34,14 +39,12 @@ export class HomePageModel {
         this._error = null;
         this._isLoading = false;
         this._isLoggedIn = false;
-
-        this._authService = new AuthService();
     }
 
     // For quick document lookup by id
-    private _documentByIdMap: Record<string, DocumentResponse> = {};
+    private _documentByIdMap: Record<string, DocumentModel> = {};
 
-    private getDocumentById(id: string): DocumentResponse | null {
+    private getDocumentById(id: string): DocumentModel | null {
         if (this._documentByIdMap[id]) {
             return this._documentByIdMap[id];
         }
@@ -51,7 +54,7 @@ export class HomePageModel {
     public bootstrap(): void {
         this.setIsLoading(true);
         this.setError(null);
-        DocumentService.getDocumentsByPath(this._pathArr)
+        DocumentsApi.getByPath(this.getPathStr())
             .then((documents) => {
                 this.setDocuments(documents);
             })
@@ -69,11 +72,15 @@ export class HomePageModel {
         return this._pathArr;
     }
 
-    public getDocuments(): DocumentResponse[] {
+    public getPathStr(): string {
+        return "/" + this._pathArr.join("/");
+    }
+
+    public getDocuments(): DocumentModel[] {
         return this._documents;
     }
 
-    public getSelectedDocument(): DocumentResponse | null {
+    public getSelectedDocument(): DocumentModel | null {
         return this._selectedDocument;
     }
 
@@ -88,7 +95,7 @@ export class HomePageModel {
         }
     }
 
-    public setDocuments(documents: DocumentResponse[]): void {
+    public setDocuments(documents: DocumentModel[]): void {
         this._documents = documents;
         this._documentByIdMap = {};
         for (const document of documents) {
@@ -97,7 +104,7 @@ export class HomePageModel {
         this.onDocumentsChange(documents);
     }
 
-    public setSelectedDocument(selectedDocument: DocumentResponse | null): void {
+    public setSelectedDocument(selectedDocument: DocumentModel | null): void {
         this._selectedDocument = selectedDocument;
         this.onSelectedDocumentChange(selectedDocument);
     }
@@ -134,6 +141,13 @@ export class HomePageModel {
         }
     }
 
+    public setCurrentFolder(currentFolder: FolderModel | null): void {
+        this._currentFolder = currentFolder;
+        if (this.onCurrentFolderChange) {
+            this.onCurrentFolderChange(currentFolder);
+        }
+    }
+
     // ==============================
     // Services:
     // ==============================
@@ -146,7 +160,7 @@ export class HomePageModel {
     }
 
     private async _handleRefreshCurrentFolder(): Promise<void> {
-        return DocumentService.getDocumentsByPath(this.getPathArr())
+        return DocumentsApi.getByPath("/" + this.getPathArr().join("/"))
             .then((newDocuments) => {
                 this.setSelectedDocument(null);
                 this.setDocuments(newDocuments);
@@ -189,10 +203,9 @@ export class HomePageModel {
         let error: string | null = null;
         this.setIsLoading(true);
         const path = this._pathArr.join("/");
-        FolderService.createFolder({
+        FolderApi.createFolder({
             name: folderName,
-            containingPath: path,
-            modifiedBy: "Current User", // TODO: Get current user
+            parentFolderId: this._currentFolder?.id || undefined,
         }).then(() => {
             this._handleFolderNavigationByName(folderName);
         }).catch((error) => {

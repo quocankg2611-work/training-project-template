@@ -1,9 +1,9 @@
 import { FileModelValidator } from "../../models/_file.model";
 import { ControlledInput } from "../inputs/texts/_controlled-input-text";
 import { ControlledSelect } from "../inputs/custom/_controlled-select";
-import { ModalBase2 } from "./base/_modal.base2";
+import { ModalBase } from "./base/_modal.base";
 
-export class AddFileModal extends ModalBase2 {
+export class AddFileModal extends ModalBase {
     private readonly fileNameInput: ControlledInput;
     private readonly fileTypeSelect: ControlledSelect;
 

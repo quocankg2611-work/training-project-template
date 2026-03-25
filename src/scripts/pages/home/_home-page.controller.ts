@@ -1,5 +1,3 @@
-import { DocumentResponse } from "../../services/_document.service";
-import { AddFileModal } from "../../components/modals/_add-file-modal";
 import { AddFolderModal } from "../../components/modals/_add-folder-modal";
 import { DeleteDocumentModal } from "../../components/modals/_delete-document-modal";
 import { UpdateFileModal } from "../../components/modals/_update-file-modal";
@@ -9,10 +7,11 @@ import { UploadFolderModal } from "../../components/modals/_upload-folder-modal"
 import { UploadPanelComponent } from "../../components/_upload-panel";
 import { HomePageModel } from "./_home-page.model";
 import { HomePageView } from "./_home-page.view";
+import { FolderModel } from "../../models/_folder.model";
+import { DocumentModel } from "../../models/_document.model";
 
 export class HomePageController {
     private addFolderModal: AddFolderModal;
-    private addFileModal: AddFileModal;
     private uploadFileModal: UploadFileModal
     private uploadFolderModal: UploadFolderModal;
     private updateFileModal: UpdateFileModal;
@@ -54,9 +53,8 @@ export class HomePageController {
         };
 
         this.addFolderModal = new AddFolderModal(this.model.handleAddFolder.bind(this.model));
-        this.addFileModal = new AddFileModal(this.model.handleAddFile.bind(this.model));
         this.uploadFileModal = new UploadFileModal(handleModalUploadFileConfirm);
-        this.uploadFolderModal = new UploadFolderModal(handleModalUploadFolderConfirm).bootstrap();
+        this.uploadFolderModal = new UploadFolderModal(handleModalUploadFolderConfirm);
         this.updateFileModal = new UpdateFileModal(this.model.handleUpdateFile.bind(this.model));
         this.updateFolderModal = new UpdateFolderModal(this.model.handleUpdateFolder.bind(this.model));
         this.deleteDocumentModal = new DeleteDocumentModal(this.model.handleDeleteDocument.bind(this.model));
@@ -68,14 +66,13 @@ export class HomePageController {
         };
 
         const handlePathArrChange = (pathArr: string[]): void => {
-            this.view.renderBreadcrumb(pathArr);
         };
 
-        const handleDocumentsChange = (documents: DocumentResponse[]): void => {
+        const handleDocumentsChange = (documents: DocumentModel[]): void => {
             this.view.renderBody(documents, this.model.getSelectedDocument()?.id ?? null);
         };
 
-        const handleSelectedDocumentChange = (selectedDocument: DocumentResponse | null): void => {
+        const handleSelectedDocumentChange = (selectedDocument: DocumentModel | null): void => {
             this.view.renderBody(this.model.getDocuments(), selectedDocument?.id ?? null);
             this.view.toggleActionButtons(selectedDocument !== null);
         };
@@ -88,13 +85,17 @@ export class HomePageController {
             this.view.toggleBodyLoading(isLoading);
         };
 
+        const handleCurrentFolderChange = (currentFolder: FolderModel | null): void => {
+        };
+
         this.model = new HomePageModel(
             handlePathArrChange,
             handleDocumentsChange,
             handleSelectedDocumentChange,
             handleErrorChange,
             handleIsLoadingChange,
-            handleIsLoggedInChange
+            handleIsLoggedInChange,
+            handleCurrentFolderChange
         );
     }
 
@@ -115,9 +116,6 @@ export class HomePageController {
             this.addFolderModal.show();
         };
 
-        const handleNavbarNewFileClick = (): void => {
-            this.addFileModal.show();
-        };
 
         const handleNavbarUploadFolderClick = (): void => {
             this.uploadFolderModal.show();
@@ -159,7 +157,6 @@ export class HomePageController {
             handleFolderNavigated,
             handleLoginBtnClick,
             handleNavbarNewFolderClick,
-            handleNavbarNewFileClick,
             handleNavbarUploadFolderClick,
             handleNavbarUploadFileClick,
             handleActionEditBtnClick,

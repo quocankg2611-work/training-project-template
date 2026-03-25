@@ -3,13 +3,6 @@ import * as msal from "@azure/msal-browser";
 let msalInstance: msal.PublicClientApplication | null = null;
 
 export class AuthService {
-    private readonly msalInstance: msal.PublicClientApplication | null = null;
-    private isInitialized: boolean = false;
-
-    constructor() {
-        this.msalInstance = new msal.PublicClientApplication(msalConfig);
-    }
-
     public static async initializeAsync(): Promise<msal.PublicClientApplication> {
         if (msalInstance !== null) {
             return msalInstance;

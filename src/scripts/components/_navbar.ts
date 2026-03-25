@@ -50,9 +50,6 @@ private readonly LOGIN_BUTTON_ID = "homePageNavbarLoginButton";
                                     <a id="homePageNavbarNewFolder"
                                     class="dropdown-item"
                                     href="#">Folder</a>
-                                    <a id="homePageNavbarNewFile"
-                                    class="dropdown-item"
-                                    href="#">File</a>
                                 </div>
                             </li>
                             <li class="nav-item dropdown">

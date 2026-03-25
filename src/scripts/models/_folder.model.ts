@@ -12,3 +12,20 @@ export class FolderModelValidator {
         return null;
     }
 }
+
+export class FolderModel {
+    constructor(
+        public readonly id: string,
+        public readonly name: string,
+        public readonly path: string,
+        public readonly parentFolderId?: string,
+    ) { }
+
+    public getPathForChildren(): string {
+        return this.path ? `${this.path}/${this.name}` : `/${this.name}`;
+    }
+
+    public getPathArrForChildren(): string[] {
+        return this.getPathForChildren().split("/").filter(Boolean);
+    }
+}
