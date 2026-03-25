@@ -1,10 +1,9 @@
 import { DocumentsApi } from "../../apis/_documents.api";
+import { FilesApi } from "../../apis/_files.api";
 import { FolderApi } from "../../apis/_folder.api";
 import { DocumentModel } from "../../models/_document.model";
 import { FolderModel } from "../../models/_folder.model";
 import { AuthService } from "../../services/_auth.service";
-import { FileService } from "../../services/_file.service";
-import { FolderService } from "../../services/_folder.service";
 
 type UploadProgressHandlers = {
     onFileUploadStart: (file: File) => string;
@@ -203,7 +202,7 @@ export class HomePageModel {
         let error: string | null = null;
         this.setIsLoading(true);
         const path = this._pathArr.join("/");
-        FolderApi.createFolder({
+        FolderApi.create({
             name: folderName,
             parentFolderId: this._currentFolder?.id || undefined,
         }).then(() => {
@@ -212,29 +211,6 @@ export class HomePageModel {
             error = "Failed to create folder";
         }).finally(() => {
             this.setIsLoading(false);
-        });
-        return error;
-    }
-
-    public handleAddFile(fileName: string, extension: string, content: string): string | null {
-        if (this._documents.some(doc => doc.name === fileName && doc.documentType === "file")) {
-            return "A file with the same name already exists in the current folder";
-        }
-        let error: string | null = null;
-        this.setIsLoading(true);
-        const path = this._pathArr.join("/");
-        FileService.createFile({
-            name: fileName,
-            fileType: extension,
-            content: content,
-            containingPath: path,
-            modifiedBy: "Current User" // TODO: Get current user
-        }).catch((error) => {
-            error = "Failed to create file";
-        }).finally(() => {
-            this._handleRefreshCurrentFolder().finally(() => {
-                this.setIsLoading(false);
-            });
         });
         return error;
     }
@@ -262,48 +238,38 @@ export class HomePageModel {
         if (uniqueSelectedNames.size !== selectedFileNames.length) {
             return "Selected files contain duplicate names";
         }
-
         const containingPath = this._pathArr.join("/");
         this.setIsLoading(true);
 
-        const filesUploadStatus: {
-            [uploadId: string]: "success" | "failed" | "pending";
-        } = {};
+        let sucessCount = 0;
 
-        function checkAllUploadsCompleted() {
-            const allCompleted = Object.values(filesUploadStatus).every(status => status === "success" || status === "failed");
-            if (allCompleted) {
-                this._handleRefreshCurrentFolder().finally(() => {
-                    this.setIsLoading(false);
-                });
-            }
-        }
-
-        files.forEach(async (file) => {
-            const uploadId = progressHandlers.onFileUploadStart(file);
-            filesUploadStatus[uploadId] = "pending";
-            FileService.uploadFile(
-                containingPath,
-                file,
-                (progress) => {
-                    if (uploadId) {
-                        progressHandlers.onFileUploadProgress(uploadId, progress);
-                    }
-                },
-                () => {
-                    if (uploadId) {
+        FilesApi.uploadMany({
+            basePath: containingPath,
+            files,
+            onUploadComplete: (index, isSuccess) => {
+                const file = files[index];
+                if (file) {
+                    const uploadId = progressHandlers.onFileUploadStart(file);
+                    if (isSuccess) {
                         progressHandlers.onFileUploadComplete(uploadId);
-                        filesUploadStatus[uploadId] = "success";
-                        checkAllUploadsCompleted.call(this);
+                    } else {
+                        progressHandlers.onFileUploadFailed(uploadId, `Failed to upload '${file.name}'`);
                     }
                 }
-            ).catch(() => {
-                if (uploadId) {
-                    progressHandlers.onFileUploadFailed(uploadId, `Failed to upload '${file.name}'`);
-                    filesUploadStatus[uploadId] = "failed";
-                    checkAllUploadsCompleted.call(this);
+                sucessCount += 1;
+                if (sucessCount === files.length) {
+                    this._handleRefreshCurrentFolder().finally(() => {
+                        this.setIsLoading(false);
+                    });
                 }
-            });
+            },
+            onUploadProgress: (index, progress) => {
+                const file = files[index];
+                if (file) {
+                    const uploadId = progressHandlers.onFileUploadStart(file);
+                    progressHandlers.onFileUploadProgress(uploadId, progress);
+                }
+            },
         });
 
         return null;
@@ -319,10 +285,9 @@ export class HomePageModel {
         }
         let error: string | null = null;
         this.setIsLoading(true);
-        FileService.updateFile({
+        FilesApi.update({
             id: fileId,
             name: fileName,
-            fileType: fileDocument.fileType,
         }).catch((error) => {
             error = "Failed to update file";
         }).finally(() => {
@@ -345,7 +310,7 @@ export class HomePageModel {
         }
         let error: string | null = null;
         this.setIsLoading(true);
-        FolderService.updateFolder({
+        FolderApi.update({
             id: folderId,
             name: folderName,
         }).catch((error) => {
@@ -366,7 +331,7 @@ export class HomePageModel {
         let error: string | null = null;
         this.setIsLoading(true);
         if (document.documentType === "file") {
-            FileService.deleteFile(documentId).catch((error) => {
+            FilesApi.delete([documentId]).catch((error) => {
                 error = "Failed to delete file";
             }).finally(() => {
                 this._handleRefreshCurrentFolder().finally(() => {
@@ -374,7 +339,7 @@ export class HomePageModel {
                 });
             });
         } else if (document.documentType === "folder") {
-            FolderService.deleteFolder(documentId).catch((error) => {
+            FolderApi.delete([documentId]).catch((error) => {
                 error = "Failed to delete folder";
             }).finally(() => {
                 this._handleRefreshCurrentFolder().finally(() => {

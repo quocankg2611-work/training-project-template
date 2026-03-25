@@ -1,7 +1,18 @@
 import { fetchClient } from "./openapi/fetch-client";
 
 export class FilesApi {
-    public static async uploadFiles(files: File[], basePath: string) {
+    public static async uploadMany({
+        files,
+        basePath,
+        // TODO: implement upload progress and completion handlers
+        onUploadProgress,
+        onUploadComplete,
+    }: {
+        files: File[];
+        basePath: string;
+        onUploadProgress?: (index: number, progress: number) => void;
+        onUploadComplete?: (index: number, isSuccess: boolean) => void;
+    }) {
         const fileRequests: {
             filePath: string;
             fileContentBinary: string;
@@ -35,5 +46,34 @@ export class FilesApi {
         await fetchClient.POST("/files/upload", {
             body: uploadRequest,
         });
+    }
+
+    public static async update({
+        id,
+        name,
+    }: {
+        id: string;
+        name: string;
+    }) {
+        const response = await fetchClient.PUT("/files", {
+            body: {
+                fileId: id,
+                newName: name,
+            }
+        });
+        if (response.error) {
+            console.error("Failed to update file", response.error);
+        }
+    }
+
+    public static async delete(fileIds: string[]) {
+        const response = await fetchClient.DELETE("/files", {
+            body: {
+                fileIds,
+            }
+        });
+        if (response.error) {
+            console.error("Failed to delete files", response.error);
+        }
     }
 }
