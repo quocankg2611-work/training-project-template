@@ -1,43 +1,39 @@
-import { FolderModelValidator } from "../../models/_folder.model";
+import { FileModelValidator } from "../../models/_file.model";
 import { ControlledFoldersInput } from "../inputs/files/_controlled-input-folder";
-import { ControlledInput } from "../inputs/texts/_controlled-input-text";
 import { ModalBase } from "./base/_modal.base";
 
 export class UploadFolderModal extends ModalBase {
-    private readonly nameInput: ControlledInput;
     private readonly folderInput: ControlledFoldersInput;
+    private readonly selectedFolderNamePlaceholderId: string = `${this.bodyId}--selectedFolderName`;
+    private selectedFolderName: string  | null = null;
 
     constructor(
-        onUploadFolder: (folderName: string, files: File[]) => void
+        onUploadFolder: (files: File[]) => string | null,
     ) {
         super(
             {
                 modalType: "uploadFolder",
                 onModalConfirmed: () => {
-                    // Todo
-                    onUploadFolder("Example Folder Name", []); // Pass an empty file array for now (since we are not actually uploading files in this example)
-                    this.hide();
+                    const isFilesValid = this.folderInput.validate();
+                    if (isFilesValid) {
+                        const files = this.folderInput.getValue();
+                        const errorMessage = onUploadFolder(files);
+                        if (errorMessage != null) {
+                            this.raiseGlobalError(errorMessage);
+                        } else {
+                            this.hide();
+                        }
+                    }
                 },
                 onModalShow: () => {
-                    // Todo
+                    this.selectedFolderName = null;
+                    this.folderInput.clearError();
+                    this.folderInput.clearInput();
                 }
             },
             "Upload Folder",
             "Upload a folder to add to your document.",
             "Upload Folder"
-        );
-        const nameInputPlaceholderId = `${this.bodyId}--folderName`;
-        this.nameInput = new ControlledInput(
-            {
-                label: "Folder Name",
-                placeholder: "e.g. Project Assets",
-                maxLength: 40,
-                placeholderId: nameInputPlaceholderId,
-                onInput: (_) => {
-                    this.nameInput.clearError();
-                }
-            },
-            (value) => FolderModelValidator.validateName(value)
         );
 
         const folderInputPlaceholderId = `${this.bodyId}--folderInput`;
@@ -47,27 +43,32 @@ export class UploadFolderModal extends ModalBase {
                 label: "Select Folder",
                 placeholderId: folderInputPlaceholderId,
                 onInput: (files) => {
-                    // Todo - maybe display selected folder name somewhere in the modal?
+                    console.log("Selected files for folder upload:", files);
+                    if (files.length > 0) {
+                        this.selectedFolderName = files[0].webkitRelativePath.split("/")[0];
+                        const selectedFolderNameElement = document.getElementById(this.selectedFolderNamePlaceholderId);
+                        if (selectedFolderNameElement) {
+                            selectedFolderNameElement.textContent = this.selectedFolderName;
+                        }
+                    }
                 }
             },
-            // For folder validation, we can check if at least one file is selected (since we can't validate the folder name until we extract it from the file paths)
-            (files) => {
-                if (files.length === 0) {
-                    return "Please select a folder to upload.";
-                }
-                return null;
-            }
+            (files) =>  FileModelValidator.validateRawFiles(files)
         );
 
         const bodyHtml = `
             <div>
-                <div id="${nameInputPlaceholderId}"></div>
+                <div style="font-size: 14px; color: #555; margin-bottom: 10px;">
+                    Please select a folder to upload. The folder's name will be used as the document name, and all files within the folder (including subfolders) will be uploaded.
+                </div>
+
+                <div id="${this.selectedFolderNamePlaceholderId}"></div>
+
                 <div id="${folderInputPlaceholderId}"></div>
             </div>
         `;
         const body = document.getElementById(this.bodyId);
         body.innerHTML = bodyHtml;
-        this.nameInput.bootstrap();
         this.folderInput.bootstrap();
     }
 }

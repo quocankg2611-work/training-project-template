@@ -1,3 +1,4 @@
+import { EXTENSION_TO_ICON_MAP } from "../_constants";
 import formatTimeAgo from "../utilities/_format-strings";
 
 export class DocumentModel {
@@ -6,7 +7,7 @@ export class DocumentModel {
         public readonly name: string,
         public readonly path: string,
         public readonly documentType: "file" | "folder",
-        public readonly fileType: string | null,
+        public readonly extension: string | null,
         public readonly modified: string,
         public readonly modifiedBy: string,
         public readonly parentFolderId?: string,
@@ -20,5 +21,9 @@ export class DocumentModel {
 
     public get modifiedTimeAgo() {
         return formatTimeAgo(this.modified);
+    }
+
+    public get fileType(): string | null {
+        return EXTENSION_TO_ICON_MAP[this.extension ?? ""] ?? "unknown";
     }
 }

@@ -30,20 +30,15 @@ export class HomePageController {
         this.view.renderBody(this.model.getDocuments(), this.model.getSelectedDocumentIds());
         this.view.renderBreadcrumb(this.model.getCurrentPathArr());
         this.view.renderNavbar(this.model.getIsLoggedIn());
+        this.view.toggleLoginState(this.model.getIsLoggedIn());
         this.view.toggleActionButtons(this.model.getSelectedDocumentCount());
 
         this.view.bootstrap();
-        this.model.bootstrap();
+        void this.model.initializeAuthStateAsync();
     }
 
     private bootstrapModals(): void {
-
-        // TODO: Handle folder upload more detail
-        const handleModalUploadFolderConfirm = (folderName: string, files: File[]) => {
-            this.model.handleAddFolder(folderName);
-        };
-
-        const handleModalUploadFileConfirm = (files: File[]): string | null => {
+        const handleModalUploadFilesConfirm = (files: File[]): string | null => {
             return this.model.handleUploadFiles(files, {
                 onFileUploadStart: (file) => this.uploadPanel.startUpload(file),
                 onFileUploadProgress: (uploadId, progress) => this.uploadPanel.updateProgress(uploadId, progress),
@@ -53,8 +48,8 @@ export class HomePageController {
         };
 
         this.addFolderModal = new AddFolderModal(this.model.handleAddFolder.bind(this.model));
-        this.uploadFileModal = new UploadFileModal(handleModalUploadFileConfirm);
-        this.uploadFolderModal = new UploadFolderModal(handleModalUploadFolderConfirm);
+        this.uploadFileModal = new UploadFileModal(handleModalUploadFilesConfirm);
+        this.uploadFolderModal = new UploadFolderModal(handleModalUploadFilesConfirm);
         this.updateFileModal = new UpdateFileModal(this.model.handleUpdateFile.bind(this.model));
         this.updateFolderModal = new UpdateFolderModal(this.model.handleUpdateFolder.bind(this.model));
         this.deleteDocumentModal = new DeleteDocumentModal(this.model.handleDeleteDocuments.bind(this.model));
@@ -63,6 +58,7 @@ export class HomePageController {
     private bootstrapModel(): void {
         const handleIsLoggedInChange = (isLoggedIn: boolean): void => {
             this.view.renderNavbar(isLoggedIn);
+            this.view.toggleLoginState(isLoggedIn);
         };
 
         const handleDocumentsChange = (documents: DocumentModel[]): void => {
@@ -155,7 +151,11 @@ export class HomePageController {
         };
 
         const handleLoginBtnClick = (): void => {
-            this.model.handleLogin();
+            void this.model.handleLogin();
+        };
+
+        const handleNavbarLogoutClick = (): void => {
+            void this.model.handleLogout();
         };
 
         this.view = new HomePageView(
@@ -163,6 +163,7 @@ export class HomePageController {
             handleDocumentItemSelectionChanged,
             handleFolderNavigated,
             handleLoginBtnClick,
+            handleNavbarLogoutClick,
             handleNavbarNewFolderClick,
             handleNavbarUploadFolderClick,
             handleNavbarUploadFileClick,

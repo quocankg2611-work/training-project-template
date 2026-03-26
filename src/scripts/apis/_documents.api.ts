@@ -18,7 +18,7 @@ export class DocumentsApi {
                     item.name,
                     item.path,
                     item.documentType as "file" | "folder" || "file",
-                    item.fileType,
+                     item.extension,
                     modified.toISOString(),
                     item.modifiedBy,
                 );

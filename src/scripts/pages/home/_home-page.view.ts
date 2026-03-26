@@ -3,18 +3,21 @@ import { CardListComponent } from "../../components/_card-list";
 import { TableComponent } from "../../components/_table";
 import { NavbarComponent } from "../../components/_navbar";
 import { HomePageDocumentView } from "./_home-page.types";
+import { LoginBodyTemplate } from "./_login-body.template";
 
 export class HomePageView {
     private readonly breadcrumbComponent: BreadcrumbComponent;
     private readonly tableComponent: TableComponent;
     private readonly cardListComponent: CardListComponent;
     private readonly navbarComponent: NavbarComponent;
+    private readonly loginBodyTemplate: LoginBodyTemplate;
 
     constructor(
         onBreadcrumbItemClick: (goBackToLevel: number) => void,
         onDocumentItemSelectionChanged: (selectedDocumentId: string, isSelected: boolean) => void,
         onFolderNavigated: (folderId: string) => void,
-        onLoginBtnClick: () => void,
+        private readonly onLoginBtnClick: () => void,
+        private readonly onNavbarLogoutClick: () => void,
         private readonly onNavbarNewFolderClick: () => void,
         private readonly onNavbarUploadFolderClick: () => void,
         private readonly onNavbarUploadFileClick: () => void,
@@ -25,7 +28,14 @@ export class HomePageView {
         this.breadcrumbComponent = new BreadcrumbComponent(onBreadcrumbItemClick);
         this.tableComponent = new TableComponent(onDocumentItemSelectionChanged, onFolderNavigated);
         this.cardListComponent = new CardListComponent(onDocumentItemSelectionChanged, onFolderNavigated);
-        this.navbarComponent = new NavbarComponent(onLoginBtnClick);
+        this.navbarComponent = new NavbarComponent(
+            this.onNavbarNewFolderClick,
+            this.onNavbarUploadFolderClick,
+            this.onNavbarUploadFileClick,
+            this.onNavbarLogoutClick,
+        );
+        this.loginBodyTemplate = new LoginBodyTemplate(this.onLoginBtnClick);
+
     }
 
     public renderNavbar(isLoggedIn: boolean): void {
@@ -33,6 +43,19 @@ export class HomePageView {
             "homePageNavBar--placeholder",
             this.navbarComponent.build(isLoggedIn)
         );
+    }
+
+    public toggleLoginState(isLoggedIn: boolean): void {
+        const loggedInContainer = document.getElementById("homePage--loggedIn");
+        const notLoggedInContainer = document.getElementById("homePage--notLoggedIn");
+
+        if (loggedInContainer) {
+            loggedInContainer.classList.toggle("hidden", !isLoggedIn);
+        }
+
+        if (notLoggedInContainer) {
+            notLoggedInContainer.classList.toggle("hidden", isLoggedIn);
+        }
     }
 
     public renderBreadcrumb(pathArr: string[]): void {
@@ -103,25 +126,11 @@ export class HomePageView {
         }
     }
 
-
     public bootstrap(): void {
-        document.getElementById("homePageNavbarNewFolder")?.addEventListener("click", (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            this.onNavbarNewFolderClick();
-        });
-
-        document.getElementById("homePageNavbarUploadFile")?.addEventListener("click", (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            this.onNavbarUploadFileClick();
-        });
-
-        document.getElementById("homePageNavbarUploadFolder")?.addEventListener("click", (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            this.onNavbarUploadFolderClick();
-        });
+        this.render(
+            "homePageLoginBody--placeholder",
+            this.loginBodyTemplate.build()
+        );
 
         document.getElementById("editBtnHomePage")?.addEventListener("click", () => {
             this.onActionEditBtnClick();

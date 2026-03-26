@@ -1,18 +1,45 @@
 import { HtmlUtils } from "../utilities/_html";
 
 export class NavbarComponent {
-private readonly LOGIN_BUTTON_ID = "homePageNavbarLoginButton";
+    private readonly NEW_FOLDER_BUTTON_ID = "homePageNavbarNewFolder";
+    private readonly UPLOAD_FILE_BUTTON_ID = "homePageNavbarUploadFile";
+    private readonly UPLOAD_FOLDER_BUTTON_ID = "homePageNavbarUploadFolder";
+    private readonly LOGOUT_BUTTON_ID = "homePageNavbarLogoutButton";
 
     constructor(
-        private readonly onLoginClick: () => void,
+        private readonly onNavbarNewFolderClick: () => void,
+        private readonly onNavbarUploadFolderClick: () => void,
+        private readonly onNavbarUploadFileClick: () => void,
+        private readonly onNavbarLogoutClick: () => void,
     ) {}
 
     public build(isLoggedIn: boolean): HTMLElement {
         const element = HtmlUtils.stringToSingleHtmlElement(this.buildHtmlString(isLoggedIn));
-        const loginButton = element.querySelector(`#${this.LOGIN_BUTTON_ID}`);
-        if (loginButton) {
-            loginButton.addEventListener("click", this.onLoginClick);
-        }
+
+        element.querySelector<HTMLAnchorElement>(`#${this.NEW_FOLDER_BUTTON_ID}`)?.addEventListener("click", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.onNavbarNewFolderClick();
+        });
+
+        element.querySelector<HTMLAnchorElement>(`#${this.UPLOAD_FILE_BUTTON_ID}`)?.addEventListener("click", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.onNavbarUploadFileClick();
+        });
+
+        element.querySelector<HTMLAnchorElement>(`#${this.UPLOAD_FOLDER_BUTTON_ID}`)?.addEventListener("click", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.onNavbarUploadFolderClick();
+        });
+
+        element.querySelector<HTMLButtonElement>(`#${this.LOGOUT_BUTTON_ID}`)?.addEventListener("click", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.onNavbarLogoutClick();
+        });
+
         return element;
     }
 
@@ -100,14 +127,17 @@ private readonly LOGIN_BUTTON_ID = "homePageNavbarLoginButton";
 
                     ${isLoggedIn === false ? `
                         <div class="d-flex">
-                            <button class="nav-button nav-button--text" id="${this.LOGIN_BUTTON_ID}">
-                                <span>Login</span>
-                            </button>
                             <button class="nav-button nav-button--primary">
                                 <span>Sign up</span>
                             </button>
                         </div>
-                    ` : ""}
+                    ` : `
+                        <div class="d-flex">
+                            <button class="nav-button nav-button--text" id="${this.LOGOUT_BUTTON_ID}">
+                                <span>Logout</span>
+                            </button>
+                        </div>
+                    `}
                 </div>
             </nav>
         `;

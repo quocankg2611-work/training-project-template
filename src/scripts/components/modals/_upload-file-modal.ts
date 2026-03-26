@@ -6,7 +6,7 @@ export class UploadFileModal extends ModalBase {
     private readonly fileUploadInput: ControlledFilesInput
 
     constructor(
-        private readonly onUploadFiles: (files: File[]) => string | null,
+        onUploadFiles: (files: File[]) => string | null,
     ) {
         super(
             {
@@ -15,7 +15,7 @@ export class UploadFileModal extends ModalBase {
                     const isFilesValid = this.fileUploadInput.validate();
                     if (isFilesValid) {
                         const files = this.fileUploadInput.getValue();
-                        const errorMessage = this.onUploadFiles(files);
+                        const errorMessage = onUploadFiles(files);
                         if (errorMessage != null) {
                             this.raiseGlobalError(errorMessage);
                         } else {
@@ -40,7 +40,7 @@ export class UploadFileModal extends ModalBase {
             {
                 label: "Select File",
                 placeholderId: fileUploadPlaceholderId,
-                acceptedExtensions: FileModelValidator.ALLOWED_EXTENSIONS,
+                acceptedExtensions: [], // Accept all file types
                 onInput(files) {
 
                 },

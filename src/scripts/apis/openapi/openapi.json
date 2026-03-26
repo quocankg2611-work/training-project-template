@@ -27,6 +27,16 @@
           "required": true
         },
         "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateFolderResponse"
+                }
+              }
+            }
+          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -539,6 +549,18 @@
           }
         }
       },
+      "CreateFolderResponse": {
+        "required": [
+          "folderId"
+        ],
+        "type": "object",
+        "properties": {
+          "folderId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
       "DeleteFilesRequest": {
         "required": [
           "fileIds"
@@ -597,7 +619,7 @@
           "name",
           "path",
           "documentType",
-          "fileType",
+          "extension",
           "modifiedBy",
           "createdAt",
           "updatedAt"
@@ -617,7 +639,7 @@
           "documentType": {
             "type": "string"
           },
-          "fileType": {
+          "extension": {
             "type": [
               "null",
               "string"

@@ -47,6 +47,21 @@
             @include icon-mask('tdesign--file-unknown');
             @include icon-sizer(1);
         }
+
+        &--pdf {
+            @include icon-image('vscode-icons--file-type-pdf2');
+            @include icon-sizer(1);
+        }
+
+        &--powerpoint {
+            @include icon-image('vscode-icons--file-type-powerpoint');
+            @include icon-sizer(1);
+        }
+
+        &--text {
+            @include icon-image('vscode-icons--file-type-text');
+            @include icon-sizer(1);
+        }
     }
 
     &__text-file {

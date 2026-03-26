@@ -22,54 +22,60 @@
 <body id="homePage"
 	  class="d-flex flex-column vh-100 overflow-hidden pb-5">
 
-	<div id="homePageNavBar--placeholder"></div>
+	<div id="homePage--loggedIn">
+		<div id="homePageNavBar--placeholder"></div>
 
-	<div class="flex-grow-1 d-flex flex-column px-2 px-lg-4 overflow-hidden">
+		<div class="flex-grow-1 d-flex flex-column px-2 px-lg-4 overflow-hidden">
 
-		<!-- Title / Actions -->
-		<div class="d-flex flex-row justify-content-between align-items-center">
-			<h1 class="mt-lg-5 mb-lg-3 mt-4 mb-2 fw-light">Documents</h1>
+			<!-- Title / Actions -->
+			<div class="d-flex flex-row justify-content-between align-items-center">
+				<h1 class="mt-lg-5 mb-lg-3 mt-4 mb-2 fw-light">Documents</h1>
 
-			<div class="home-page-actions hidden d-flex gap-2">
-				<span id="selectedCountHomePage"
-					  class="align-self-center text-muted small">Selected: 0</span>
-				<button class="act-button"
-						id="editBtnHomePage">
-					<span class="act-button__icon--edit"></span>
-					Edit
-				</button>
-				<button class="act-button"
-						id="deleteBtnHomePage">
-					<span class="act-button__icon--delete"></span>
-					Delete
-				</button>
-				<button class="act-button act-button--cancel"
-						id="cancelBtnHomePage">
-					Cancel
-				</button>
+				<div class="home-page-actions hidden d-flex gap-2">
+					<span id="selectedCountHomePage"
+						  class="align-self-center text-muted small">Selected: 0</span>
+					<button class="act-button"
+							id="editBtnHomePage">
+						<span class="act-button__icon--edit"></span>
+						Edit
+					</button>
+					<button class="act-button"
+							id="deleteBtnHomePage">
+						<span class="act-button__icon--delete"></span>
+						Delete
+					</button>
+					<button class="act-button act-button--cancel"
+							id="cancelBtnHomePage">
+						Cancel
+					</button>
+				</div>
+			</div>
+
+			<!-- Breadcrumb -->
+			<div id="homePageBreadcrumb--placeholder"></div>
+
+			<!-- Body section (table - desktop) -->
+
+			<div id="homePageBody--desktop"
+				 class="home-page__desktop d-none d-lg-block flex-grow-1">
+
+				<!-- Documents table -->
+				<div id="homePageBodyTable--placeholder"></div>
+			</div>
+
+			<!-- Body section (item list - mobile) -->
+
+			<div id="homePageBody--mobile"
+				 class="d-lg-none d-flex flex-column flex-grow-1 overflow-y-auto">
+
+				<!-- Card list -->
+				<div id="homePageBodyCardList--placeholder"></div>
 			</div>
 		</div>
+	</div>
 
-		<!-- Breadcrumb -->
-		<div id="homePageBreadcrumb--placeholder"></div>
-
-		<!-- Body section (table - desktop) -->
-
-		<div id="homePageBody--desktop"
-			 class="home-page__desktop d-none d-lg-block flex-grow-1">
-
-			<!-- Documents table -->
-			<div id="homePageBodyTable--placeholder"></div>
-		</div>
-
-		<!-- Body section (item list - mobile) -->
-
-		<div id="homePageBody--mobile"
-			 class="d-lg-none d-flex flex-column flex-grow-1 overflow-y-auto">
-
-			<!-- Card list -->
-			<div id="homePageBodyCardList--placeholder"></div>
-		</div>
+	<div id="homePage--notLoggedIn">
+		<div id="homePageLoginBody--placeholder"></div>
 	</div>
 
 	<!-- === Scripts import === -->

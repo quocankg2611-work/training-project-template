@@ -112,6 +112,10 @@ export interface components {
             parentFolderId?: null | string;
             name: null | string;
         };
+        CreateFolderResponse: {
+            /** Format: uuid */
+            folderId: string;
+        };
         DeleteFilesRequest: {
             fileIds: null | string[];
         };
@@ -127,7 +131,7 @@ export interface components {
             name: string;
             path: string;
             documentType: string;
-            fileType: null | string;
+            extension: null | string;
             modifiedBy: string;
             /** Format: date-time */
             createdAt: string;
@@ -251,6 +255,15 @@ export interface operations {
             };
         };
         responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateFolderResponse"];
+                };
+            };
             /** @description Bad Request */
             400: {
                 headers: {

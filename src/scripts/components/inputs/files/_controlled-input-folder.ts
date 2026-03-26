@@ -59,7 +59,7 @@ export class ControlledFoldersInput extends ControlledInputBase {
 
             const files = Array.from(inputElement.files);
             const acceptedExtensions = this.props.acceptedExtensions;
-            const hasInvalidFile = files.some((file) => {
+            const hasInvalidFile = acceptedExtensions.length > 0 && files.some((file) => {
                 const dotIndex = file.name.lastIndexOf(".");
                 const extension = dotIndex > 0 ? file.name.substring(dotIndex + 1).toLowerCase() : "";
                 return !acceptedExtensions.includes(extension);

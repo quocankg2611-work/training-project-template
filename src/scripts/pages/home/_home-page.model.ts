@@ -47,6 +47,12 @@ export class HomePageModel {
     }
 
     public bootstrap(): void {
+        if (!this._isLoggedIn) {
+            this.clearSelectedDocuments();
+            this.setDocuments([]);
+            return;
+        }
+
         this.setIsLoading(true);
         this.setError(null);
         DocumentsApi.getByPath(this.getCurrentPath())
@@ -59,6 +65,19 @@ export class HomePageModel {
             .finally(() => {
                 this.setIsLoading(false);
             });
+    }
+
+    public async initializeAuthStateAsync(): Promise<void> {
+        const isLoggedIn = await AuthService.restoreSessionAsync().catch(() => false);
+        this.setIsLoggedIn(isLoggedIn);
+
+        if (isLoggedIn) {
+            this.bootstrap();
+            return;
+        }
+
+        this.clearSelectedDocuments();
+        this.setDocuments([]);
     }
 
     // Getters and setters:
@@ -276,10 +295,6 @@ export class HomePageModel {
         return error;
     }
 
-    public handleUploadFolder(folderName: string, files: File[]): string | null {
-        return "Not implemented yet";
-    }
-
     public handleUploadFiles(files: File[], progressHandlers: UploadProgressHandlers): string | null {
         if (files.length === 0) {
             return "Please select at least one file";
@@ -429,17 +444,31 @@ export class HomePageModel {
         return error;
     }
 
-    public handleLogin(): void {
-        // this._authService.loginPopup();
-        AuthService.initializeAsync().then((msalInstance) => {
-            msalInstance.loginPopup({
-                scopes: ["User.Read"],
-                redirectUri: "/redirect.html",
-            }).then((loginResponse) => {
-                msalInstance.setActiveAccount(loginResponse.account);
+    public async handleLogin(): Promise<void> {
+        this.setError(null);
+
+        return AuthService.loginAsync()
+            .then(() => {
                 this.setIsLoggedIn(true);
+                this.bootstrap();
+            })
+            .catch(() => {
+                this.setIsLoggedIn(false);
+                this.setError("Login failed");
             });
-        });
+    }
+
+    public async handleLogout(): Promise<void> {
+        this.setError(null);
+
+        return AuthService.logoutAsync()
+            .then(() => {
+                this.setIsLoggedIn(false);
+                this.bootstrap();
+            })
+            .catch(() => {
+                this.setError("Logout failed");
+            });
     }
 }
 
