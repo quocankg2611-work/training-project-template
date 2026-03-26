@@ -3,17 +3,16 @@ import { ModalBase } from "./base/_modal.base";
 export class DeleteDocumentModal extends ModalBase {
     private readonly subtitleElId: string;
     private readonly messageElId: string;
-    private currentDocumentId = "";
-    private currentDocumentType: "folder" | "file" = "folder";
+    private currentDocumentIds: string[] = [];
 
     constructor(
-        onDelete: (documentId: string, documentType: "folder" | "file") => void
+        onDelete: (documentIds: string[]) => void
     ) {
         super(
             {
                 modalType: "deleteDocument",
                 onModalConfirmed: () => {
-                    onDelete(this.currentDocumentId, this.currentDocumentType);
+                    onDelete(this.currentDocumentIds);
                     this.hide();
                 },
                 onModalShow: () => {
@@ -34,8 +33,7 @@ export class DeleteDocumentModal extends ModalBase {
     }
 
     public showWithData(documentId: string, documentName: string, documentType: "folder" | "file"): void {
-        this.currentDocumentId = documentId;
-        this.currentDocumentType = documentType;
+        this.currentDocumentIds = [documentId];
 
         const subtitleEl = document.getElementById(this.subtitleElId)!;
         const messageEl = document.getElementById(this.messageElId)!;
@@ -44,6 +42,21 @@ export class DeleteDocumentModal extends ModalBase {
         messageEl.textContent = documentType === "folder"
             ? "This folder and all its contents will be permanently removed."
             : "This file will be permanently removed.";
+
+        this.show();
+    }
+
+    public showWithDocuments(documents: Array<{ id: string; name: string; documentType: "folder" | "file" }>): void {
+        this.currentDocumentIds = documents.map((document) => document.id);
+
+        const subtitleEl = document.getElementById(this.subtitleElId)!;
+        const messageEl = document.getElementById(this.messageElId)!;
+
+        const folderCount = documents.filter((document) => document.documentType === "folder").length;
+        const fileCount = documents.length - folderCount;
+
+        subtitleEl.textContent = `Are you sure you want to delete ${documents.length} selected items?`;
+        messageEl.textContent = `This will permanently remove ${folderCount} folder(s) and ${fileCount} file(s).`;
 
         this.show();
     }

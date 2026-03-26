@@ -14,27 +14,23 @@ type UploadProgressHandlers = {
 
 export class HomePageModel {
     private _currentFolder: FolderModel | null;
-
-
-    private _pathArr: string[];
     private _documents: DocumentModel[];
     private _isLoggedIn: boolean = false;
-    private _selectedDocument: DocumentModel | null
+    private _selectedDocumentIds: Set<string>;
     private _error: string | null;
     private _isLoading: boolean;
 
     constructor(
-        private readonly onPathArrChange: (pathArr: string[]) => void,
         private readonly onDocumentsChange: (documents: DocumentModel[]) => void,
-        private readonly onSelectedDocumentChange: (selectedDocument: DocumentModel | null) => void,
+        private readonly onSelectedDocumentsChange: (selectedDocumentIds: string[]) => void,
         private readonly onErrorChange: (error: string | null) => void,
         private readonly onIsLoadingChange: (isLoading: boolean) => void,
         private readonly onIsLoggedInChange: (isLoggedIn: boolean) => void,
         private readonly onCurrentFolderChange?: (currentFolder: FolderModel | null) => void,
     ) {
-        this._pathArr = [];
+        this._currentFolder = null;
         this._documents = [];
-        this._selectedDocument = null;
+        this._selectedDocumentIds = new Set<string>();
         this._error = null;
         this._isLoading = false;
         this._isLoggedIn = false;
@@ -53,7 +49,7 @@ export class HomePageModel {
     public bootstrap(): void {
         this.setIsLoading(true);
         this.setError(null);
-        DocumentsApi.getByPath(this.getPathStr())
+        DocumentsApi.getByPath(this.getCurrentPath())
             .then((documents) => {
                 this.setDocuments(documents);
             })
@@ -67,31 +63,64 @@ export class HomePageModel {
 
     // Getters and setters:
 
-    public getPathArr(): string[] {
-        return this._pathArr;
+    public getCurrentFolder(): FolderModel | null {
+        return this._currentFolder;
     }
 
-    public getPathStr(): string {
-        return "/" + this._pathArr.join("/");
+    public getCurrentPathArr(): string[] {
+        if (!this._currentFolder) {
+            return [];
+        }
+        const currentPath = `${this._currentFolder.path}/${this._currentFolder.name}`;
+        return currentPath.split("/").filter(Boolean);
+    }
+
+    public getCurrentPath(): string {
+        const pathArr = this.getCurrentPathArr();
+        if (pathArr.length === 0) {
+            return "/";
+        }
+        return `/${pathArr.join("/")}`;
     }
 
     public getDocuments(): DocumentModel[] {
         return this._documents;
     }
 
+    public getSelectedDocumentIds(): string[] {
+        return Array.from(this._selectedDocumentIds);
+    }
+
+    public getSelectedDocumentCount(): number {
+        return this._selectedDocumentIds.size;
+    }
+
+    public getSelectedDocuments(): DocumentModel[] {
+        return this.getSelectedDocumentIds()
+            .map((documentId) => this.getDocumentById(documentId))
+            .filter((document): document is DocumentModel => document !== null);
+    }
+
+    /**
+     * For editing document, only allow exactly one document to be selected, and return that document. If the selection is invalid, return null.
+     * @returns 
+     */
     public getSelectedDocument(): DocumentModel | null {
-        return this._selectedDocument;
+        if (this._selectedDocumentIds.size !== 1) {
+            return null;
+        }
+
+        const ids = this.getSelectedDocumentIds();
+        const selectedDocumentId = ids[0];
+        if (!selectedDocumentId) {
+            return null;
+        }
+
+        return this.getDocumentById(selectedDocumentId);
     }
 
     public getIsLoggedIn(): boolean {
         return this._isLoggedIn;
-    }
-
-    public setPathArr(pathArr: string[]): void {
-        if (pathArr.join("/") !== this._pathArr.join("/")) {
-            this._pathArr = pathArr;
-            this.onPathArrChange(pathArr);
-        }
     }
 
     public setDocuments(documents: DocumentModel[]): void {
@@ -100,23 +129,37 @@ export class HomePageModel {
         for (const document of documents) {
             this._documentByIdMap[document.id] = document;
         }
+
+        const validSelectedIds = this.getSelectedDocumentIds().filter((selectedId) => this._documentByIdMap[selectedId]);
+        if (validSelectedIds.length !== this._selectedDocumentIds.size) {
+            this._selectedDocumentIds = new Set(validSelectedIds);
+            this.onSelectedDocumentsChange(validSelectedIds);
+        }
+
         this.onDocumentsChange(documents);
     }
 
-    public setSelectedDocument(selectedDocument: DocumentModel | null): void {
-        this._selectedDocument = selectedDocument;
-        this.onSelectedDocumentChange(selectedDocument);
+    public clearSelectedDocuments(): void {
+        if (this._selectedDocumentIds.size === 0) {
+            return;
+        }
+
+        this._selectedDocumentIds.clear();
+        this.onSelectedDocumentsChange([]);
     }
 
-    public setSelectedDocumentById(documentId: string | null): void {
-        if (documentId !== this._selectedDocument?.id) {
-            if (documentId === null) {
-                this.setSelectedDocument(null);
-            } else {
-                const document = this.getDocumentById(documentId);
-                this.setSelectedDocument(document);
-            }
+    public setDocumentSelection(documentId: string, isSelected: boolean): void {
+        if (!this.getDocumentById(documentId)) {
+            return;
         }
+
+        if (isSelected) {
+            this._selectedDocumentIds.add(documentId);
+        } else {
+            this._selectedDocumentIds.delete(documentId);
+        }
+
+        this.onSelectedDocumentsChange(this.getSelectedDocumentIds());
     }
 
     public setError(error: string | null): void {
@@ -141,6 +184,14 @@ export class HomePageModel {
     }
 
     public setCurrentFolder(currentFolder: FolderModel | null): void {
+        const hasChanged =
+            this._currentFolder?.id !== currentFolder?.id ||
+            this._currentFolder?.name !== currentFolder?.name ||
+            this._currentFolder?.path !== currentFolder?.path;
+        if (!hasChanged) {
+            return;
+        }
+
         this._currentFolder = currentFolder;
         if (this.onCurrentFolderChange) {
             this.onCurrentFolderChange(currentFolder);
@@ -153,15 +204,21 @@ export class HomePageModel {
 
     // Common methods:
 
-    private async _handleFolderNavigationByName(folderName: string): Promise<void> {
-        const newPathArr = [...this._pathArr, folderName];
-        return this.handleFolderNavigation(newPathArr);
+    private _createFolderModelFromPath(pathArr: string[]): FolderModel | null {
+        if (pathArr.length === 0) {
+            return null;
+        }
+
+        const folderName = pathArr[pathArr.length - 1];
+        const parentPathArr = pathArr.slice(0, -1);
+        const parentPath = parentPathArr.length > 0 ? `/${parentPathArr.join("/")}` : "";
+        return new FolderModel("", folderName, parentPath);
     }
 
     private async _handleRefreshCurrentFolder(): Promise<void> {
-        return DocumentsApi.getByPath("/" + this.getPathArr().join("/"))
+        return DocumentsApi.getByPath(this.getCurrentPath())
             .then((newDocuments) => {
-                this.setSelectedDocument(null);
+                this.clearSelectedDocuments();
                 this.setDocuments(newDocuments);
             })
             .catch((error) => {
@@ -169,10 +226,8 @@ export class HomePageModel {
             });
     }
 
-    // Usecase specific methods:
-
-    public handleFolderNavigation(pathArr: string[]) {
-        this.setPathArr(pathArr);
+    private _navigateToFolder(currentFolder: FolderModel | null): void {
+        this.setCurrentFolder(currentFolder);
         this.setIsLoading(true);
         this.setError(null);
         this._handleRefreshCurrentFolder().finally(() => {
@@ -180,18 +235,23 @@ export class HomePageModel {
         });
     }
 
+    // Usecase specific methods:
+
     public handleFolderNavigationGoBackToLevel(goBackToLevel: number): void {
-        if (goBackToLevel < 0 || goBackToLevel >= this._pathArr.length) {
+        const currentPathArr = this.getCurrentPathArr();
+        if (goBackToLevel < 0 || goBackToLevel > currentPathArr.length) {
             return;
         }
-        const newPathArr = this._pathArr.slice(0, goBackToLevel);
-        this.handleFolderNavigation(newPathArr);
+
+        const targetPathArr = currentPathArr.slice(0, goBackToLevel);
+        const targetFolder = this._createFolderModelFromPath(targetPathArr);
+        this._navigateToFolder(targetFolder);
     }
 
     public handleFolderNavigationById(folderId: string): void {
         const folderDocument = this.getDocumentById(folderId);
         if (folderDocument && folderDocument.documentType === "folder") {
-            this._handleFolderNavigationByName(folderDocument.name);
+            this._navigateToFolder(new FolderModel(folderDocument.id, folderDocument.name, folderDocument.path));
         }
     }
 
@@ -201,12 +261,13 @@ export class HomePageModel {
         }
         let error: string | null = null;
         this.setIsLoading(true);
-        const path = this._pathArr.join("/");
         FolderApi.create({
             name: folderName,
             parentFolderId: this._currentFolder?.id || undefined,
         }).then(() => {
-            this._handleFolderNavigationByName(folderName);
+            const parentPathArr = this.getCurrentPathArr();
+            const parentPath = parentPathArr.length > 0 ? `/${parentPathArr.join("/")}` : "";
+            this._navigateToFolder(new FolderModel("", folderName, parentPath));
         }).catch((error) => {
             error = "Failed to create folder";
         }).finally(() => {
@@ -238,7 +299,7 @@ export class HomePageModel {
         if (uniqueSelectedNames.size !== selectedFileNames.length) {
             return "Selected files contain duplicate names";
         }
-        const containingPath = this._pathArr.join("/");
+        const containingPath = this.getCurrentPath();
         this.setIsLoading(true);
 
         let sucessCount = 0;
@@ -270,8 +331,11 @@ export class HomePageModel {
                     progressHandlers.onFileUploadProgress(uploadId, progress);
                 }
             },
+        }).then(() => {
+            this._handleRefreshCurrentFolder().finally(() => {
+                this.setIsLoading(false);
+            });
         });
-
         return null;
     }
 
@@ -283,13 +347,10 @@ export class HomePageModel {
         if (this._documents.some(doc => doc.name === fileName && doc.documentType === "file" && doc.id !== fileId)) {
             return "A file with the same name already exists in the current folder";
         }
-        let error: string | null = null;
         this.setIsLoading(true);
         FilesApi.update({
             id: fileId,
             name: fileName,
-        }).catch((error) => {
-            error = "Failed to update file";
         }).finally(() => {
             this._handleRefreshCurrentFolder().finally(() => {
                 this.setIsLoading(false);
@@ -323,31 +384,48 @@ export class HomePageModel {
         return error;
     }
 
-    public handleDeleteDocument(documentId: string): string | null {
-        const document = this.getDocumentById(documentId);
-        if (!document) {
+    public handleDeleteDocuments(documentIds: string[]): string | null {
+        if (documentIds.length === 0) {
+            return "Please select at least one document";
+        }
+
+        const uniqueDocumentIds = Array.from(new Set(documentIds));
+        const selectedDocuments = uniqueDocumentIds
+            .map((documentId) => this.getDocumentById(documentId))
+            .filter((document): document is DocumentModel => document !== null);
+
+        if (selectedDocuments.length === 0) {
             return "Document not found";
         }
+
+        const fileIds = selectedDocuments
+            .filter((document) => document.documentType === "file")
+            .map((document) => document.id);
+        const folderIds = selectedDocuments
+            .filter((document) => document.documentType === "folder")
+            .map((document) => document.id);
+
         let error: string | null = null;
         this.setIsLoading(true);
-        if (document.documentType === "file") {
-            FilesApi.delete([documentId]).catch((error) => {
-                error = "Failed to delete file";
-            }).finally(() => {
-                this._handleRefreshCurrentFolder().finally(() => {
-                    this.setIsLoading(false);
-                });
-            });
-        } else if (document.documentType === "folder") {
-            FolderApi.delete([documentId]).catch((error) => {
-                error = "Failed to delete folder";
-            }).finally(() => {
+
+        const deleteTasks: Promise<unknown>[] = [];
+        if (fileIds.length > 0) {
+            deleteTasks.push(FilesApi.delete(fileIds));
+        }
+        if (folderIds.length > 0) {
+            deleteTasks.push(FolderApi.delete(folderIds));
+        }
+
+        Promise.all(deleteTasks)
+            .catch(() => {
+                error = "Failed to delete selected documents";
+            })
+            .finally(() => {
                 this._handleRefreshCurrentFolder().finally(() => {
                     this.setIsLoading(false);
                 });
             });
 
-        }
         return error;
     }
 

@@ -3,15 +3,15 @@ import { HtmlUtils } from "../utilities/_html";
 
 export class TableComponent {
     constructor(
-        private readonly onDocumentItemSelected: (selectedDocumentId: string | null) => void,
+        private readonly onDocumentItemSelectionChanged: (selectedDocumentId: string, isSelected: boolean) => void,
         private readonly onFolderNavigated: (folderId: string) => void,
     ) { }
 
     public build(
         items: HomePageDocumentView[],
-        selectedItemId: string | null,
+        selectedItemIds: string[],
     ): HTMLElement {
-        const tableHtml = this.buildHtml(items, selectedItemId);
+        const tableHtml = this.buildHtml(items, selectedItemIds);
         const tableElement = HtmlUtils.stringToSingleHtmlElement(tableHtml);
 
         // Attach selection event listeners
@@ -23,10 +23,18 @@ export class TableComponent {
                 });
             }
 
-            const documentSelectionArea = tableRowElement.querySelector(`td[data-id="${item.id}"]`);
+            const documentSelectionArea = tableRowElement?.querySelector(`td[data-id="${item.id}"]`);
+            const selectionInput = documentSelectionArea?.querySelector<HTMLInputElement>(`input[data-id="${item.id}"]`);
             documentSelectionArea?.addEventListener("click", (e) => {
                 e.stopPropagation(); // Prevent the click from bubbling up to the row's click event
-                this.onDocumentItemSelected(item.id);
+                if (selectionInput && e.target !== selectionInput) {
+                    selectionInput.click();
+                }
+            });
+
+            selectionInput?.addEventListener("change", (e) => {
+                e.stopPropagation();
+                this.onDocumentItemSelectionChanged(item.id, selectionInput.checked);
             });
         }
 
@@ -35,7 +43,7 @@ export class TableComponent {
 
     private buildHtml(
         items: HomePageDocumentView[],
-        selectedItemId: string | null,
+        selectedItemIds: string[],
     ): string {
         const html = `
         <div class="home-page__table">
@@ -55,7 +63,7 @@ export class TableComponent {
                 </thead>
 
                 <tbody>
-                   ${items.map(item => this.buildRowHtml(item, selectedItemId)).join("")}
+                   ${items.map(item => this.buildRowHtml(item, selectedItemIds)).join("")}
                 </tbody>
             </table>
         </div>
@@ -66,15 +74,16 @@ export class TableComponent {
 
     private buildRowHtml(
         item: HomePageDocumentView,
-        selectedItemId: string | null,
+        selectedItemIds: string[],
     ): string {
+        const isSelected = selectedItemIds.includes(item.id);
         const html = `
-        <tr data-id="${item.id}" class="file-table__row ${item.id === selectedItemId ? "file-table__row--selected" : ""}">
+        <tr data-id="${item.id}" class="file-table__row ${isSelected ? "file-table__row--selected" : ""}">
             <td data-id=${item.id}>
                 <input class="form-check-input"
-                        type="radio"
-                        name="file-table-select"
-                        ${item.id === selectedItemId ? "checked" : ""}
+                        data-id="${item.id}"
+                        type="checkbox"
+                        ${isSelected ? "checked" : ""}
                         />
             </td>
             <td>

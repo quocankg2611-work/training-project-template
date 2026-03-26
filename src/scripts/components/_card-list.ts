@@ -3,15 +3,15 @@ import { HtmlUtils } from "../utilities/_html";
 
 export class CardListComponent {
     constructor(
-        private readonly onDocumentItemSelected: (selectedDocumentId: string | null) => void,
+        private readonly onDocumentItemSelectionChanged: (selectedDocumentId: string, isSelected: boolean) => void,
         private readonly onFolderNavigated: (folderId: string) => void,
     ) { }
 
     public build(
         documentItemViews: HomePageDocumentView[],
-        selectedItemId: string | null,
+        selectedItemIds: string[],
     ): HTMLElement {
-        const cardListHtml = this.buildHtml(documentItemViews, selectedItemId);
+        const cardListHtml = this.buildHtml(documentItemViews, selectedItemIds);
         const cardListElement = HtmlUtils.stringToSingleHtmlElement(cardListHtml);
 
         // Attach selection event listeners
@@ -24,9 +24,17 @@ export class CardListComponent {
             }
 
             const selectionArea = cardElement?.querySelector(`thead>tr>th:first-child`);
+            const selectionInput = cardElement?.querySelector<HTMLInputElement>(`input[data-id="${documentView.id}"]`);
             selectionArea?.addEventListener("click", (event) => {
                 event.stopPropagation(); // Prevent the click from bubbling up to the card's click event
-                this.onDocumentItemSelected(documentView.id);
+                if (selectionInput && event.target !== selectionInput) {
+                    selectionInput.click();
+                }
+            });
+
+            selectionInput?.addEventListener("change", (event) => {
+                event.stopPropagation();
+                this.onDocumentItemSelectionChanged(documentView.id, selectionInput.checked);
             });
         }
 
@@ -35,7 +43,7 @@ export class CardListComponent {
 
     private buildHtml(
         documentItemViews: HomePageDocumentView[],
-        selectedItemId: string | null,
+        selectedItemIds: string[],
     ): string {
         const html = `
     	<div class="home-page__list d-flex flex-column flex-grow-1">
@@ -44,7 +52,7 @@ export class CardListComponent {
             </div>
 
             <div class="d-flex flex-column gap-4 pb-5">
-                ${documentItemViews.map((view) => this.buildCardItem(view, selectedItemId)).join("")}
+                ${documentItemViews.map((view) => this.buildCardItem(view, selectedItemIds)).join("")}
             </div>
         </div>
     `;
@@ -53,20 +61,21 @@ export class CardListComponent {
 
     private buildCardItem(
         documentView: HomePageDocumentView,
-        selectedItemId: string | null,
+        selectedItemIds: string[],
     ): string {
+        const isSelected = selectedItemIds.includes(documentView.id);
         return `
         <table 
-            class="file-card" 
+            class="file-card ${isSelected ? "file-card--selected" : ""}" 
             data-id="${documentView.id}"
         >
             <thead>
                 <tr>
                     <th>
                         <input class="form-check-input"
-                                type="radio"
-                                name="file-card-select" 
-                                ${documentView.id === selectedItemId ? "checked" : ""}
+                                data-id="${documentView.id}"
+                                type="checkbox"
+                                ${isSelected ? "checked" : ""}
                                 />
                         <span>File Type</span>
                     </th>

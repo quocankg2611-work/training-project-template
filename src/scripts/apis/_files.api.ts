@@ -13,38 +13,22 @@ export class FilesApi {
         onUploadProgress?: (index: number, progress: number) => void;
         onUploadComplete?: (index: number, isSuccess: boolean) => void;
     }) {
-        const fileRequests: {
-            filePath: string;
-            fileContentBinary: string;
-        }[] = [];
-        files.forEach(async (file) => {
-            const filePath = file.webkitRelativePath || "/";
-            const reader = new FileReader();
-            const fileContentBinary = await new Promise<string>((resolve, reject) => {
-                reader.onload = () => {
-                    const content = reader.result as string;
-                    resolve(content);
-                };
-                reader.onerror = () => {
-                    reject(new Error(`Failed to read file: ${file.name}`));
-                };
-                reader.readAsDataURL(file);
-            });
+        const formData = new FormData();
+        formData.append("basePath", basePath);
 
-            fileRequests.push({
-                filePath,
-                fileContentBinary,
-            });
-        });
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            formData.append("files", file);
+            formData.append(
+            "filePaths",
+            file.webkitRelativePath || "/"
+            );
+        }
 
-        const uploadRequest = {
-            basePath,
-            files: fileRequests.map(fr => fr.fileContentBinary),
-            filePaths: fileRequests.map(fr => fr.filePath),
-        };
+        const uploadRequest = formData;
 
         await fetchClient.POST("/files/upload", {
-            body: uploadRequest,
+            body: uploadRequest as any, // FormData is not directly supported by our typed fetch client, so we cast it to any
         });
     }
 

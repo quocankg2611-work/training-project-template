@@ -4,6 +4,12 @@
   cursor: pointer;
   font-size: fs(sm);
 
+  &--selected {
+    tr {
+      background-color: $color-table-row-selected;
+    }
+  }
+
   &__icon {
     &--folder {
       @include icon-mask('tdesign--folder-filled');

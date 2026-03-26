@@ -12,7 +12,7 @@ export class HomePageView {
 
     constructor(
         onBreadcrumbItemClick: (goBackToLevel: number) => void,
-        onDocumentItemSelected: (selectedDocumentId: string | null) => void,
+        onDocumentItemSelectionChanged: (selectedDocumentId: string, isSelected: boolean) => void,
         onFolderNavigated: (folderId: string) => void,
         onLoginBtnClick: () => void,
         private readonly onNavbarNewFolderClick: () => void,
@@ -23,8 +23,8 @@ export class HomePageView {
         private readonly onActionCancelBtnClick: () => void,
     ) {
         this.breadcrumbComponent = new BreadcrumbComponent(onBreadcrumbItemClick);
-        this.tableComponent = new TableComponent(onDocumentItemSelected, onFolderNavigated);
-        this.cardListComponent = new CardListComponent(onDocumentItemSelected, onFolderNavigated);
+        this.tableComponent = new TableComponent(onDocumentItemSelectionChanged, onFolderNavigated);
+        this.cardListComponent = new CardListComponent(onDocumentItemSelectionChanged, onFolderNavigated);
         this.navbarComponent = new NavbarComponent(onLoginBtnClick);
     }
 
@@ -44,16 +44,16 @@ export class HomePageView {
 
     public renderBody(
         homePageDocumentViews: HomePageDocumentView[],
-        selectedDocumentId: string | null,
+        selectedDocumentIds: string[],
     ): void {
         this.render(
             "homePageBodyTable--placeholder",
-            this.tableComponent.build(homePageDocumentViews, selectedDocumentId)
+            this.tableComponent.build(homePageDocumentViews, selectedDocumentIds)
         );
 
         this.render(
             "homePageBodyCardList--placeholder",
-            this.cardListComponent.build(homePageDocumentViews, selectedDocumentId)
+            this.cardListComponent.build(homePageDocumentViews, selectedDocumentIds)
         );
     }
 
@@ -70,10 +70,21 @@ export class HomePageView {
         }
     }
 
-    public toggleActionButtons(isShow: boolean): void {
+    public toggleActionButtons(selectedCount: number): void {
+        const isShow = selectedCount > 0;
         const homePageActionElements = document.getElementsByClassName("home-page-actions");
         for (let i = 0; i < homePageActionElements.length; i++) {
             homePageActionElements[i].classList.toggle("hidden", !isShow);
+        }
+
+        const selectedCountElement = document.getElementById("selectedCountHomePage");
+        if (selectedCountElement) {
+            selectedCountElement.textContent = `Selected: ${selectedCount}`;
+        }
+
+        const editBtn = document.getElementById("editBtnHomePage");
+        if (editBtn) {
+            editBtn.classList.toggle("hidden", selectedCount !== 1);
         }
     }
 

@@ -7,7 +7,6 @@ import { UploadFolderModal } from "../../components/modals/_upload-folder-modal"
 import { UploadPanelComponent } from "../../components/_upload-panel";
 import { HomePageModel } from "./_home-page.model";
 import { HomePageView } from "./_home-page.view";
-import { FolderModel } from "../../models/_folder.model";
 import { DocumentModel } from "../../models/_document.model";
 
 export class HomePageController {
@@ -28,9 +27,10 @@ export class HomePageController {
         this.bootstrapView();
         this.bootstrapModals();
 
-        this.view.renderBody(this.model.getDocuments(), this.model.getSelectedDocument()?.id ?? null);
-        this.view.renderBreadcrumb(this.model.getPathArr());
+        this.view.renderBody(this.model.getDocuments(), this.model.getSelectedDocumentIds());
+        this.view.renderBreadcrumb(this.model.getCurrentPathArr());
         this.view.renderNavbar(this.model.getIsLoggedIn());
+        this.view.toggleActionButtons(this.model.getSelectedDocumentCount());
 
         this.view.bootstrap();
         this.model.bootstrap();
@@ -57,7 +57,7 @@ export class HomePageController {
         this.uploadFolderModal = new UploadFolderModal(handleModalUploadFolderConfirm);
         this.updateFileModal = new UpdateFileModal(this.model.handleUpdateFile.bind(this.model));
         this.updateFolderModal = new UpdateFolderModal(this.model.handleUpdateFolder.bind(this.model));
-        this.deleteDocumentModal = new DeleteDocumentModal(this.model.handleDeleteDocument.bind(this.model));
+        this.deleteDocumentModal = new DeleteDocumentModal(this.model.handleDeleteDocuments.bind(this.model));
     }
 
     private bootstrapModel(): void {
@@ -65,16 +65,13 @@ export class HomePageController {
             this.view.renderNavbar(isLoggedIn);
         };
 
-        const handlePathArrChange = (pathArr: string[]): void => {
-        };
-
         const handleDocumentsChange = (documents: DocumentModel[]): void => {
-            this.view.renderBody(documents, this.model.getSelectedDocument()?.id ?? null);
+            this.view.renderBody(documents, this.model.getSelectedDocumentIds());
         };
 
-        const handleSelectedDocumentChange = (selectedDocument: DocumentModel | null): void => {
-            this.view.renderBody(this.model.getDocuments(), selectedDocument?.id ?? null);
-            this.view.toggleActionButtons(selectedDocument !== null);
+        const handleSelectedDocumentsChange = (selectedDocumentIds: string[]): void => {
+            this.view.renderBody(this.model.getDocuments(), selectedDocumentIds);
+            this.view.toggleActionButtons(selectedDocumentIds.length);
         };
 
         // TODO
@@ -85,13 +82,13 @@ export class HomePageController {
             this.view.toggleBodyLoading(isLoading);
         };
 
-        const handleCurrentFolderChange = (currentFolder: FolderModel | null): void => {
+        const handleCurrentFolderChange = (): void => {
+            this.view.renderBreadcrumb(this.model.getCurrentPathArr());
         };
 
         this.model = new HomePageModel(
-            handlePathArrChange,
             handleDocumentsChange,
-            handleSelectedDocumentChange,
+            handleSelectedDocumentsChange,
             handleErrorChange,
             handleIsLoadingChange,
             handleIsLoggedInChange,
@@ -104,8 +101,8 @@ export class HomePageController {
             this.model.handleFolderNavigationGoBackToLevel(goBackToLevel);
         };
 
-        const handleDocumentItemSelected = (selectedDocumentId: string | null): void => {
-            this.model.setSelectedDocumentById(selectedDocumentId);
+        const handleDocumentItemSelectionChanged = (selectedDocumentId: string, isSelected: boolean): void => {
+            this.model.setDocumentSelection(selectedDocumentId, isSelected);
         };
 
         const handleFolderNavigated = (folderId: string): void => {
@@ -137,14 +134,24 @@ export class HomePageController {
         };
 
         const handleActionDeleteBtnClick = (): void => {
-            const selectedDocument = this.model.getSelectedDocument();
-            if (selectedDocument) {
-                this.deleteDocumentModal.showWithData(selectedDocument.id, selectedDocument.name, selectedDocument.documentType);
+            const selectedDocuments = this.model.getSelectedDocuments();
+            if (selectedDocuments.length === 0) {
+                return;
             }
+
+            if (selectedDocuments.length === 1) {
+                const [selectedDocument] = selectedDocuments;
+                if (selectedDocument) {
+                    this.deleteDocumentModal.showWithData(selectedDocument.id, selectedDocument.name, selectedDocument.documentType);
+                }
+                return;
+            }
+
+            this.deleteDocumentModal.showWithDocuments(selectedDocuments);
         };
 
         const handleActionCancelBtnClick = (): void => {
-            this.model.setSelectedDocument(null);
+            this.model.clearSelectedDocuments();
         };
 
         const handleLoginBtnClick = (): void => {
@@ -153,7 +160,7 @@ export class HomePageController {
 
         this.view = new HomePageView(
             handleBreadcrumbItemClick,
-            handleDocumentItemSelected,
+            handleDocumentItemSelectionChanged,
             handleFolderNavigated,
             handleLoginBtnClick,
             handleNavbarNewFolderClick,
