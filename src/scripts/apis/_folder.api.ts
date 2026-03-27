@@ -19,14 +19,14 @@ export class FolderApi {
         }
     }
 
-    public static async update({
+    public static async updateName({
         id,
         name,
     }: {
         id: string;
         name: string;
     }) {
-        const response = await fetchClient.PUT("/folders", {
+        const response = await fetchClient.PATCH("/folders-name", {
             body: {
                 folderId: id,
                 newName: name

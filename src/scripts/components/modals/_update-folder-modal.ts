@@ -2,21 +2,21 @@ import { FileModelValidator } from "../../models/_file.model";
 import { ControlledInput } from "../inputs/texts/_controlled-input-text";
 import { ModalBase } from "./base/_modal.base";
 
-export class UpdateFolderModal extends ModalBase {
+export class UpdateFolderNameModal extends ModalBase {
     private currentFolderId = "";
     private readonly folderNameInput: ControlledInput;
 
     constructor(
-        private readonly onUpdateFolder: (folderId: string, folderName: string) => string | null
+        private readonly onUpdateFolderName: (folderId: string, folderName: string) => string | null
     ) {
         super(
             {
-                modalType: "updateFolder",
+                modalType: "updateFolderName",
                 onModalConfirmed: () => {
                     const isFolderNameValid = this.folderNameInput.validate();
                     if (isFolderNameValid) {
                         const folderName = this.folderNameInput.getValue();
-                        const errorMessage = this.onUpdateFolder(this.currentFolderId, folderName);
+                        const errorMessage = this.onUpdateFolderName(this.currentFolderId, folderName);
                         if (errorMessage != null) {
                             this.raiseGlobalError(errorMessage);
                         } else {

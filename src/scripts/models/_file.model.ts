@@ -19,6 +19,30 @@ export class FileModelValidator {
         return null;
     }
 
+    public static validateFiles(files: File[], isUploadFolder: boolean): string | null {
+        if (!files || files.length === 0) {
+            return "Please select at least one file to upload.";
+        }
+        const distinctFileNameSet = new Set<string>();
+        if (isUploadFolder === true) {
+            for (const file of files) {
+                if (distinctFileNameSet.has(file.webkitRelativePath)) {
+                    return "Duplicate file names are not allowed in the upload folder.";
+                }
+                distinctFileNameSet.add(file.webkitRelativePath);
+            }
+        }
+        else {
+            for (const file of files) {
+                if (distinctFileNameSet.has(file.name)) {
+                    return "Duplicate file names are not allowed.";
+                }
+                distinctFileNameSet.add(file.name);
+            }
+        }
+        return null;
+    }
+
     public static validateRawFiles(
         files: File[],
     ): string | null {

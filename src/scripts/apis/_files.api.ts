@@ -18,11 +18,11 @@ export class FilesApi {
 
         for (let i = 0; i < files.length; i++) {
             const file = files[i];
+            const path = file.webkitRelativePath.trim() !== ""
+                ? "/" + file.webkitRelativePath.split("/").slice(0, -1).join("/") // Remove the file name from the path, we only want the folder structure, and ensure it starts with a "/"
+                : "/";
             formData.append("files", file);
-            formData.append(
-            "filePaths",
-            file.webkitRelativePath || "/"
-            );
+            formData.append("filePaths", path);
         }
 
         const uploadRequest = formData;

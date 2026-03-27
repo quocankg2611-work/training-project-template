@@ -1,7 +1,7 @@
 import { AddFolderModal } from "../../components/modals/_add-folder-modal";
 import { DeleteDocumentModal } from "../../components/modals/_delete-document-modal";
 import { UpdateFileModal } from "../../components/modals/_update-file-modal";
-import { UpdateFolderModal } from "../../components/modals/_update-folder-modal";
+import { UpdateFolderNameModal } from "../../components/modals/_update-folder-modal";
 import { UploadFileModal } from "../../components/modals/_upload-file-modal";
 import { UploadFolderModal } from "../../components/modals/_upload-folder-modal";
 import { UploadPanelComponent } from "../../components/_upload-panel";
@@ -14,7 +14,7 @@ export class HomePageController {
     private uploadFileModal: UploadFileModal
     private uploadFolderModal: UploadFolderModal;
     private updateFileModal: UpdateFileModal;
-    private updateFolderModal: UpdateFolderModal;
+    private updateFolderModal: UpdateFolderNameModal;
     private deleteDocumentModal: DeleteDocumentModal;
 
     private uploadPanel: UploadPanelComponent;
@@ -38,20 +38,20 @@ export class HomePageController {
     }
 
     private bootstrapModals(): void {
-        const handleModalUploadFilesConfirm = (files: File[]): string | null => {
+        const handleModalUploadFilesConfirm = (files: File[], isFolderUpload: boolean): string | null => {
             return this.model.handleUploadFiles(files, {
                 onFileUploadStart: (file) => this.uploadPanel.startUpload(file),
                 onFileUploadProgress: (uploadId, progress) => this.uploadPanel.updateProgress(uploadId, progress),
                 onFileUploadComplete: (uploadId) => this.uploadPanel.markCompleted(uploadId),
                 onFileUploadFailed: (uploadId, errorMessage) => this.uploadPanel.markFailed(uploadId, errorMessage),
-            });
+            }, isFolderUpload);
         };
 
         this.addFolderModal = new AddFolderModal(this.model.handleAddFolder.bind(this.model));
-        this.uploadFileModal = new UploadFileModal(handleModalUploadFilesConfirm);
-        this.uploadFolderModal = new UploadFolderModal(handleModalUploadFilesConfirm);
+        this.uploadFileModal = new UploadFileModal((files) => handleModalUploadFilesConfirm(files, false));
+        this.uploadFolderModal = new UploadFolderModal((files) => handleModalUploadFilesConfirm(files, true));
         this.updateFileModal = new UpdateFileModal(this.model.handleUpdateFile.bind(this.model));
-        this.updateFolderModal = new UpdateFolderModal(this.model.handleUpdateFolder.bind(this.model));
+        this.updateFolderModal = new UpdateFolderNameModal(this.model.handleUpdateFolderName.bind(this.model));
         this.deleteDocumentModal = new DeleteDocumentModal(this.model.handleDeleteDocuments.bind(this.model));
     }
 

@@ -45,7 +45,7 @@ export class UploadFileModal extends ModalBase {
 
                 },
             },
-            (value) => FileModelValidator.validateRawFiles(value)
+            (value) => FileModelValidator.validateFiles(value, false)
         );
 
         const bodyHtml = `

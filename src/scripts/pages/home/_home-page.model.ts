@@ -295,25 +295,7 @@ export class HomePageModel {
         return error;
     }
 
-    public handleUploadFiles(files: File[], progressHandlers: UploadProgressHandlers): string | null {
-        if (files.length === 0) {
-            return "Please select at least one file";
-        }
-
-        const existingFileNames = this._documents
-            .filter((doc) => doc.documentType === "file")
-            .map((doc) => doc.name);
-
-        const selectedFileNames = files.map((file) => file.name);
-        const duplicateNameInFolder = selectedFileNames.find((name) => existingFileNames.includes(name));
-        if (duplicateNameInFolder) {
-            return `A file named '${duplicateNameInFolder}' already exists in the current folder`;
-        }
-
-        const uniqueSelectedNames = new Set(selectedFileNames);
-        if (uniqueSelectedNames.size !== selectedFileNames.length) {
-            return "Selected files contain duplicate names";
-        }
+    public handleUploadFiles(files: File[], progressHandlers: UploadProgressHandlers, isUploadFolder: boolean): string | null {
         const containingPath = this.getCurrentPath();
         this.setIsLoading(true);
 
@@ -373,7 +355,7 @@ export class HomePageModel {
         });
     }
 
-    public handleUpdateFolder(folderId: string, folderName: string): string | null {
+    public handleUpdateFolderName(folderId: string, folderName: string): string | null {
         const folderDocument = this.getDocumentById(folderId);
         if (!folderDocument || folderDocument.documentType !== "folder") {
             return "Folder not found";
@@ -386,7 +368,7 @@ export class HomePageModel {
         }
         let error: string | null = null;
         this.setIsLoading(true);
-        FolderApi.update({
+        FolderApi.updateName({
             id: folderId,
             name: folderName,
         }).catch((error) => {

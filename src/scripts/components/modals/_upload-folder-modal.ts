@@ -53,7 +53,7 @@ export class UploadFolderModal extends ModalBase {
                     }
                 }
             },
-            (files) =>  FileModelValidator.validateRawFiles(files)
+            (files) =>  FileModelValidator.validateFiles(files, true)
         );
 
         const bodyHtml = `
