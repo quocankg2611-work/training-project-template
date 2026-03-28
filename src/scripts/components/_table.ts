@@ -5,6 +5,8 @@ export class TableComponent {
     constructor(
         private readonly onDocumentItemSelectionChanged: (selectedDocumentId: string, isSelected: boolean) => void,
         private readonly onFolderNavigated: (folderId: string) => void,
+        private readonly onViewDetails?: (documentId: string) => void,
+        private readonly onDownload?: (documentId: string) => void,
     ) { }
 
     public build(
@@ -22,6 +24,11 @@ export class TableComponent {
                     this.onFolderNavigated(item.id);
                 });
             }
+
+            const rowActions = tableRowElement?.querySelector(".file-table__row-actions");
+            rowActions?.addEventListener("click", (e) => {
+                e.stopPropagation();
+            });
 
             const documentSelectionArea = tableRowElement?.querySelector(`td[data-id="${item.id}"]`);
             const selectionInput = documentSelectionArea?.querySelector<HTMLInputElement>(`input[data-id="${item.id}"]`);
@@ -87,13 +94,19 @@ export class TableComponent {
                         />
             </td>
             <td>
-                <span class="file-table__icon--${item.documentType === "file" 
-                    ? item.fileType ?? "unknown"
-                    : "folder"
-                }"></span>
+                <span class="file-table__icon--${item.documentType === "file"
+                ? item.fileType ?? "unknown"
+                : "folder"
+            }"></span>
             </td>
             <td>
-                <span class="${item.documentType === "file" ? "file-table__text-file" : ""}">${item.name}</span>
+                <div class="file-table__name-cell">
+                    <span class="file-table__name-text ${item.documentType === "file" ? "file-table__text-file" : ""}">${item.name}</span>
+                    <div class="file-table__row-actions" aria-hidden="true">
+                        <span class="file-table__row-action file-table__row-action--view" title="View details"></span>
+                        <span class="file-table__row-action file-table__row-action--download" title="Download"></span>
+                    </div>
+                </div>
             </td>
             <td>
                 ${item.modifiedTimeAgo}

@@ -1,166 +1,206 @@
 .file-table {
+  // Properties
 
-    // Properties
+  width: 100%;
+  table-layout: auto;
+  font-weight: lighter;
 
-    width: 100%;
-    table-layout: auto;
-    font-weight: lighter;
+  &__dropdown-indicator {
+    color: $color-dropdown-indicator;
+    margin-left: $spacer-base * 1.25;
+    @include icon-mask('fluent-mdl2--chevron-down');
+    @include icon-sizer(0.675);
+  }
 
-    &__dropdown-indicator {
-        color: $color-dropdown-indicator;
-        margin-left: $spacer-base * 1.25;
-        @include icon-mask('fluent-mdl2--chevron-down');
-        @include icon-sizer(0.675);
+  &__header-icon {
+    &--add {
+      color: $color-gray-600;
+      margin-right: $spacer-base;
+      @include icon-mask('fluent-mdl2--add');
+      @include icon-sizer(0.675);
+    }
+  }
+
+  &__icon {
+    &--file {
+      @include icon-mask('tdesign--file');
+      @include icon-sizer(1);
     }
 
-    &__header-icon {
-        &--add {
-            color: $color-gray-600;
-            margin-right: $spacer-base;
-            @include icon-mask('fluent-mdl2--add');
-            @include icon-sizer(0.675)
-        }
+    &--folder {
+      @include icon-mask('ph--folder-fill');
+      @include icon-sizer(1);
     }
 
-    &__icon {
-        &--file {
-            @include icon-mask('tdesign--file');
-            @include icon-sizer(1);
-        }
-
-        &--folder {
-            @include icon-mask('ph--folder-fill');
-            @include icon-sizer(1);
-        }
-
-        &--excel {
-            @include icon-image('vscode-icons--file-type-excel');
-            @include icon-sizer(1);
-        }
-
-        &--word {
-            @include icon-image('vscode-icons--file-type-word');
-            @include icon-sizer(1);
-        }
-
-        &--unknown {
-            @include icon-mask('tdesign--file-unknown');
-            @include icon-sizer(1);
-        }
-
-        &--pdf {
-            @include icon-image('vscode-icons--file-type-pdf2');
-            @include icon-sizer(1);
-        }
-
-        &--powerpoint {
-            @include icon-image('vscode-icons--file-type-powerpoint');
-            @include icon-sizer(1);
-        }
-
-        &--text {
-            @include icon-image('vscode-icons--file-type-text');
-            @include icon-sizer(1);
-        }
+    &--excel {
+      @include icon-image('vscode-icons--file-type-excel');
+      @include icon-sizer(1);
     }
 
-    &__text-file {
-        @include text-with-icon('self--synced');
-        @include text-with-icon-offset(-8px, -16px, 16px, 16px);
+    &--word {
+      @include icon-image('vscode-icons--file-type-word');
+      @include icon-sizer(1);
     }
 
-    &__row {
-        &--selected {
-            background-color: $color-table-row-selected;
-        }
+    &--unknown {
+      @include icon-mask('tdesign--file-unknown');
+      @include icon-sizer(1);
     }
 
-    tr>td,
-    tr>th {
-        padding: padding-x-y(3, 3);
+    &--pdf {
+      @include icon-image('vscode-icons--file-type-pdf2');
+      @include icon-sizer(1);
+    }
 
-        &:nth-child(1) {
-            text-align: right;
-            width: 2rem;
+    &--powerpoint {
+      @include icon-image('vscode-icons--file-type-powerpoint');
+      @include icon-sizer(1);
+    }
+
+    &--text {
+      @include icon-image('vscode-icons--file-type-text');
+      @include icon-sizer(1);
+    }
+  }
+
+  &__text-file {
+    @include text-with-icon('self--synced');
+    @include text-with-icon-offset(-8px, -16px, 16px, 16px);
+  }
+
+  &__row {
+    &--selected {
+      background-color: $color-table-row-selected;
+    }
+  }
+
+  &__name-cell {
+    display: flex;
+    align-items: center;
+    gap: $spacer-base;
+  }
+
+  &__name-text {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__row-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacer-base * 2;
+    margin-left: auto;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease-in-out;
+  }
+
+  &__row-action {
+    color: $color-text-muted;
+
+    &--view {
+      @include icon-mask('fluent-mdl2--view');
+      @include icon-sizer(0.75);
+    }
+
+    &--download {
+      @include icon-mask('fluent-mdl2--download');
+      @include icon-sizer(0.75);
+    }
+  }
+
+  tr > td,
+  tr > th {
+    padding: padding-x-y(3, 3);
+
+    &:nth-child(1) {
+      text-align: right;
+      width: 2rem;
+    }
+
+    &:nth-child(2) {
+      text-align: right;
+      width: 2rem;
+    }
+
+    &:nth-child(3) {
+      width: 30%;
+      font-weight: normal;
+    }
+
+    &:nth-child(4) {
+      width: 15%;
+    }
+
+    &:nth-child(5) {
+      width: 15%;
+    }
+
+    &:nth-child(6) {
+      width: auto;
+    }
+
+    @for $i from 1 through 6 {
+      &:nth-child(#{$i}) {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+
+  thead {
+    > tr {
+      > th {
+        font-weight: normal;
+        border-bottom: 2px solid $color-table-header-border;
+        cursor: pointer;
+        vertical-align: middle;
+        line-height: 1rem;
+
+        &:hover {
+          background-color: $color-table-header-hover;
         }
 
         &:nth-child(2) {
-            text-align: right;
-            width: 2rem;
+          text-align: right;
         }
+      }
+    }
+  }
 
-        &:nth-child(3) {
-            width: 40%;
-            font-weight: normal;
+  tbody {
+    > tr {
+      > td {
+        &:nth-child(2) {
+          text-align: right;
         }
 
         &:nth-child(4) {
-            width: 15%;
+          color: $color-text-muted;
         }
 
         &:nth-child(5) {
-            width: 15%;
+          color: $color-text-muted;
         }
 
         &:nth-child(6) {
-            width: auto;
+          color: $color-text-muted;
         }
+      }
 
-        @for $i from 1 through 6 {
-            &:nth-child(#{$i}) {
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
+      cursor: pointer;
+      border-bottom: 1px solid $color-table-body-border;
+
+      &:hover {
+        background-color: $color-table-body-hover;
+        .file-table__row-actions {
+          opacity: 1;
+          pointer-events: auto;
         }
+      }
     }
-
-    thead {
-        >tr {
-            >th {
-                font-weight: normal;
-                border-bottom: 2px solid $color-table-header-border;
-                cursor: pointer;
-                vertical-align: middle;
-                line-height: 1rem;
-
-                &:hover {
-                    background-color: $color-table-header-hover;
-                }
-
-                &:nth-child(2) {
-                    text-align: right;
-                }
-            }
-        }
-    }
-
-    tbody {
-        >tr {
-            >td {
-                &:nth-child(2) {
-                    text-align: right;
-                }
-
-                &:nth-child(4) {
-                    color: $color-text-muted;
-                }
-
-                &:nth-child(5) {
-                    color: $color-text-muted;
-                }
-
-                &:nth-child(6) {
-                    color: $color-text-muted;
-                }
-            }
-
-            cursor: pointer;
-            border-bottom: 1px solid $color-table-body-border;
-
-            &:hover {
-                background-color: $color-table-body-hover;
-            }
-        }
-    }
+  }
 }

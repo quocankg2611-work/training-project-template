@@ -26,7 +26,11 @@ export class HomePageView {
         private readonly onActionCancelBtnClick: () => void,
     ) {
         this.breadcrumbComponent = new BreadcrumbComponent(onBreadcrumbItemClick);
-        this.tableComponent = new TableComponent(onDocumentItemSelectionChanged, onFolderNavigated);
+        this.tableComponent = new TableComponent(
+            onDocumentItemSelectionChanged,
+            onFolderNavigated,
+
+        );
         this.cardListComponent = new CardListComponent(onDocumentItemSelectionChanged, onFolderNavigated);
         this.navbarComponent = new NavbarComponent(
             this.onNavbarNewFolderClick,
