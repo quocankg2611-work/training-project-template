@@ -1,8 +1,8 @@
 import { FileModelValidator } from "../../models/_file.model";
 import { ControlledInput } from "../inputs/texts/_controlled-input-text";
-import { ModalBase } from "./base/_modal.base";
+import { ActionModalBase } from "./base/_action-modal.base";
 
-export class UpdateFolderNameModal extends ModalBase {
+export class UpdateFolderNameModal extends ActionModalBase {
     private currentFolderId = "";
     private readonly folderNameInput: ControlledInput;
 
@@ -24,7 +24,7 @@ export class UpdateFolderNameModal extends ModalBase {
                         }
                     }
                 },
-                onModalShow: () => { 
+                onModalShow: () => {
                     this.folderNameInput.clearError();
                 }
             },

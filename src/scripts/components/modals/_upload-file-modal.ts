@@ -1,8 +1,8 @@
 import { ControlledFilesInput } from "../inputs/files/_controlled-input-files";
-import { ModalBase } from "./base/_modal.base";
+import { ActionModalBase } from "./base/_action-modal.base";
 import { FileModelValidator } from "../../models/_file.model";
 
-export class UploadFileModal extends ModalBase {
+export class UploadFileModal extends ActionModalBase {
     private readonly fileUploadInput: ControlledFilesInput
 
     constructor(

@@ -1,11 +1,11 @@
 import { FileModelValidator } from "../../models/_file.model";
 import { ControlledFoldersInput } from "../inputs/files/_controlled-input-folder";
-import { ModalBase } from "./base/_modal.base";
+import { ActionModalBase } from "./base/_action-modal.base";
 
-export class UploadFolderModal extends ModalBase {
+export class UploadFolderModal extends ActionModalBase {
     private readonly folderInput: ControlledFoldersInput;
     private readonly selectedFolderNamePlaceholderId: string = `${this.bodyId}--selectedFolderName`;
-    private selectedFolderName: string  | null = null;
+    private selectedFolderName: string | null = null;
 
     constructor(
         onUploadFolder: (files: File[]) => string | null,
@@ -43,7 +43,6 @@ export class UploadFolderModal extends ModalBase {
                 label: "Select Folder",
                 placeholderId: folderInputPlaceholderId,
                 onInput: (files) => {
-                    console.log("Selected files for folder upload:", files);
                     if (files.length > 0) {
                         this.selectedFolderName = files[0].webkitRelativePath.split("/")[0];
                         const selectedFolderNameElement = document.getElementById(this.selectedFolderNamePlaceholderId);
@@ -53,7 +52,7 @@ export class UploadFolderModal extends ModalBase {
                     }
                 }
             },
-            (files) =>  FileModelValidator.validateFiles(files, true)
+            (files) => FileModelValidator.validateFiles(files, true)
         );
 
         const bodyHtml = `

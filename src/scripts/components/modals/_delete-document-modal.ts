@@ -1,6 +1,6 @@
-import { ModalBase } from "./base/_modal.base";
+import { ActionModalBase } from "./base/_action-modal.base";
 
-export class DeleteDocumentModal extends ModalBase {
+export class DeleteDocumentModal extends ActionModalBase {
     private readonly subtitleElId: string;
     private readonly messageElId: string;
     private currentDocumentIds: string[] = [];
