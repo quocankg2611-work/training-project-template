@@ -1,6 +1,35 @@
 import { fetchClient } from "./openapi/fetch-client";
+import { FolderModel } from "../models/_folder.model";
 
 export class FolderApi {
+    public static async getById(id: string): Promise<FolderModel | undefined> {
+        const response = await fetchClient.GET("/folders/{folderId}", {
+            params: {
+                path: {
+                    folderId: id,
+                }
+            }
+        });
+
+        if (response.error) {
+            console.error("Failed to get folder by id:", response.error);
+            return;
+        }
+
+        if (response.data) {
+            const data = response.data;
+            return new FolderModel(
+                data.id ?? "",
+                data.name ?? "",
+                data.path ?? "",
+                data.createdAt ?? "",
+                data.createdByName ?? "",
+                data.updatedAt ?? "",
+                data.updatedByName ?? "",
+            );
+        }
+    }
+
     public static async create({
         name,
         parentFolderId

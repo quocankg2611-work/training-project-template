@@ -1,6 +1,37 @@
 import { fetchClient } from "./openapi/fetch-client";
+import { FileModel } from "../models/_file.model";
 
 export class FilesApi {
+    public static async getById(id: string): Promise<FileModel | undefined> {
+        const response = await fetchClient.GET("/files/{fileId}", {
+            params: {
+                path: {
+                    fileId: id,
+                }
+            }
+        });
+
+        if (response.error) {
+            console.error("Failed to get file by id:", response.error);
+            return;
+        }
+
+        if (response.data) {
+            const data = response.data;
+            return new FileModel(
+                data.id ?? "",
+                data.name ?? "",
+                data.extension ?? "",
+                Number(data.sizeBytes ?? 0),
+                data.path ?? "",
+                data.createdAt ?? "",
+                data.createdByName ?? "",
+                data.updatedAt ?? "",
+                data.updatedByName ?? "",
+            );
+        }
+    }
+
     public static async uploadMany({
         files,
         basePath,

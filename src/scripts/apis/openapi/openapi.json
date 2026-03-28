@@ -659,31 +659,16 @@
         }
       },
       "GetFileByIdResponse": {
-        "required": [
-          "id",
-          "folderId",
-          "name",
-          "mimeType",
-          "sizeBytes",
-          "storageKey",
-          "checksum",
-          "createdAt",
-          "updatedAt"
-        ],
         "type": "object",
         "properties": {
           "id": {
             "type": "string",
             "format": "uuid"
           },
-          "folderId": {
-            "type": "string",
-            "format": "uuid"
-          },
           "name": {
             "type": "string"
           },
-          "mimeType": {
+          "extension": {
             "type": "string"
           },
           "sizeBytes": {
@@ -694,42 +679,30 @@
             ],
             "format": "int64"
           },
-          "storageKey": {
-            "type": "string"
-          },
-          "checksum": {
+          "path": {
             "type": "string"
           },
           "createdAt": {
             "type": "string",
             "format": "date-time"
           },
+          "createdByName": {
+            "type": "string"
+          },
           "updatedAt": {
             "type": "string",
             "format": "date-time"
+          },
+          "updatedByName": {
+            "type": "string"
           }
         }
       },
       "GetFolderByIdResponse": {
-        "required": [
-          "id",
-          "parentFolderId",
-          "name",
-          "path",
-          "createdAt",
-          "updatedAt"
-        ],
         "type": "object",
         "properties": {
           "id": {
             "type": "string",
-            "format": "uuid"
-          },
-          "parentFolderId": {
-            "type": [
-              "null",
-              "string"
-            ],
             "format": "uuid"
           },
           "name": {
@@ -742,9 +715,15 @@
             "type": "string",
             "format": "date-time"
           },
+          "createdByName": {
+            "type": "string"
+          },
           "updatedAt": {
             "type": "string",
             "format": "date-time"
+          },
+          "updatedByName": {
+            "type": "string"
           }
         }
       },

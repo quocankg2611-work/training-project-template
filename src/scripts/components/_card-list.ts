@@ -5,6 +5,8 @@ export class CardListComponent {
     constructor(
         private readonly onDocumentItemSelectionChanged: (selectedDocumentId: string, isSelected: boolean) => void,
         private readonly onFolderNavigated: (folderId: string) => void,
+        private readonly onViewDetails?: (documentId: string) => void,
+        private readonly onDownload?: (documentId: string) => void,
     ) { }
 
     public build(
@@ -35,6 +37,37 @@ export class CardListComponent {
             selectionInput?.addEventListener("change", (event) => {
                 event.stopPropagation();
                 this.onDocumentItemSelectionChanged(documentView.id, selectionInput.checked);
+            });
+
+            const rowActions = cardElement?.querySelector(".file-table__row-actions");
+            rowActions?.addEventListener("click", (event) => {
+                event.stopPropagation();
+            });
+
+            const viewAction = rowActions?.querySelector<HTMLElement>(".file-table__row-action--view");
+            viewAction?.addEventListener("click", (event) => {
+                event.stopPropagation();
+                this.onViewDetails?.(documentView.id);
+            });
+            viewAction?.addEventListener("keydown", (event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    this.onViewDetails?.(documentView.id);
+                }
+            });
+
+            const downloadAction = rowActions?.querySelector<HTMLElement>(".file-table__row-action--download");
+            downloadAction?.addEventListener("click", (event) => {
+                event.stopPropagation();
+                this.onDownload?.(documentView.id);
+            });
+            downloadAction?.addEventListener("keydown", (event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    this.onDownload?.(documentView.id);
+                }
             });
         }
 
@@ -103,6 +136,15 @@ export class CardListComponent {
                     <td>Modified By</td>
                     <td>
                         ${documentView.modifiedBy}
+                    </td>
+                </tr>
+                <tr>
+                    <td>Actions</td>
+                    <td>
+                        <div class="file-table__row-actions" aria-hidden="true">
+                            <span class="file-table__row-action file-table__row-action--view" title="View details" aria-label="View details" role="button" tabindex="0"></span>
+                            <span class="file-table__row-action file-table__row-action--download" title="Download" aria-label="Download" role="button" tabindex="0"></span>
+                        </div>
                     </td>
                 </tr>
             </tbody>

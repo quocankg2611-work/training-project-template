@@ -57,7 +57,12 @@ export class FileModel {
     constructor(
         public readonly id: string,
         public readonly name: string,
-        public readonly type: string,
-        public readonly parentFolderId?: string,
+        public readonly extension: string,
+        public readonly sizeBytes: number,
+        public readonly path: string,
+        public readonly createdAt: string,
+        public readonly createdByName: string,
+        public readonly updatedAt: string,
+        public readonly updatedByName: string,
     ) { }
 }

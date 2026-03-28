@@ -18,7 +18,10 @@ export class FolderModel {
         public readonly id: string,
         public readonly name: string,
         public readonly path: string,
-        public readonly parentFolderId?: string,
+        public readonly createdAt: string,
+        public readonly createdByName: string,
+        public readonly updatedAt: string,
+        public readonly updatedByName: string,
     ) { }
 
     public getPathForChildren(): string {

@@ -2,8 +2,10 @@ import { DocumentsApi } from "../../apis/_documents.api";
 import { FilesApi } from "../../apis/_files.api";
 import { FolderApi } from "../../apis/_folder.api";
 import { DocumentModel } from "../../models/_document.model";
+import { FileModel } from "../../models/_file.model";
 import { FolderModel } from "../../models/_folder.model";
 import { AuthService } from "../../services/_auth.service";
+import { HomePageCurrentFolder } from "./_home-page.types";
 
 type UploadProgressHandlers = {
     onFileUploadStart: (file: File) => string;
@@ -13,7 +15,7 @@ type UploadProgressHandlers = {
 };
 
 export class HomePageModel {
-    private _currentFolder: FolderModel | null;
+    private _currentFolder: HomePageCurrentFolder | null;
     private _documents: DocumentModel[];
     private _isLoggedIn: boolean = false;
     private _selectedDocumentIds: Set<string>;
@@ -26,7 +28,7 @@ export class HomePageModel {
         private readonly onErrorChange: (error: string | null) => void,
         private readonly onIsLoadingChange: (isLoading: boolean) => void,
         private readonly onIsLoggedInChange: (isLoggedIn: boolean) => void,
-        private readonly onCurrentFolderChange?: (currentFolder: FolderModel | null) => void,
+        private readonly onCurrentFolderChange?: (currentFolder: HomePageCurrentFolder | null) => void,
     ) {
         this._currentFolder = null;
         this._documents = [];
@@ -39,11 +41,29 @@ export class HomePageModel {
     // For quick document lookup by id
     private _documentByIdMap: Record<string, DocumentModel> = {};
 
-    private getDocumentById(id: string): DocumentModel | null {
+    public getDocumentById(id: string): DocumentModel | null {
         if (this._documentByIdMap[id]) {
             return this._documentByIdMap[id];
         }
         return null;
+    }
+
+    public async getFileDetailById(id: string): Promise<FileModel | null> {
+        try {
+            const file = await FilesApi.getById(id);
+            return file ?? null;
+        } catch {
+            return null;
+        }
+    }
+
+    public async getFolderDetailById(id: string): Promise<FolderModel | null> {
+        try {
+            const folder = await FolderApi.getById(id);
+            return folder ?? null;
+        } catch {
+            return null;
+        }
     }
 
     public bootstrap(): void {
@@ -82,16 +102,11 @@ export class HomePageModel {
 
     // Getters and setters:
 
-    public getCurrentFolder(): FolderModel | null {
-        return this._currentFolder;
-    }
-
     public getCurrentPathArr(): string[] {
         if (!this._currentFolder) {
             return [];
         }
-        const currentPath = `${this._currentFolder.path}/${this._currentFolder.name}`;
-        return currentPath.split("/").filter(Boolean);
+        return this._currentFolder.path.split("/").filter(Boolean);
     }
 
     public getCurrentPath(): string {
@@ -202,10 +217,9 @@ export class HomePageModel {
         }
     }
 
-    public setCurrentFolder(currentFolder: FolderModel | null): void {
+    public setCurrentFolder(currentFolder: HomePageCurrentFolder | null): void {
         const hasChanged =
             this._currentFolder?.id !== currentFolder?.id ||
-            this._currentFolder?.name !== currentFolder?.name ||
             this._currentFolder?.path !== currentFolder?.path;
         if (!hasChanged) {
             return;
@@ -223,15 +237,14 @@ export class HomePageModel {
 
     // Common methods:
 
-    private _createFolderModelFromPath(pathArr: string[]): FolderModel | null {
+    private _createCurrentFolderFromPath(pathArr: string[]): HomePageCurrentFolder | null {
         if (pathArr.length === 0) {
             return null;
         }
 
-        const folderName = pathArr[pathArr.length - 1];
-        const parentPathArr = pathArr.slice(0, -1);
-        const parentPath = parentPathArr.length > 0 ? `/${parentPathArr.join("/")}` : "";
-        return new FolderModel("", folderName, parentPath);
+        return {
+            path: `/${pathArr.join("/")}`,
+        };
     }
 
     private async _handleRefreshCurrentFolder(): Promise<void> {
@@ -245,7 +258,7 @@ export class HomePageModel {
             });
     }
 
-    private _navigateToFolder(currentFolder: FolderModel | null): void {
+    private _navigateToFolder(currentFolder: HomePageCurrentFolder | null): void {
         this.setCurrentFolder(currentFolder);
         this.setIsLoading(true);
         this.setError(null);
@@ -263,14 +276,18 @@ export class HomePageModel {
         }
 
         const targetPathArr = currentPathArr.slice(0, goBackToLevel);
-        const targetFolder = this._createFolderModelFromPath(targetPathArr);
+        const targetFolder = this._createCurrentFolderFromPath(targetPathArr);
         this._navigateToFolder(targetFolder);
     }
 
     public handleFolderNavigationById(folderId: string): void {
         const folderDocument = this.getDocumentById(folderId);
         if (folderDocument && folderDocument.documentType === "folder") {
-            this._navigateToFolder(new FolderModel(folderDocument.id, folderDocument.name, folderDocument.path));
+            const folderPath = folderDocument.path ? `${folderDocument.path}/${folderDocument.name}` : `/${folderDocument.name}`;
+            this._navigateToFolder({
+                id: folderDocument.id,
+                path: folderPath,
+            });
         }
     }
 
@@ -284,9 +301,11 @@ export class HomePageModel {
             name: folderName,
             parentFolderId: this._currentFolder?.id || undefined,
         }).then(() => {
-            const parentPathArr = this.getCurrentPathArr();
-            const parentPath = parentPathArr.length > 0 ? `/${parentPathArr.join("/")}` : "";
-            this._navigateToFolder(new FolderModel("", folderName, parentPath));
+            const currentPath = this.getCurrentPath();
+            const targetPath = currentPath === "/" ? `/${folderName}` : `${currentPath}/${folderName}`;
+            this._navigateToFolder({
+                path: targetPath,
+            });
         }).catch((error) => {
             error = "Failed to create folder";
         }).finally(() => {

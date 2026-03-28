@@ -1,6 +1,11 @@
 import { DocumentModel } from "../../models/_document.model";
 import formatTimeAgo from "../../utilities/_format-strings";
 
+export type HomePageCurrentFolder = {
+    id?: string;
+    path: string;
+};
+
 export class HomePageDocumentView {
     constructor(
         public readonly id: string,

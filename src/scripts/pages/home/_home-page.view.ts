@@ -16,6 +16,8 @@ export class HomePageView {
         onBreadcrumbItemClick: (goBackToLevel: number) => void,
         onDocumentItemSelectionChanged: (selectedDocumentId: string, isSelected: boolean) => void,
         onFolderNavigated: (folderId: string) => void,
+        onViewDetails: (documentId: string) => void,
+        onDownload: (documentId: string) => void,
         private readonly onLoginBtnClick: () => void,
         private readonly onNavbarLogoutClick: () => void,
         private readonly onNavbarNewFolderClick: () => void,
@@ -29,9 +31,15 @@ export class HomePageView {
         this.tableComponent = new TableComponent(
             onDocumentItemSelectionChanged,
             onFolderNavigated,
-
+            onViewDetails,
+            onDownload,
         );
-        this.cardListComponent = new CardListComponent(onDocumentItemSelectionChanged, onFolderNavigated);
+        this.cardListComponent = new CardListComponent(
+            onDocumentItemSelectionChanged,
+            onFolderNavigated,
+            onViewDetails,
+            onDownload,
+        );
         this.navbarComponent = new NavbarComponent(
             this.onNavbarNewFolderClick,
             this.onNavbarUploadFolderClick,
@@ -117,7 +125,27 @@ export class HomePageView {
 
     // TODO
     public toggleErrorMessage(message: string | null): void {
+        const container = document.querySelector("#homePage--loggedIn > .flex-grow-1") as HTMLElement | null;
+        if (!container) {
+            return;
+        }
 
+        let errorElement = document.getElementById("homePageErrorMessage");
+        if (!errorElement) {
+            errorElement = document.createElement("div");
+            errorElement.id = "homePageErrorMessage";
+            errorElement.className = "alert alert-danger d-none mt-2 mb-2";
+            container.insertBefore(errorElement, container.firstChild);
+        }
+
+        if (message && message.trim() !== "") {
+            errorElement.textContent = message;
+            errorElement.classList.remove("d-none");
+            return;
+        }
+
+        errorElement.textContent = "";
+        errorElement.classList.add("d-none");
     }
 
     /**

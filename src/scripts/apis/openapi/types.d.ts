@@ -154,31 +154,30 @@ export interface components {
         };
         GetFileByIdResponse: {
             /** Format: uuid */
-            id: string;
-            /** Format: uuid */
-            folderId: string;
-            name: string;
-            mimeType: string;
+            id?: string;
+            name?: string;
+            extension?: string;
             /** Format: int64 */
-            sizeBytes: number | string;
-            storageKey: string;
-            checksum: string;
+            sizeBytes?: number | string;
+            path?: string;
             /** Format: date-time */
-            createdAt: string;
+            createdAt?: string;
+            createdByName?: string;
             /** Format: date-time */
-            updatedAt: string;
+            updatedAt?: string;
+            updatedByName?: string;
         };
         GetFolderByIdResponse: {
             /** Format: uuid */
-            id: string;
-            /** Format: uuid */
-            parentFolderId: null | string;
-            name: string;
-            path: string;
+            id?: string;
+            name?: string;
+            path?: string;
             /** Format: date-time */
-            createdAt: string;
+            createdAt?: string;
+            createdByName?: string;
             /** Format: date-time */
-            updatedAt: string;
+            updatedAt?: string;
+            updatedByName?: string;
         };
         /** Format: binary */
         IFormFile: string;

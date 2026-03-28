@@ -29,6 +29,31 @@ export class TableComponent {
             rowActions?.addEventListener("click", (e) => {
                 e.stopPropagation();
             });
+            const viewAction = rowActions?.querySelector<HTMLElement>(".file-table__row-action--view");
+            viewAction?.addEventListener("click", (e) => {
+                e.stopPropagation();
+                this.onViewDetails?.(item.id);
+            });
+            viewAction?.addEventListener("keydown", (e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.onViewDetails?.(item.id);
+                }
+            });
+
+            const downloadAction = rowActions?.querySelector<HTMLElement>(".file-table__row-action--download");
+            downloadAction?.addEventListener("click", (e) => {
+                e.stopPropagation();
+                this.onDownload?.(item.id);
+            });
+            downloadAction?.addEventListener("keydown", (e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.onDownload?.(item.id);
+                }
+            });
 
             const documentSelectionArea = tableRowElement?.querySelector(`td[data-id="${item.id}"]`);
             const selectionInput = documentSelectionArea?.querySelector<HTMLInputElement>(`input[data-id="${item.id}"]`);
@@ -103,8 +128,8 @@ export class TableComponent {
                 <div class="file-table__name-cell">
                     <span class="file-table__name-text ${item.documentType === "file" ? "file-table__text-file" : ""}">${item.name}</span>
                     <div class="file-table__row-actions" aria-hidden="true">
-                        <span class="file-table__row-action file-table__row-action--view" title="View details"></span>
-                        <span class="file-table__row-action file-table__row-action--download" title="Download"></span>
+                        <span class="file-table__row-action file-table__row-action--view" title="View details" aria-label="View details" role="button" tabindex="0"></span>
+                        <span class="file-table__row-action file-table__row-action--download" title="Download" aria-label="Download" role="button" tabindex="0"></span>
                     </div>
                 </div>
             </td>

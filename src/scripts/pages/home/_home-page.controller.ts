@@ -4,6 +4,8 @@ import { UpdateFileModal } from "../../components/modals/_update-file-modal";
 import { UpdateFolderNameModal } from "../../components/modals/_update-folder-modal";
 import { UploadFileModal } from "../../components/modals/_upload-file-modal";
 import { UploadFolderModal } from "../../components/modals/_upload-folder-modal";
+import { FileDetailModalComponent } from "../../components/modals/document-detail/_file-detail-modal";
+import { FolderDetailModalComponent } from "../../components/modals/document-detail/_folder-detail-modal";
 import { UploadPanelComponent } from "../../components/_upload-panel";
 import { HomePageModel } from "./_home-page.model";
 import { HomePageView } from "./_home-page.view";
@@ -16,6 +18,8 @@ export class HomePageController {
     private updateFileModal: UpdateFileModal;
     private updateFolderModal: UpdateFolderNameModal;
     private deleteDocumentModal: DeleteDocumentModal;
+    private fileDetailModal: FileDetailModalComponent;
+    private folderDetailModal: FolderDetailModalComponent;
 
     private uploadPanel: UploadPanelComponent;
 
@@ -34,7 +38,7 @@ export class HomePageController {
         this.view.toggleActionButtons(this.model.getSelectedDocumentCount());
 
         this.view.bootstrap();
-        void this.model.initializeAuthStateAsync();
+        this.model.initializeAuthStateAsync();
     }
 
     private bootstrapModals(): void {
@@ -53,6 +57,8 @@ export class HomePageController {
         this.updateFileModal = new UpdateFileModal(this.model.handleUpdateFile.bind(this.model));
         this.updateFolderModal = new UpdateFolderNameModal(this.model.handleUpdateFolderName.bind(this.model));
         this.deleteDocumentModal = new DeleteDocumentModal(this.model.handleDeleteDocuments.bind(this.model));
+        this.fileDetailModal = new FileDetailModalComponent();
+        this.folderDetailModal = new FolderDetailModalComponent();
     }
 
     private bootstrapModel(): void {
@@ -72,6 +78,7 @@ export class HomePageController {
 
         // TODO
         const handleErrorChange = (error: string | null): void => {
+            this.view.toggleErrorMessage(error);
         };
 
         const handleIsLoadingChange = (isLoading: boolean): void => {
@@ -154,6 +161,14 @@ export class HomePageController {
             void this.model.handleLogin();
         };
 
+        const handleViewDetails = (documentId: string): void => {
+            void this.handleViewDetails(documentId);
+        };
+
+        const handleDownload = (_documentId: string): void => {
+            this.model.setError("Download is not implemented yet.");
+        };
+
         const handleNavbarLogoutClick = (): void => {
             void this.model.handleLogout();
         };
@@ -162,6 +177,8 @@ export class HomePageController {
             handleBreadcrumbItemClick,
             handleDocumentItemSelectionChanged,
             handleFolderNavigated,
+            handleViewDetails,
+            handleDownload,
             handleLoginBtnClick,
             handleNavbarLogoutClick,
             handleNavbarNewFolderClick,
@@ -174,6 +191,33 @@ export class HomePageController {
 
         this.uploadPanel = new UploadPanelComponent();
         this.uploadPanel.mount(document.body);
+    }
+
+    private async handleViewDetails(documentId: string): Promise<void> {
+        const document = this.model.getDocumentById(documentId);
+        if (!document) {
+            this.model.setError("Failed to load document details.");
+            return;
+        }
+
+        this.model.setError(null);
+
+        if (document.documentType === "file") {
+            const fileDetail = await this.model.getFileDetailById(documentId);
+            if (!fileDetail) {
+                this.model.setError("Failed to load file details.");
+                return;
+            }
+            this.fileDetailModal.showWithData(fileDetail);
+            return;
+        }
+
+        const folderDetail = await this.model.getFolderDetailById(documentId);
+        if (!folderDetail) {
+            this.model.setError("Failed to load folder details.");
+            return;
+        }
+        this.folderDetailModal.showWithData(folderDetail);
     }
 }
 
