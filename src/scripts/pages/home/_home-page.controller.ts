@@ -42,19 +42,28 @@ export class HomePageController {
     }
 
     private bootstrapModals(): void {
-        const handleModalUploadFilesConfirm = (files: File[], isFolderUpload: boolean): string | null => {
+        const handleModalUploadFilesConfirm = (files: File[]): string | null => {
             return this.model.handleUploadFiles(files, {
                 onFileUploadStart: (file) => this.uploadPanel.startUpload(file),
                 onFileUploadProgress: (uploadId, progress) => this.uploadPanel.updateProgress(uploadId, progress),
                 onFileUploadComplete: (uploadId) => this.uploadPanel.markCompleted(uploadId),
                 onFileUploadFailed: (uploadId, errorMessage) => this.uploadPanel.markFailed(uploadId, errorMessage),
-            }, isFolderUpload);
+            });
+        };
+
+        const handleModalUploadFolderConfirm = (files: File[]): string | null => {
+            return this.model.handleUploadFolder(files, {
+                onFileUploadStart: (file) => this.uploadPanel.startUpload(file),
+                onFileUploadProgress: (uploadId, progress) => this.uploadPanel.updateProgress(uploadId, progress),
+                onFileUploadComplete: (uploadId) => this.uploadPanel.markCompleted(uploadId),
+                onFileUploadFailed: (uploadId, errorMessage) => this.uploadPanel.markFailed(uploadId, errorMessage),
+            });
         };
 
         this.addFolderModal = new AddFolderModal(this.model.handleAddFolder.bind(this.model));
-        this.uploadFileModal = new UploadFileModal((files) => handleModalUploadFilesConfirm(files, false));
-        this.uploadFolderModal = new UploadFolderModal((files) => handleModalUploadFilesConfirm(files, true));
-        this.updateFileModal = new UpdateFileModal(this.model.handleUpdateFile.bind(this.model));
+        this.uploadFileModal = new UploadFileModal(handleModalUploadFilesConfirm);
+        this.uploadFolderModal = new UploadFolderModal(handleModalUploadFolderConfirm);
+        this.updateFileModal = new UpdateFileModal(this.model.handleUpdateFileName.bind(this.model));
         this.updateFolderModal = new UpdateFolderNameModal(this.model.handleUpdateFolderName.bind(this.model));
         this.deleteDocumentModal = new DeleteDocumentModal(this.model.handleDeleteDocuments.bind(this.model));
         this.fileDetailModal = new FileDetailModalComponent();
@@ -157,8 +166,8 @@ export class HomePageController {
             this.model.clearSelectedDocuments();
         };
 
-        const handleLoginBtnClick = (): void => {
-            void this.model.handleLogin();
+        const handleLoginBtnClick = async (): Promise<void> => {
+            await this.model.handleLogin();
         };
 
         const handleViewDetails = (documentId: string): void => {

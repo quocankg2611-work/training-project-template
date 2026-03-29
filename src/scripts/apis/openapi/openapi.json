@@ -627,6 +627,59 @@
           }
         }
       }
+    },
+    "/folders/upload": {
+      "post": {
+        "tags": [
+          "Files"
+        ],
+        "operationId": "UploadFolder",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/UploadFolderRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -938,6 +991,25 @@
         }
       },
       "UploadFilesRequest": {
+        "required": [
+          "basePath",
+          "files"
+        ],
+        "type": "object",
+        "properties": {
+          "basePath": {
+            "minLength": 1,
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "files": {
+            "$ref": "#/components/schemas/IFormFileCollection"
+          }
+        }
+      },
+      "UploadFolderRequest": {
         "required": [
           "basePath",
           "files",

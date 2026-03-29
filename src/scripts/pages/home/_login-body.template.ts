@@ -2,10 +2,13 @@ import { HtmlUtils } from "../../utilities/_html";
 
 export class LoginBodyTemplate {
 	private static readonly MICROSOFT_SVG_PATH = "./assets/icons/microsoft.svg";
+	private static readonly DEFAULT_LOGIN_TEXT = "Sign in with Microsoft";
+	private static readonly LOADING_LOGIN_TEXT = "Signing in...";
+	private isLoginInProgress = false;
 
 	constructor(
-		private readonly onLoginBtnClick: () => void,
-	) {}
+		private readonly onLoginBtnClick: () => Promise<void>,
+	) { }
 
 	public build(): HTMLElement {
 		const container = HtmlUtils.stringToSingleHtmlElement(`
@@ -23,7 +26,7 @@ export class LoginBodyTemplate {
 
 						<button type="button" data-home-login-btn="true" class="w-100 d-flex align-items-center justify-content-center gap-3" style="height:52px; border:1px solid #bdbdbd; background-color:#f7f7f7; color:#3b3b3b; font-size:16px; font-weight:600;">
 							<img src="${LoginBodyTemplate.MICROSOFT_SVG_PATH}" width="22" height="22" alt="" aria-hidden="true" />
-							<span>Sign in with Microsoft</span>
+							<span data-home-login-btn-label="true">${LoginBodyTemplate.DEFAULT_LOGIN_TEXT}</span>
 						</button>
 
 						<p class="text-center mb-0 mt-4" style="font-size:14px; color:#5f5f5f; line-height:1.5;">
@@ -44,10 +47,38 @@ export class LoginBodyTemplate {
 			</section>
 		`);
 
-		container.querySelector<HTMLButtonElement>("[data-home-login-btn='true']")?.addEventListener("click", () => {
-			this.onLoginBtnClick();
+		const loginButton = container.querySelector<HTMLButtonElement>("[data-home-login-btn='true']");
+		const loginButtonLabel = container.querySelector<HTMLSpanElement>("[data-home-login-btn-label='true']");
+
+		loginButton?.addEventListener("click", async () => {
+			if (this.isLoginInProgress || !loginButton || !loginButtonLabel) {
+				return;
+			}
+
+			this.setLoginLoadingState(loginButton, loginButtonLabel, true);
+
+			try {
+				await this.onLoginBtnClick();
+			} finally {
+				this.setLoginLoadingState(loginButton, loginButtonLabel, false);
+			}
 		});
 
 		return container;
+	}
+
+	private setLoginLoadingState(
+		loginButton: HTMLButtonElement,
+		loginButtonLabel: HTMLSpanElement,
+		isLoading: boolean,
+	): void {
+		this.isLoginInProgress = isLoading;
+		loginButton.disabled = isLoading;
+		loginButton.setAttribute("aria-busy", String(isLoading));
+		loginButton.style.opacity = isLoading ? "0.75" : "1";
+		loginButton.style.cursor = isLoading ? "not-allowed" : "pointer";
+		loginButtonLabel.textContent = isLoading
+			? LoginBodyTemplate.LOADING_LOGIN_TEXT
+			: LoginBodyTemplate.DEFAULT_LOGIN_TEXT;
 	}
 }

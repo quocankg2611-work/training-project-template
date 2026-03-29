@@ -311,9 +311,6 @@ export class HomePageModel {
     }
 
     public handleAddFolder(folderName: string): string | null {
-        if (this._documents.some(doc => doc.name === folderName)) {
-            return "A document with the same name already exists in the current folder";
-        }
         let error: string | null = null;
         this.setIsLoading(true);
         FolderApi.create({
@@ -333,7 +330,7 @@ export class HomePageModel {
         return error;
     }
 
-    public handleUploadFiles(files: File[], progressHandlers: UploadProgressHandlers, isUploadFolder: boolean): string | null {
+    public handleUploadFiles(files: File[], progressHandlers: UploadProgressHandlers): string | null {
         const containingPath = this.getCurrentPath();
         this.setIsLoading(true);
 
@@ -374,13 +371,51 @@ export class HomePageModel {
         return null;
     }
 
-    public handleUpdateFile(fileId: string, fileName: string): string | null {
+    public handleUploadFolder(files: File[], progressHandlers: UploadProgressHandlers): string | null {
+        const containingPath = this.getCurrentPath();
+        this.setIsLoading(true);
+
+        let sucessCount = 0;
+
+        FolderApi.upload({
+            basePath: containingPath,
+            files,
+            onUploadComplete: (index, isSuccess) => {
+                const file = files[index];
+                if (file) {
+                    const uploadId = progressHandlers.onFileUploadStart(file);
+                    if (isSuccess) {
+                        progressHandlers.onFileUploadComplete(uploadId);
+                    } else {
+                        progressHandlers.onFileUploadFailed(uploadId, `Failed to upload '${file.name}'`);
+                    }
+                }
+                sucessCount += 1;
+                if (sucessCount === files.length) {
+                    this._handleRefreshCurrentFolder().finally(() => {
+                        this.setIsLoading(false);
+                    });
+                }
+            },
+            onUploadProgress: (index, progress) => {
+                const file = files[index];
+                if (file) {
+                    const uploadId = progressHandlers.onFileUploadStart(file);
+                    progressHandlers.onFileUploadProgress(uploadId, progress);
+                }
+            },
+        }).then(() => {
+            this._handleRefreshCurrentFolder().finally(() => {
+                this.setIsLoading(false);
+            });
+        });
+        return null;
+    }
+
+    public handleUpdateFileName(fileId: string, fileName: string): string | null {
         const fileDocument = this.getDocumentById(fileId);
         if (!fileDocument || fileDocument.documentType !== "file") {
             return "File not found";
-        }
-        if (this._documents.some(doc => doc.name === fileName && doc.documentType === "file" && doc.id !== fileId)) {
-            return "A file with the same name already exists in the current folder";
         }
         this.setIsLoading(true);
         FilesApi.update({
@@ -391,6 +426,7 @@ export class HomePageModel {
                 this.setIsLoading(false);
             });
         });
+        return null;
     }
 
     public handleUpdateFolderName(folderId: string, folderName: string): string | null {
@@ -400,9 +436,6 @@ export class HomePageModel {
         }
         if (folderName.trim() === "") {
             return "Folder name cannot be empty";
-        }
-        if (this._documents.some(doc => doc.name === folderName && doc.documentType === "folder" && doc.id !== folderId)) {
-            return "A folder with the same name already exists in the current folder";
         }
         let error: string | null = null;
         this.setIsLoading(true);

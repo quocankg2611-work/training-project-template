@@ -77,7 +77,34 @@ export class FolderApi {
         }
     }
 
-    public static async download(folderId: string) {
+    public static async upload({
+        files,
+        basePath,
+        // TODO: implement upload progress and completion handlers
+        onUploadProgress,
+        onUploadComplete,
+    }: {
+        files: File[];
+        basePath: string;
+        onUploadProgress?: (index: number, progress: number) => void;
+        onUploadComplete?: (index: number, isSuccess: boolean) => void;
+    }) {
+        const formData = new FormData();
+        formData.append("basePath", basePath);
 
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            const path = file.webkitRelativePath.trim() !== ""
+                ? "/" + file.webkitRelativePath.split("/").slice(0, -1).join("/") // Remove the file name from the path, we only want the folder structure, and ensure it starts with a "/"
+                : "/";
+            formData.append("files", file);
+            formData.append("filePaths", path);
+        }
+
+        const uploadRequest = formData;
+
+        await fetchClient.POST("/folders/upload", {
+            body: uploadRequest as any, // FormData is not directly supported by our typed fetch client, so we cast it to any
+        });
     }
 }

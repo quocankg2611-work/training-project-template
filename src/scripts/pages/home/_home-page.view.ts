@@ -18,7 +18,7 @@ export class HomePageView {
         onFolderNavigated: (folderId: string) => void,
         onViewDetails: (documentId: string) => void,
         onDownload: (documentId: string) => void,
-        private readonly onLoginBtnClick: () => void,
+        private readonly onLoginBtnClick: () => Promise<void>,
         private readonly onNavbarLogoutClick: () => void,
         private readonly onNavbarNewFolderClick: () => void,
         private readonly onNavbarUploadFolderClick: () => void,

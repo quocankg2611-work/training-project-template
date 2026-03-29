@@ -96,6 +96,10 @@ const msalConfig: msal.Configuration = {
         clientId: "b9fff41a-f5dd-4d68-b230-95e45b37ab25",
         authority: "https://login.microsoftonline.com/d09600d6-acac-480e-84d9-7b68daf22e3c",
         redirectUri: "/",
+        onRedirectNavigate(url) {
+            // Prevent navigation after redirect to preserve the state of the single page application
+            return false;
+        },
     },
     cache: {
         cacheLocation: "sessionStorage",
