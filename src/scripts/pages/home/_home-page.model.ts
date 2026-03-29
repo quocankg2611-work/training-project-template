@@ -291,6 +291,25 @@ export class HomePageModel {
         }
     }
 
+    public async handleDownload(documentId: string): Promise<void> {
+        const document = this.getDocumentById(documentId);
+        if (!document) {
+            this.setError("Document not found");
+            return;
+        }
+
+        if (document.documentType !== "file") {
+            this.setError("Only files can be downloaded");
+            return;
+        }
+
+        this.setError(null);
+        return FilesApi.download(documentId)
+            .catch(() => {
+                this.setError("Failed to download file");
+            });
+    }
+
     public handleAddFolder(folderName: string): string | null {
         if (this._documents.some(doc => doc.name === folderName)) {
             return "A document with the same name already exists in the current folder";

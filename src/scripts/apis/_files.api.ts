@@ -91,4 +91,25 @@ export class FilesApi {
             console.error("Failed to delete files", response.error);
         }
     }
+
+    public static async download(fileId: string): Promise<void> {
+        const response = await fetchClient.POST("/files/{fileId}/download-link", {
+            params: {
+                path: {
+                    fileId: fileId
+                },
+            }
+        });
+        if (response.error) {
+            console.error("Failed to create file download link", response.error);
+            throw new Error("Failed to create file download link");
+        }
+
+        const downloadUrl = response.data?.downloadUrl;
+        if (!downloadUrl) {
+            throw new Error("Missing download URL");
+        }
+
+        window.open(downloadUrl, "_blank");
+    }
 }

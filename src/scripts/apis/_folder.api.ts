@@ -76,4 +76,8 @@ export class FolderApi {
             console.error("Failed to delete folder:", response.error);
         }
     }
+
+    public static async download(folderId: string) {
+
+    }
 }

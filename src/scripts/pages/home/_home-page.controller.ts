@@ -165,8 +165,8 @@ export class HomePageController {
             void this.handleViewDetails(documentId);
         };
 
-        const handleDownload = (_documentId: string): void => {
-            this.model.setError("Download is not implemented yet.");
+        const handleDownload = (documentId: string): void => {
+            void this.model.handleDownload(documentId);
         };
 
         const handleNavbarLogoutClick = (): void => {
